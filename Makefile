@@ -8,5 +8,10 @@ data/mortality_rates.csv:
 clean:
 	rm -rf data reports figure activity.md
 
-reports/ETH.html: compiler.R activity.Rmd data/mortality_rates.csv
-	Rscript compiler.R "rmd.file <- 'activity.Rmd'" "country.code <- 'ETH'"
+COUNTRY_CODES = ETH ZMB ZAF IND USA
+REPORTS = $(addsuffix .html,$(addprefix reports/,$(COUNTRY_CODES)))
+
+reports: $(REPORTS)
+
+reports/%.html: compiler.R activity.Rmd data/mortality_rates.csv
+	Rscript compiler.R "destination <- '$@'"
