@@ -6,7 +6,7 @@ for (line in args) {
     eval(parse(text=line))
 }
 
-rmd.file <- 'activity.Rmd'
+rmd.file <- 'mortality.Rmd'
 country.code <- gsub('(reports/|.html)', '', destination)
 knit2html(rmd.file, quiet=TRUE)
 html.file <- gsub('.Rmd', '.html', rmd.file)

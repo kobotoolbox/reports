@@ -39,14 +39,14 @@ MyStats <- function(x) c(
     Min=min(x, na.rm=TRUE),
     Mean=mean(x, na.rm=TRUE),
     Max=max(x, na.rm=TRUE),
-    Missing=sum(is.na(x)) / length(x)
+    Proportion.Missing=sum(is.na(x)) / length(x)
     )
 numeric.columns <- sapply(long, is.numeric)
 summary.stats <- t(sapply(long[numeric.columns], MyStats))
-pandoc.table(summary.stats, style='rmarkdown', caption='Summary statistics')
+pandoc.table(summary.stats, style='rmarkdown', caption='Summary statistics', split.tables=Inf)
 ```
 
-This report expects a single parameter to be passed in, a country code. With that country code we creat a graph comparing the change in child mortality over time for that country to all other countries in the world.
+This report expects a single parameter to be passed in, a country code. With that country code we create a graph comparing the change in child mortality over time for that country to all other countries in the world.
 
 ```{r, fig.width=10}
 long$in.country <- long$Country.Code == country.code
@@ -62,7 +62,7 @@ g <- (
                        labels=c('Rest of the world', country.name)) + 
     scale_size_manual(values=c(0.5, 3),
                       labels=c('Rest of the world', country.name)) +
-    ylab('Mortality rate of children under five') +
+    ylab(indicator.name) +
     xlab('Year') +
     ggtitle('Mortality rate of children under five over time by country')
     )

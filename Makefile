@@ -6,12 +6,12 @@ data/mortality_rates.csv:
 	touch data/mortality_rates.csv
 
 clean:
-	rm -rf data reports figure activity.md
+	rm -rf data reports figure mortality.md
 
 COUNTRY_CODES = ETH ZMB ZAF IND USA
 REPORTS = $(addsuffix .html,$(addprefix reports/,$(COUNTRY_CODES)))
 
 reports: $(REPORTS)
 
-reports/%.html: compiler.R activity.Rmd data/mortality_rates.csv
+reports/%.html: compiler.R mortality.Rmd data/mortality_rates.csv
 	Rscript compiler.R "destination <- '$@'"

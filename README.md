@@ -5,4 +5,4 @@ We want to make it easy to deliver dynamic reports using R. There are two differ
 1.  We could build a web application that allows a user to compile various reports.
 2.  We can manually compile reports and distribute them manually.
 
-Realtime reporting (1) has a great ring, but can be quite difficult. To make things easy on me, I will take a quick pass at (2) using a Makefile and R's knitr package.
+Realtime reporting (1) has a great ring, but can be quite difficult. To make things easy, I have taken a quick pass at (2) using a Makefile and R's knitr package.
