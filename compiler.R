@@ -6,9 +6,13 @@ for (line in args) {
     eval(parse(text=line))
 }
 
-rmd.file <- 'mortality.Rmd'
+# Create an HTML report using knitr.
 country.code <- gsub('(reports/|.html)', '', destination)
-knit2html(rmd.file, quiet=TRUE)
-html.file <- gsub('.Rmd', '.html', rmd.file)
-dir.create('reports', showWarnings=FALSE)
-quietly <- file.rename(from=html.file, to=destination)
+knit2html('mortality.Rmd', quiet=TRUE)
+system('mkdir -p reports')
+system(paste('mv mortality.html', destination))
+
+# Let's also make a pdf using pandoc.
+system('pandoc mortality.md -o mortality.pdf')
+pdf.path <- paste0('reports/', country.code, '.pdf')
+system(paste('mv mortality.pdf', pdf.path))
