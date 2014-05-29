@@ -15,10 +15,6 @@ data/mortality_rates.csv: data
 clean:
 	rm -rf data reports figure mortality.md
 
-COUNTRY_CODES = ETH ZMB ZAF IND USA
-REPORTS = $(addsuffix .html,$(addprefix reports/,$(COUNTRY_CODES)))
-
-reports: $(REPORTS)
-
-reports/%.html: compiler.R mortality.Rmd data/mortality_rates.csv
-	Rscript compiler.R "destination <- '$@'" "suspicious.time <- 10"
+reports: data/games.csv data/mortality_rates.csv
+	mkdir reports
+	Rscript compiler.R

@@ -1,5 +1,6 @@
-{
-    "anaheim-and-toronto": {
+[
+    {
+        "id": "anaheim-and-toronto",
         "template": "baseball",
         "data": {
             "path": "../data/games.csv",
@@ -7,17 +8,19 @@
         },
         "message": "Arbitrary parameters are accepted."
     },
-    "all-mlb": {
+    {
+        "id": "all-mlb",
         "template": "baseball",
         "data": {
             "path": "../data/games.csv"
         }
     },
-    "ethiopia-child-mortality": {
+    {
+        "id": "ethiopia-child-mortality",
         "template": "mortality",
         "data": {
             "path": "../data/mortality_rates.csv"
         },
         "country.code": "ETH"
     }
-}
+]

@@ -19,7 +19,9 @@ set.knitr.defaults <- function() {
     opts_chunk$set(error=FALSE, echo=FALSE)
 }
 
-compile <- function(compilation.id, config) {
+compile <- function(config) {
+    compilation.id <- config$id
+
     set.knitr.defaults()
     rmd.path <- paste0('templates/', config$template, '.Rmd')
     knit2html(rmd.path, quiet=TRUE)
@@ -38,8 +40,8 @@ get.data <- function(config) {
 
 ## TODO: This JSON parser doesn't throw errors when it should.
 compilations <- fromJSON(file='compilations.json')
-for (k in names(compilations)) {
-    compile(k, compilations[[k]])
+for (config in compilations) {
+    compile(config)
 }
 
 md2pdf <- function() {
