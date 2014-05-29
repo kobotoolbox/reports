@@ -2,6 +2,7 @@ library(knitr)
 library(rjson)
 library(pander)
 library(ggplot2)
+library(plyr)
 
 # TODO: It would be good to tap into a good SQL library here.
 extract <- function(path, ...) {

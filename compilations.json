@@ -22,5 +22,13 @@
             "path": "../data/mortality_rates.csv"
         },
         "country.code": "ETH"
+    },
+    {
+        "id": "mlb-groupby-league",
+        "template": "baseball",
+        "data": {
+            "path": "../data/games.csv"
+        },
+        "groupby": "hleague"
     }
 ]

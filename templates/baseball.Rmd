@@ -5,6 +5,11 @@ This report aims to show the versatility of using `knitr` to construct reports. 
 ```{r, results='asis'}
 data <- get.data(config)
 
+if (sum(names(config) == 'groupby') == 0) {
+    ## Specify a default value for groupby.
+    config$groupby <- 'home'
+}
+
 counts <- data.frame(table(data$home))
 names(counts) <- c('Team', 'Games')
 pandoc.table(counts, style='rmarkdown')
@@ -19,4 +24,13 @@ Let's see if there's an obvious home field advantage.
     coord_fixed(ratio=1) +
     xlab('Home team score') + ylab('Away team score')
     )
+```
+
+Let's show an example of passing a groupby parameter. The groupby parameter passed into this report is: `r config$groupby`
+
+```{r, results='asis'}
+stats <- ddply(data, config$groupby, function(df) c(
+    average.margin.of.victory=mean(abs(df$homescore - df$visscore))
+    ))
+pandoc.table(stats, style='rmarkdown')
 ```
