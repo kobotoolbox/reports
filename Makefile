@@ -1,9 +1,16 @@
-data/mortality_rates.csv:
+data:
 	mkdir data
-	curl -o data/worldbank.zip "http://api.worldbank.org/v2/en/indicator/sh.dyn.mort?downloadformat=csv"
-	cd data; unzip worldbank.zip
-	mv data/sh.dyn.mort_Indicator_en_csv_v2.csv data/mortality_rates.csv
-	touch data/mortality_rates.csv
+
+data/games.csv: data
+	curl -o data/games.csv http://www.calvin.edu/~stob/data/bballgames03.csv
+	touch data/games.csv
+
+data/mortality_rates.csv: data
+	mkdir temp
+	curl -o temp/worldbank.zip "http://api.worldbank.org/v2/en/indicator/sh.dyn.mort?downloadformat=csv"
+	cd temp; unzip worldbank.zip
+	cat temp/sh.dyn.mort_Indicator_en_csv_v2.csv | sed '1,2d' > data/mortality_rates.csv
+	rm -r temp
 
 clean:
 	rm -rf data reports figure mortality.md
@@ -14,4 +21,4 @@ REPORTS = $(addsuffix .html,$(addprefix reports/,$(COUNTRY_CODES)))
 reports: $(REPORTS)
 
 reports/%.html: compiler.R mortality.Rmd data/mortality_rates.csv
-	Rscript compiler.R "destination <- '$@'"
+	Rscript compiler.R "destination <- '$@'" "suspicious.time <- 10"

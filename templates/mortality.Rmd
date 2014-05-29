@@ -12,7 +12,7 @@ I want to show how easy it is to build dynamic reports using the R package knitr
 
 ```{r}
 options(stringsAsFactors=FALSE)
-wide <- read.csv('data/mortality_rates.csv', skip=2)
+wide <- get.data(config)
 
 indicator.name <- 'Mortality rate, under-5 (per 1,000 live births)'
 stopifnot(all(wide$Indicator.Name == indicator.name))
@@ -49,7 +49,7 @@ pandoc.table(summary.stats, style='rmarkdown', caption='Summary statistics', spl
 This report expects a single parameter to be passed in, a country code. With that country code we create a graph comparing the change in child mortality over time for that country to all other countries in the world.
 
 ```{r, fig.width=10}
-long$in.country <- long$Country.Code == country.code
+long$in.country <- long$Country.Code == config$country.code
 country.name <- unique(long$Country.Name[long$in.country])
 
 keep <- !is.na(long$mortality.under.five)

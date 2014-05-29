@@ -1,0 +1,23 @@
+{
+    "anaheim-and-toronto": {
+        "template": "baseball",
+        "data": {
+            "path": "../data/games.csv",
+            "home": ["ANA", "TOR"]
+        },
+        "message": "Arbitrary parameters are accepted."
+    },
+    "all-mlb": {
+        "template": "baseball",
+        "data": {
+            "path": "../data/games.csv"
+        }
+    },
+    "ethiopia-child-mortality": {
+        "template": "mortality",
+        "data": {
+            "path": "../data/mortality_rates.csv"
+        },
+        "country.code": "ETH"
+    }
+}
