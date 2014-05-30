@@ -1,11 +1,11 @@
 {
     "baseball": {
-        "data.path": "../data/games.csv",
-        "data.home": ["choice1", "choice2"],
-        "groupby": ["hleague"]
+        "data/path": "../data/games.csv",
+        "data/home": ["", "ANA"],
+        "groupby": ["hleague", "home"]
     },
     "mortality": {
-        "data.path": "../data/mortality_rates.csv",
+        "data/path": "../data/mortality_rates.csv",
         "country.code": ["ETH", "IND"]
     }
 }

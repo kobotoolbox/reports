@@ -27,8 +27,26 @@ class DynamicForm(forms.Form):
             if type(v) == list:
                 self.fields[k] = forms.ChoiceField(
                     label=k,
-                    choices=[(c, c) for c in v]
+                    choices=[(c, c) for c in v],
+                    required=False
                 )
+
+    def clean(self):
+        sep = '/'
+        cleaned_data = super(DynamicForm, self).clean()
+        grouped = {}
+        for k, v in cleaned_data.items():
+            if sep in k:
+                l = k.split(sep)
+                assert len(l) == 2
+                if l[0] in grouped:
+                    grouped[l[0]][l[1]] = v
+                else:
+                    grouped[l[0]] = {l[1]: v}
+            else:
+                grouped[k] = v
+        self.cleaned_data = grouped
+        return grouped
 
 def report(request, slug):
     '''
@@ -41,6 +59,7 @@ def report(request, slug):
         form = DynamicForm(request.POST, fields=fields)
         if form.is_valid():
             config = form.cleaned_data
+            config['template'] = slug
             return render(request, 'report.html', {'config': json.dumps(config)})
     else:
         form = DynamicForm(fields=fields)
