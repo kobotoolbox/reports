@@ -4,7 +4,7 @@ requirements <- c(
     'pander',
     'ggplot2',
     'plyr',
-    'reshape2',
+    'reshape2'
     )
 
 for (lib in requirements) {
