@@ -1,6 +1,10 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from django import forms
 import json
+import tempfile
+import subprocess
+import os
 
 with open('portal/reports.json') as f:
     REPORTS = json.load(f)
@@ -60,7 +64,30 @@ def report(request, slug):
         if form.is_valid():
             config = form.cleaned_data
             config['template'] = slug
-            return render(request, 'report.html', {'config': json.dumps(config)})
+            return _compile(config)
     else:
         form = DynamicForm(fields=fields)
     return render(request, 'form.html', {'form': form})
+
+def _compile(config):
+    ## Save config to temporary json file.
+    config_json = tempfile.NamedTemporaryFile(delete=False)
+    json.dump(config, config_json)
+    config_json.close()
+
+    ## Create temporary file for saving compiled report.
+    report_html = tempfile.NamedTemporaryFile(delete=False)
+
+    ## Call the compiler.
+    cmd = ' '.join(['Rscript ../compiler/compiler.R', config_json.name, report_html.name])
+    subprocess.call(cmd, shell=True, cwd='../compiler/')
+    
+    ## Pull the text out of the compiled report.
+    with open(report_html.name) as f:
+        text = f.read()
+
+    ## Clean up temporary files.
+    os.remove(config_json.name)
+    os.remove(report_html.name)
+
+    return HttpResponse(text)

@@ -10,8 +10,10 @@ extract <- function(path, ...) {
     result <- read.csv(path)
     l <- list(...)
     for (k in names(l)) {
-        keep <- result[[k]] %in% l[[k]]
-        result <- result[keep, ]
+        if (l[[k]] != '') {
+            keep <- result[[k]] == l[[k]]
+            result <- result[keep, ]
+        }
     }
     return(result)
 }
@@ -20,7 +22,7 @@ set.knitr.defaults <- function() {
     opts_chunk$set(error=FALSE, echo=FALSE)
 }
 
-compile <- function(config) {
+compile <- function(config, destination) {
     compilation.id <- config$id
 
     set.knitr.defaults()
@@ -28,7 +30,6 @@ compile <- function(config) {
     knit2html(rmd.path, quiet=TRUE)
 
     html.path <- paste0(config$template, '.html')
-    destination <- paste0('reports/', compilation.id, '.html')
     system(paste('mv', html.path, destination))
 
     md.path <- paste0(config$template, '.md')
@@ -39,15 +40,13 @@ get.data <- function(config) {
     return(do.call(extract, config$data))
 }
 
-## TODO: This JSON parser doesn't throw errors when it should.
-compilations <- fromJSON(file='compilations.json')
-for (config in compilations) {
-    compile(config)
-}
-
 md2pdf <- function() {
     ## Let's also make a pdf using pandoc.
     system('pandoc mortality.md -o mortality.pdf')
     pdf.path <- paste0('reports/', country.code, '.pdf')
     system(paste('mv mortality.pdf', pdf.path))
 }
+
+args <- commandArgs(trailingOnly=TRUE)
+config <- fromJSON(file=args[1])
+compile(config, destination=args[2])
