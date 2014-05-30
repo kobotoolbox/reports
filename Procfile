@@ -1,0 +1,1 @@
+web: gunicorn --pythonpath web_portal web_portal.wsgi

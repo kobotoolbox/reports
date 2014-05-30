@@ -6,7 +6,9 @@ import tempfile
 import subprocess
 import os
 
-with open('portal/reports.json') as f:
+THIS_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+
+with open(os.path.join(THIS_DIRECTORY, 'reports.json')) as f:
     REPORTS = json.load(f)
 
 def index(request):
@@ -79,8 +81,10 @@ def _compile(config):
     report_html = tempfile.NamedTemporaryFile(delete=False)
 
     ## Call the compiler.
-    cmd = ' '.join(['Rscript ../compiler/compiler.R', config_json.name, report_html.name])
-    subprocess.call(cmd, shell=True, cwd='../compiler/')
+    compiler_dir = os.path.join(THIS_DIRECTORY, '..', '..', 'compiler')
+    compiler_path = os.path.join(compiler_dir, 'compiler.R')
+    cmd = ' '.join(['Rscript', compiler_path, config_json.name, report_html.name])
+    subprocess.call(cmd, shell=True, cwd=compiler_dir)
     
     ## Pull the text out of the compiled report.
     with open(report_html.name) as f:
