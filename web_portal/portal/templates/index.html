@@ -1,0 +1,9 @@
+<p>Click on the report you want to compile.</p>
+
+<ul>
+  {% for k, v in reports.items %}
+  <li>
+    <a href="{% url 'report' slug=k %}">{{ k }}</a>
+  </li>
+  {% endfor %}
+</ul>

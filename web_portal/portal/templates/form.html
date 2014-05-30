@@ -1,0 +1,6 @@
+<p>Please fill in the fields necessary for compiling this form and click compile to generate your dynamic report.</p>
+
+<form action="." method="post">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Submit" />
+</form>
