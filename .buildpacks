@@ -1,2 +1,2 @@
-https://github.com/heroku/heroku-buildpack-python.git
-https://github.com/virtualstaticvoid/heroku-buildpack-r.git
+https://github.com/heroku/heroku-buildpack-python.git#v37
+https://github.com/virtualstaticvoid/heroku-buildpack-r.git#v0.0.5
