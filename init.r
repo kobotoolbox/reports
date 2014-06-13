@@ -13,7 +13,7 @@ init <- function() {
 }
 
 install.list <- function(l) {
-    for (lib in requirements) {
+    for (lib in l) {
         install.packages(lib, dependencies=TRUE)
     }
 }
@@ -23,7 +23,7 @@ install.rcharts <- function() {
     install.list(rcharts.deps)
     url <- 'https://codeload.github.com/ramnathv/rCharts/tar.gz/master'
     path <- 'rCharts.tar.gz'
-    system(paste('curl', url, '-o', path))
+    system(paste('curl --insecure', url, '-o', path))
     install.packages(path, repos=NULL, type='source')
     system(paste('rm', path))
 }
