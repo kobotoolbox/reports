@@ -1,0 +1,5 @@
+What is one plus one?
+
+```{r}
+1 + 1
+```

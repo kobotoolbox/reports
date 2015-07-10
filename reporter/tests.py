@@ -1,3 +1,18 @@
 from django.test import TestCase
+from reporter.models import Template, Rendering, User
+import os
 
-# Create your tests here.
+
+class TestRendering(TestCase):
+
+    def test_render(self):
+        path = os.path.join(os.path.dirname(__file__), 'simple.Rmd')
+        with open(path) as f:
+            rmd = f.read()
+        t = Template.objects.create(rmd=rmd)
+
+        u = User.objects.create(username='bob')
+        r = Rendering.objects.create(user=u, template=t, data='')
+
+        r.render()
+        self.assertEqual(r.md, 'hi')
