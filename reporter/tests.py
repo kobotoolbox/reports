@@ -9,10 +9,10 @@ class TestRendering(TestCase):
         path = os.path.join(os.path.dirname(__file__), 'simple.Rmd')
         with open(path) as f:
             rmd = f.read()
-        t = Template.objects.create(rmd=rmd)
+        t = Template.objects.create(rmd=rmd, name='simple')
 
         u = User.objects.create(username='bob')
         r = Rendering.objects.create(user=u, template=t, data='')
 
         r.render()
-        self.assertEqual(r.md, 'hi')
+        self.assertTrue(r.md.strip().endswith('2'))

@@ -1,5 +1,1 @@
-What is one plus one?
-
-```{r}
-1 + 1
-```
+What is one plus one? `r 1+1`
