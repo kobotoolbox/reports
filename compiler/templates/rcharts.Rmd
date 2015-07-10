@@ -41,3 +41,12 @@ data(economics, package = 'ggplot2')
 p6 <- nPlot(uempmed ~ date, data = economics, type = 'lineChart')
 my.print(p6)
 ```
+
+## Gapminder example
+
+I think we want to work off of this [example](http://bost.ocks.org/mike/nations/). I was working off this [example](http://blog.ouseful.info/2013/11/04/generating-d3js-motion-charts-from-rcharts/), which wasn't working well at all.
+
+
+## ggvis example
+
+[ggvis](https://github.com/rstudio/ggvis) is better for exploratory data visualization. It's quick to write because it uses a similar syntax to ggplot2 (grammar of graphics), but it is less flexible than rCharts (can't do arbitrary d3 stuff).
