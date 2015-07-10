@@ -1,14 +1,3 @@
-"""
-Django settings for web_portal project.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.6/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.6/ref/settings/
-"""
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -36,7 +25,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'portal',
+    'reporter',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -48,9 +37,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'web_portal.urls'
+ROOT_URLCONF = 'koboreports.urls'
 
-WSGI_APPLICATION = 'web_portal.wsgi.application'
+WSGI_APPLICATION = 'koboreports.wsgi.application'
 
 
 # Database
