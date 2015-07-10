@@ -1,8 +1,0 @@
-Package: compiler
-Title: Wrapper around rmarkdown.
-Version: 0.0
-Author: Andrew Marder
-Maintainer: Andrew Marder <andrew.n.marder@gmail.com>
-Description: Package to compile rmarkdown reports.
-Depends: R (>= 3.0), rmarkdown (>= 0.7.1)
-License: GPL-3
