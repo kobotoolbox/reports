@@ -4,11 +4,15 @@
 reports. It is built on the R package
 [knitr](http://yihui.name/knitr/).
 
+# Current Features
+
+Report templates are stored in the database.
+
+Context variables can be passed to the template each time a template
+is rendered. This allows us to pass in a URL describing where to pull
+data from (read the kobo API).
+
 # TODO
-
-Report templates need to be stored in the database.
-
-Pull data from the API.
 
 Dockerize this project so it's easy to deploy.
 
