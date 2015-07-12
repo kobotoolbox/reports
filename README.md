@@ -1,8 +1,33 @@
 # reports
 
-`reporter` makes it easy to compile a large number of dynamic reports. Check out a demo [here](http://dimagi.herokuapp.com/). `reporter` is built with the R package [knitr](http://yihui.name/knitr/), the Python web framework [Django](https://www.djangoproject.com/), and it is deployed with [Heroku](https://www.heroku.com).
+`reports` is a Django project that makes it easy to compile dynamic
+reports. It is built on the R package
+[knitr](http://yihui.name/knitr/).
 
-Adding a new dynamic report to `reporter` is easy:
+# TODO
 
-1.  Add an R Markdown document to the [templates](https://github.com/amarder/reporter/tree/master/compiler/templates) folder.
-2.  Add a corresponding entry in the [config file](https://github.com/amarder/reporter/tree/master/web_portal/portal/reports.json).
+Report templates need to be stored in the database.
+
+Pull data from the API.
+
+Dockerize this project so it's easy to deploy.
+
+Need support for an if/else template tag. So we can return a warning
+message if a deployment has fewer than 150 responses.
+
+# Backburner
+
+On each compilation of a report, it would be nice to save the
+corresponding CSV file. That way when the report is recompiled we can
+pull only the new / updated data from the API to get the latest
+data. I'm not going to worry about setting this up right now, but I'll
+keep it in mind in my design decisions.
+
+I am going to ignore different user roles for the moment.  It seems
+like there is a large NGO that wants to write reports, and then there
+are satellite offices collecting data that will want to view the
+reports. For the moment I'm not going to worry too much about
+supporting different users and groups.
+
+We will want to share sessions with the other kobo projects on the
+server, this will allow users to log in once.
