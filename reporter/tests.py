@@ -1,18 +1,26 @@
 from django.test import TestCase
-from reporter.models import Template, Rendering, User
+from reporter.models import Template, Rendering
 import os
+
+
+_rmd_path = lambda x: os.path.join(os.path.dirname(__file__), 'rmd_templates', x)
 
 
 class TestRendering(TestCase):
 
     def test_render(self):
-        path = os.path.join(os.path.dirname(__file__), 'simple.Rmd')
-        with open(path) as f:
-            rmd = f.read()
-        t = Template.objects.create(rmd=rmd, name='simple')
+        path = _rmd_path('simple.Rmd')
+        t = Template.create(path)
 
-        u = User.objects.create(username='bob')
-        r = Rendering.objects.create(user=u, template=t, data='')
-
+        r = Rendering.objects.create(template=t)
         r.render()
         self.assertTrue(r.md.strip().endswith('2'))
+
+    def test_url(self):
+        path = _rmd_path('baseball.Rmd')
+        t = Template.create(path)
+
+        url = 'http://www.calvin.edu/~stob/data/bballgames03.csv'
+        r = Rendering.objects.create(template=t, url=url)
+        r.render()
+        self.assertTrue(r.md.startswith('[1] 2430'))

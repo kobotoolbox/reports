@@ -1,15 +1,13 @@
+```{r, echo=FALSE, results='asis'}
+data <- read.csv('{{ url }}')
+nrow(data)
+```
+
 # A Baseball Report
 
 This report aims to show the versatility of using `knitr` to construct reports. The abilitiy to interweave text and figures seems extremely valuable. Let's make sure that we've restricted the data to the right set of teams.
 
 ```{r, results='asis'}
-data <- get.data(config)
-
-if (sum(names(config) == 'groupby') == 0) {
-    ## Specify a default value for groupby.
-    config$groupby <- 'home'
-}
-
 counts <- data.frame(table(data$home))
 names(counts) <- c('Team', 'Games')
 pandoc.table(counts, style='rmarkdown')
@@ -26,10 +24,8 @@ Let's see if there's an obvious home field advantage.
     )
 ```
 
-Let's show an example of passing a groupby parameter. The groupby parameter passed into this report is: `r config$groupby`
-
 ```{r, results='asis'}
-stats <- ddply(data, config$groupby, function(df) c(
+stats <- ddply(data, 'home', function(df) c(
     average.margin.of.victory=mean(abs(df$homescore - df$visscore))
     ))
 pandoc.table(stats, style='rmarkdown')
