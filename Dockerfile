@@ -1,11 +1,15 @@
-FROM python:2.7
+FROM rocker/hadleyverse:latest
 
-ENV PYTHONUNBUFFERED 1
-RUN mkdir /app
+RUN mkdir /app 
 WORKDIR /app
-ADD requirements.txt /app/
-RUN pip install -r requirements.txt
-ADD . /app/
+ADD . /app
 
+RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+RUN chmod +x miniconda.sh
+RUN ./miniconda.sh -b
+ENV PATH /root/miniconda/bin:$PATH
+RUN conda update --yes conda
+RUN pip install -r requirements.txt
+ 
 EXPOSE 5000
 CMD gunicorn --bind 0.0.0.0:5000 koboreports.wsgi
