@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath web_portal web_portal.wsgi
+web: gunicorn koboreports.wsgi
