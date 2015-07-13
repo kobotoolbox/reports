@@ -1,1 +1,0 @@
-web: gunicorn koboreports.wsgi
