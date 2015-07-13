@@ -1,6 +1,6 @@
 FROM rocker/hadleyverse:latest
 
-RUN mkdir /app 
+RUN mkdir /app
 WORKDIR /app
 ADD . /app
 
@@ -10,6 +10,10 @@ RUN ./miniconda.sh -b
 ENV PATH /root/miniconda/bin:$PATH
 RUN conda update --yes conda
 RUN pip install -r requirements.txt
- 
+
+RUN python manage.py syncdb --noinput
+# RUN python manage.py migrate --noinput
+RUN python manage.py collectstatic --noinput
+
 EXPOSE 5000
 CMD gunicorn --bind 0.0.0.0:5000 koboreports.wsgi
