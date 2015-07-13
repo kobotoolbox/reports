@@ -9,6 +9,7 @@ RUN chmod +x miniconda.sh
 RUN ./miniconda.sh -b
 ENV PATH /root/miniconda/bin:$PATH
 RUN conda update --yes conda
+RUN conda install --yes --file conda-requirements.txt
 RUN pip install -r requirements.txt
 
 RUN python manage.py syncdb --noinput

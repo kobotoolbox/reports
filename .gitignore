@@ -4,3 +4,4 @@
 .ropeproject
 /db.sqlite3
 /static/
+/.env
