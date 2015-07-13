@@ -24,3 +24,12 @@ class TestRendering(TestCase):
         r = Rendering.objects.create(template=t, url=url)
         r.render()
         self.assertTrue(r.md.startswith('[1] 2430'))
+
+    def test_warning(self):
+        pass
+        # path = _rmd_path('warning.Rmd')
+        # t = Template.create(path)
+
+        # r = Rendering.objects.create(template=t)
+        # r.render()
+        # self.assertEqual(r.md, '')

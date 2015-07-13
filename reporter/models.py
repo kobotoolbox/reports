@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
 import tempfile
 import os
 import subprocess
@@ -18,6 +19,11 @@ class Template(models.Model):
         name, ext = os.path.splitext(l[-1])
         return cls.objects.create(rmd=rmd, name=name)
 
+    def render(self, dictionary):
+        template = django.template.Template(self.rmd)
+        context = django.template.Context(dictionary)
+        return template.render(context)
+
 
 class Rendering(models.Model):
     # I'm putting a user here because each rendering may access
@@ -35,20 +41,18 @@ class Rendering(models.Model):
     def render(self):
         folder = tempfile.gettempdir()
         filename = '%s.Rmd' % self.template.name
-
         path = os.path.join(folder, filename)
-        t = django.template.Template(self.template.rmd)
-        rmd = t.render(django.template.Context(self.context()))
+
+        rmd = self.template.render(self.context())
         with open(path, 'w') as f:
             f.write(rmd)
 
-        r_commands = [
-            'library(knitr)',
-            # 'opts_chunk\\$set(error=FALSE, warning=FALSE)',
-            "knit2html('%(filename)s', quiet=TRUE)" % locals(),
-        ]
-        l = map(lambda s: '-e "%s"' % s, r_commands)
-        cmd = ' '.join(['Rscript'] + l)
+        script = render_to_string('compile.R', locals())
+        path = os.path.join(folder, 'temp.R')
+        with open(path, 'w') as f:
+            f.write(script)
+
+        cmd = 'Rscript temp.R'
         retcode = subprocess.call(cmd, shell=True, cwd=folder)
 
         for extension in ['md', 'html']:

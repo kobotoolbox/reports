@@ -8,6 +8,10 @@ nrow(data)
 This report aims to show the versatility of using `knitr` to construct reports. The abilitiy to interweave text and figures seems extremely valuable. Let's make sure that we've restricted the data to the right set of teams.
 
 ```{r, results='asis'}
+library(pander)
+library(ggplot2)
+library(plyr)
+
 counts <- data.frame(table(data$home))
 names(counts) <- c('Team', 'Games')
 pandoc.table(counts, style='rmarkdown')
