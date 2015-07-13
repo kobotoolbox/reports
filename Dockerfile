@@ -12,8 +12,10 @@ RUN conda update --yes conda
 RUN conda install --yes --file conda-requirements.txt
 RUN pip install -r requirements.txt
 
+RUN which python
+RUN echo "$DATABASE_URL"
 RUN python manage.py syncdb --noinput
-# RUN python manage.py migrate --noinput
+RUN python manage.py migrate --noinput
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 5000
