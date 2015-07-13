@@ -27,7 +27,7 @@ class Rendering(models.Model):
     url = models.URLField(blank=True)
     md = models.TextField(editable=False)
     html = models.TextField(editable=False)
-    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, editable=False)
 
     def context(self):
         return {'url': self.url}
