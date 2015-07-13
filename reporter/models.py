@@ -22,11 +22,11 @@ class Template(models.Model):
 class Rendering(models.Model):
     # I'm putting a user here because each rendering may access
     # private data that relies on the user for authentication.
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(User, null=True, blank=True)
     template = models.ForeignKey(Template)
-    url = models.URLField()
-    md = models.TextField()
-    html = models.TextField()
+    url = models.URLField(blank=True)
+    md = models.TextField(editable=False)
+    html = models.TextField(editable=False)
     created = models.DateTimeField(auto_now_add=True)
 
     def context(self):

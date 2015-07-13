@@ -1,9 +1,9 @@
-<p>Click on the report you want to compile.</p>
+<p>Click on the report you want to view.</p>
 
 <ul>
-  {% for k, v in reports.items %}
+  {% for r in renderings %}
   <li>
-    <a href="{% url 'report' slug=k %}">{{ k }}</a>
+    <a href="{% url 'rendering' id=r.id %}">{{ r.template.name }}</a>
   </li>
   {% endfor %}
 </ul>
