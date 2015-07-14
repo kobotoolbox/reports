@@ -1,4 +1,5 @@
 FROM rocker/hadleyverse:latest
+RUN install2.r --error pander
 
 RUN mkdir /app
 WORKDIR /app
