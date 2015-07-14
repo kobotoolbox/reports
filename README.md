@@ -1,23 +1,46 @@
 # reports
 
-`reports` is a Django project that makes it easy to compile dynamic
-reports. It is built on the R package
-[knitr](http://yihui.name/knitr/).
+`reports` is a Django project for compiling dynamic reports. It is
+built on the R package [knitr][knitr].
 
-# Current Features
+# Features
 
-Report templates are stored in the database.
+Report templates are stored in the
+database. `reporter.models.Template.rmd`
 
-Context variables can be passed to the template each time a template
-is rendered. This allows us to pass in a URL describing where to pull
-data from (read the kobo API).
+When rendering a report we can pull data from any
+URL. `reporter.tests.TestRendering.test_url`
 
-# TODO
+Project is dockerized so it's easy to deploy. `Dockerfile`
 
-Dockerize this project so it's easy to deploy.
+Mustache tags are supported so we can return a warning message if a
+deployment has fewer than 150
+responses. `reporter.tests.TestRendering.test_warning`
 
-Need support for an if/else template tag. So we can return a warning
-message if a deployment has fewer than 150 responses.
+# Notes
+
+Right now I am deploying this web application using [dokku][dokku]. To
+see an instance of this application running go to
+[koboreports][koboreports].
+
+Here's how I set up an admin account using dokku:
+
+1.  SSH into AWS server.
+2.  Find name of the docker container that is running the application
+    using `docker ps`.
+3.  Open a bash terminal inside that docker container:
+
+        docker exec -it {{ container_name }} bash
+
+4.  Use django's management command to create a super user:
+
+        python manage.py createsuperuser
+
+One thing to keep in mind when deploying with dokku is every time you
+deploy, a new docker container is built. If you are using sqlite to
+store data inside a container that data will be lost when you redeploy
+the application. I am using postgres to persist data across
+deployments.
 
 # Backburner
 
@@ -35,3 +58,7 @@ supporting different users and groups.
 
 We will want to share sessions with the other kobo projects on the
 server, this will allow users to log in once.
+
+[knitr]: http://yihui.name/knitr/
+[dokku]: http://progrium.viewdocs.io/dokku/
+[koboreports]: http://koboreports.hbs-rcs.org/

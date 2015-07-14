@@ -17,7 +17,7 @@ compile <- function() {
     for (k in ls()) {
         .context[[k]] <- get(k)
     }
-    template <- readLines('{{ filename }}')
+    template <- paste(readLines('{{ filename }}'), collapse='\n')
     rmd <- whisker.render(template, .context)
 
     ## 3. write back out to the file and knit again
