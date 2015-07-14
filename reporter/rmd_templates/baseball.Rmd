@@ -1,5 +1,4 @@
 ```{r, echo=FALSE, results='asis'}
-data <- read.csv('{{ url }}')
 nrow(data)
 ```
 

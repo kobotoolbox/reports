@@ -4,7 +4,6 @@ from django.template.loader import render_to_string
 import tempfile
 import os
 import subprocess
-import django
 
 
 class Template(models.Model):
@@ -19,11 +18,6 @@ class Template(models.Model):
         name, ext = os.path.splitext(l[-1])
         return cls.objects.create(rmd=rmd, name=name)
 
-    def render(self, dictionary):
-        template = django.template.Template(self.rmd)
-        context = django.template.Context(dictionary)
-        return template.render(context)
-
 
 class Rendering(models.Model):
     # I'm putting a user here because each rendering may access
@@ -35,19 +29,16 @@ class Rendering(models.Model):
     html = models.TextField(editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
 
-    def context(self):
-        return {'url': self.url}
-
     def render(self):
         folder = tempfile.gettempdir()
         filename = '%s.Rmd' % self.template.name
         path = os.path.join(folder, filename)
 
-        rmd = self.template.render(self.context())
         with open(path, 'w') as f:
-            f.write(rmd)
+            f.write(self.template.rmd)
 
-        script = render_to_string('compile.R', locals())
+        context = {'filename': filename, 'url': self.url}
+        script = render_to_string('compile.R', context)
         path = os.path.join(folder, 'temp.R')
         with open(path, 'w') as f:
             f.write(script)

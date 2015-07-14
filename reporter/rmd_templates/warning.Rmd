@@ -1,14 +1,8 @@
----
-title: "A Web Doc"
-author: "Andrew Marder"
-output: md_document
----
-
 {{#warning}}
 ```{r, echo=FALSE, results='asis'}
 warning <- TRUE
 if (warning) {
-  cat('WARNING: You must collect at least 100 responses before you can compile this report.')
+  cat('WARNING: Need more data.')
   report <- FALSE
 }
 ```
