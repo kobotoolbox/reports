@@ -1,0 +1,43 @@
+# Wealth Quintile Results
+
+```{r, echo=FALSE}
+cutoff <- 50
+n <- nrow(data)
+warning_message <- n < cutoff
+report <- !warning_message
+```
+
+`r n` respondents have been interviewed.
+
+{{#warning_message}}
+Warning: Your sample is too small. Collect at least `r cutoff` responses to be representative.
+{{/warning_message}}
+
+{{#report}}
+## National quintile results
+
+These are the national quintile results for these respondents: 
+
+```{r, echo=FALSE}
+library(ggplot2)
+
+density <- as.data.frame(table(data$Quintile) / nrow(data) * 100)
+names(density) <- c('Quintile', 'Percentage')
+density$label <- paste0(round(density$Percentage, 1), '%')
+(
+  ggplot(density, aes(x=Quintile, y=Percentage, fill=Quintile)) + 
+  geom_bar(stat='identity') + 
+  ggtitle('Respondents by wealth quintile') + 
+  ylab('Percentage of respondents') + 
+  xlab('Wealth quintile') + 
+  geom_text(aes(y=Percentage+0.75, label=label, color=Quintile)) + 
+  guides(fill=FALSE, color=FALSE)
+)
+
+bottom_two <- sum(density$Percentage[density$Quintile %in% c(1, 2)])
+```
+
+The graph above shows you the percentage of your respondents that were in each national wealth quintile.
+
+`r round(bottom_two)`% of your respondents were in the bottom two quintiles. For more information on interpreting wealth quintile results, [please click here](http://somestaticlink).
+{{/report}}
