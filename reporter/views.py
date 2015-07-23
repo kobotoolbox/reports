@@ -10,6 +10,6 @@ def index(request):
 
 def rendering(request, id):
     r = Rendering.objects.get(id=id)
-    if not r.html:
-        r.render()
+    # To start, every time a report is requested let's recompile it.
+    r.render()
     return HttpResponse(r.html)
