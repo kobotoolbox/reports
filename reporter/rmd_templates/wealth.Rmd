@@ -18,11 +18,23 @@ Warning: Your sample is too small. Collect at least `r cutoff` responses to be r
 
 These are the national quintile results for these respondents:
 
-```{r, echo=FALSE}
-library(ggplot2)
+```{r, echo=FALSE, results='asis'}
+library(pander)
 
 density <- as.data.frame(table(data$Quintile) / nrow(data) * 100)
 names(density) <- c('Quintile', 'Percentage')
+
+my_table <- data.frame(
+  k=c(as.character(density$Quintile), 'Total'),
+  v=c(density$Percentage, sum(density$Percentage))
+  )
+names(my_table) <- c('Wealth quintile', 'Percentage of respondents')
+pandoc.table(my_table, style='rmarkdown', caption='Respondents by wealth quintile', round=1, keep.trailing.zeros=TRUE, justify='left')
+```
+
+```{r, echo=FALSE}
+library(ggplot2)
+
 density$label <- paste0(round(density$Percentage, 1), '%')
 (
   ggplot(density, aes(x=Quintile, y=Percentage, fill=Quintile)) +
