@@ -16,7 +16,7 @@ Warning: Your sample is too small. Collect at least `r cutoff` responses to be r
 {{#report}}
 ## National quintile results
 
-These are the national quintile results for these respondents: 
+These are the national quintile results for these respondents:
 
 ```{r, echo=FALSE}
 library(ggplot2)
@@ -25,19 +25,27 @@ density <- as.data.frame(table(data$Quintile) / nrow(data) * 100)
 names(density) <- c('Quintile', 'Percentage')
 density$label <- paste0(round(density$Percentage, 1), '%')
 (
-  ggplot(density, aes(x=Quintile, y=Percentage, fill=Quintile)) + 
-  geom_bar(stat='identity') + 
-  ggtitle('Respondents by wealth quintile') + 
-  ylab('Percentage of respondents') + 
-  xlab('Wealth quintile') + 
-  geom_text(aes(y=Percentage+0.75, label=label, color=Quintile)) + 
+  ggplot(density, aes(x=Quintile, y=Percentage, fill=Quintile)) +
+  geom_bar(stat='identity') +
+  ggtitle('Respondents by wealth quintile') +
+  ylab('Percentage of respondents') +
+  xlab('Wealth quintile') +
+  geom_text(aes(y=Percentage+0.75, label=label, color=Quintile)) +
   guides(fill=FALSE, color=FALSE)
 )
 
 bottom_two <- sum(density$Percentage[density$Quintile %in% c(1, 2)])
+
+if (bottom_two > 40) {
+  verdict <- 'relatively large'
+} else if (bottom_two > 20) {
+  verdict <- 'small'
+} else {
+  verdict <- 'very small'
+}
 ```
 
 The graph above shows you the percentage of your respondents that were in each national wealth quintile.
 
-`r round(bottom_two)`% of your respondents were in the bottom two quintiles. For more information on interpreting wealth quintile results, [please click here](http://somestaticlink).
+`r round(bottom_two)`% of your respondents were in the bottom two quintiles. This means that a `r verdict` proportion of respondents were poor. For more information on interpreting wealth quintile results, [please click here](http://somestaticlink).
 {{/report}}
