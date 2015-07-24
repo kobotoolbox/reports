@@ -2,6 +2,8 @@ from django.test import TestCase
 from reporter.models import Template, Rendering
 import os
 import re
+# from django.contrib.auth.models import User
+import subprocess
 
 
 _rmd_path = lambda x: os.path.join(os.path.dirname(__file__), 'rmd_templates', x)
@@ -63,3 +65,17 @@ class TestRendering(TestCase):
         r = Rendering.objects.create(template=t)
         output = r.render()
         self.assertEqual(output['md'].strip(), 'WARNING: Need more data.')
+
+    def test_kobo_api(self):
+        d = {
+            'username': 'm4m_testing',
+            'password': 'metricsmetrics',
+            'filename': '17516.csv',
+            'url': 'https://kc.kobotoolbox.org/api/v1/data',
+        }
+        cmd = 'curl --silent --insecure --user %(username)s:%(password)s %(url)s/%(filename)s --output %(filename)s' % d
+        subprocess.call(cmd, shell=True)
+        with open(d['filename']) as f:
+            lines = [line for line in f]
+        self.assertTrue(lines[0].startswith('Q1,Q2,Q3'))
+        os.remove(d['filename'])
