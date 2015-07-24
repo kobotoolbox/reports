@@ -5,11 +5,15 @@ from models import Rendering
 
 def index(request):
     renderings = Rendering.objects.all()
+    extensions = ['html', 'pdf', 'docx']
     return render(request, 'index.html', dictionary=locals())
 
 
-def rendering(request, id):
+def rendering(request, id, extension):
     r = Rendering.objects.get(id=id)
-    # To start, every time a report is requested let's recompile it.
-    r.render()
-    return HttpResponse(r.html)
+    results = r.render()
+    response = HttpResponse(results[extension])
+    if extension != 'html':
+        filename = '%(id)s.%(extension)s' % locals()
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+    return response

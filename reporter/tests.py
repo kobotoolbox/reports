@@ -14,8 +14,8 @@ class TestRendering(TestCase):
         t = Template.create(path)
 
         r = Rendering.objects.create(template=t)
-        r.render()
-        self.assertTrue(r.md.strip().endswith('2'))
+        output = r.render()
+        self.assertTrue(output['md'].strip().endswith('2'))
 
     def test_url(self):
         '''
@@ -29,8 +29,8 @@ class TestRendering(TestCase):
         t = Template.objects.create(rmd=rmarkdown, name='n_observations')
         url = 'http://www.calvin.edu/~stob/data/bballgames03.csv'
         r = Rendering.objects.create(template=t, url=url)
-        r.render()
-        self.assertEqual(int(r.md), 2430)
+        output = r.render()
+        self.assertEqual(int(output['md']), 2430)
 
     def test_warning(self):
         '''
@@ -61,5 +61,5 @@ class TestRendering(TestCase):
         rmarkdown = '\n'.join(lines)
         t = Template.objects.create(rmd=rmarkdown, name='warning')
         r = Rendering.objects.create(template=t)
-        r.render()
-        self.assertEqual(r.md.strip(), 'WARNING: Need more data.')
+        output = r.render()
+        self.assertEqual(output['md'].strip(), 'WARNING: Need more data.')

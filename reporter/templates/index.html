@@ -1,9 +1,14 @@
 <p>Click to view a report.</p>
 
-<ul>
+<table>
+  <tr><th>Template name</th><th>Data source</th><th colspan="3">Formats</th></tr>
   {% for r in renderings %}
-  <li>
-    <a href="{% url 'rendering' id=r.id %}">{{ r.template.name }}</a>
-  </li>
+  <tr>
+    <td>{{ r.template.name }}</td>
+    <td>{{ r.url }}</td>
+    {% for ext in extensions %}
+    <td><a href="{% url 'rendering' id=r.id  extension=ext %}">{{ ext }}</a></td>
+    {% endfor %}
+  </tr>
   {% endfor %}
-</ul>
+</table>

@@ -46,10 +46,10 @@ class Rendering(models.Model):
         cmd = 'Rscript temp.R'
         retcode = subprocess.call(cmd, shell=True, cwd=folder)
 
-        for extension in ['md', 'html']:
+        results = {}
+        for extension in ['md', 'html', 'pdf', 'docx']:
             path = os.path.join(folder, self.template.name + '.' + extension)
             with open(path) as f:
-                text = f.read()
-                setattr(self, extension, text)
+                results[extension] = f.read()
 
-        self.save()
+        return results
