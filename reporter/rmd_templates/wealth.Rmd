@@ -1,6 +1,9 @@
 # Wealth Quintile Results
 
 ```{r, echo=FALSE}
+# uncomment for local development
+# data <- read.csv('../static/india_equity_nonurban_2015_07_22_11_12_30.csv')
+
 cutoff <- 50
 n <- nrow(data)
 warning_message <- n < cutoff
@@ -35,16 +38,27 @@ pandoc.table(my_table, style='rmarkdown', caption='Respondents by wealth quintil
 ```{r, echo=FALSE}
 library(ggplot2)
 
-density$label <- paste0(round(density$Percentage, 1), '%')
-(
-  ggplot(density, aes(x=Quintile, y=Percentage, fill=Quintile)) +
-  geom_bar(stat='identity') +
-  ggtitle('Respondents by wealth quintile') +
-  ylab('Percentage of respondents') +
-  xlab('Wealth quintile') +
-  geom_text(aes(y=Percentage+0.75, label=label, color=Quintile)) +
-  guides(fill=FALSE, color=FALSE)
-)
+pie_chart <- function(data, varname) {
+  var <- factor(data[[varname]])
+  percent <- round(100 * table(var) / length(var), 1)
+  label <- paste0(var, ' = ', percent[var], '%')
+  data[[varname]] <- label
+  data[['empty']] <- factor(0)
+  
+  pie <- (
+    ggplot(data, aes_string(x='empty', fill=varname)) +
+    geom_bar(width = 1) +
+    ylab('') + 
+    xlab('') + 
+    theme_bw() +
+    theme(axis.ticks.y=element_blank(), axis.text.y=element_blank(), panel.grid.major.y=element_blank(), panel.border=element_blank()) +
+    coord_polar(theta = "y")
+  )
+  
+  return(pie)  
+}
+
+pie_chart(data, 'Quintile') + ggtitle('Respondents by wealth quintile')
 
 bottom_two <- sum(density$Percentage[density$Quintile %in% c(1, 2)])
 
