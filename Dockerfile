@@ -1,10 +1,10 @@
 FROM rocker/hadleyverse:latest
 RUN install2.r --error pander
 
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get clean
-RUN apt-get install -y python-pip
+RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+RUN chmod +x miniconda.sh
+RUN ./miniconda.sh -b
+ENV PATH /root/miniconda/bin:$PATH
 
 RUN mkdir /app
 WORKDIR /app
