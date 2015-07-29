@@ -5,6 +5,8 @@ RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O 
 RUN chmod +x miniconda.sh
 RUN ./miniconda.sh -b
 ENV PATH /root/miniconda/bin:$PATH
+RUN conda update --yes conda
+RUN conda install pip
 
 RUN mkdir /app
 WORKDIR /app
