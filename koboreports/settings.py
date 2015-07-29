@@ -72,3 +72,8 @@ LOGIN_URL = '/login/kobo/'
 
 SOCIAL_AUTH_KOBO_OAUTH_KEY = 'zXhPzqgAo7lkG_kBknm9kU!HdXUEkM?zq5eRC5op'
 SOCIAL_AUTH_KOBO_OAUTH_SECRET = 'quUXs:14MvUlWdcw@jZ.n86ugu1-nE4KqSVC5?xfyH;UHrXS5vLMYQwmjLndmj=8ltNxE:YpM_eA=c!=:3nF;oTW8;=ilpJ-pQZKFbgz8c4RYq7uW1oebD1E-Gd@@GN4'
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
+)
