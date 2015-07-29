@@ -64,6 +64,8 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 AUTHENTICATION_BACKENDS = (
-    'social.backends.google.GoogleOAuth2',
+    'social.backends.google.GoogleOpenId',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+LOGIN_URL = '/login/google/'
