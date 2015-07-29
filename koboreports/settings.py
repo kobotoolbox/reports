@@ -64,8 +64,8 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 AUTHENTICATION_BACKENDS = (
-    'social.backends.google.GoogleOpenId',
+    'reporter.kobo_backend.KoboOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
-LOGIN_URL = '/login/google/'
+LOGIN_URL = '/login/kobo/'
