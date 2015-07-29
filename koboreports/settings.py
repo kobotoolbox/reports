@@ -74,6 +74,13 @@ SOCIAL_AUTH_KOBO_OAUTH_KEY = 'zXhPzqgAo7lkG_kBknm9kU!HdXUEkM?zq5eRC5op'
 SOCIAL_AUTH_KOBO_OAUTH_SECRET = 'quUXs:14MvUlWdcw@jZ.n86ugu1-nE4KqSVC5?xfyH;UHrXS5vLMYQwmjLndmj=8ltNxE:YpM_eA=c!=:3nF;oTW8;=ilpJ-pQZKFbgz8c4RYq7uW1oebD1E-Gd@@GN4'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.template.context_processors.debug",
+    "django.template.context_processors.i18n",
+    "django.template.context_processors.media",
+    "django.template.context_processors.static",
+    "django.template.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
     'social.apps.django_app.context_processors.backends',
     'social.apps.django_app.context_processors.login_redirect',
 )
