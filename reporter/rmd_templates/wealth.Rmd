@@ -61,17 +61,9 @@ pie_chart <- function(data, varname) {
 pie_chart(data, 'Quintile') + ggtitle('Respondents by wealth quintile')
 
 bottom_two <- sum(density$Percentage[density$Quintile %in% c(1, 2)])
-
-if (bottom_two > 40) {
-  verdict <- 'relatively large'
-} else if (bottom_two > 20) {
-  verdict <- 'small'
-} else {
-  verdict <- 'very small'
-}
 ```
 
 The graph above shows you the percentage of your respondents that were in each national wealth quintile.
 
-`r round(bottom_two)`% of your respondents were in the bottom two quintiles. This means that a `r verdict` proportion of respondents were poor. For more information on interpreting wealth quintile results, [please click here](http://somestaticlink).
+`r round(bottom_two)`% of your respondents were in the bottom two quintiles. This means that a relatively `r ifelse(bottom_two >= 40, 'large', 'small')` number of respondents were poor.
 {{/report}}
