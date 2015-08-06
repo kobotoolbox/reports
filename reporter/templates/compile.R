@@ -7,7 +7,7 @@ opts_chunk$set(error=FALSE, warning=FALSE)
 compile <- function() {
     {% if url %}
     ## 0. download the data
-    data <- read.csv('{{ url }}')
+    data <- read.csv('data.csv')
     {% endif %}
 
     ## 1. knit to get calculate value of interest

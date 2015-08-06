@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 import tempfile
 import os
 import subprocess
+import requests
 
 
 class Template(models.Model):
@@ -29,6 +30,10 @@ class Rendering(models.Model):
     html = models.TextField(editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
 
+    def download_data(self):
+        response = requests.get(self.url)
+        self.data = response.content
+
     def render(self):
         folder = tempfile.gettempdir()
         filename = '%s.Rmd' % self.template.name
@@ -37,14 +42,23 @@ class Rendering(models.Model):
         with open(path, 'w') as f:
             f.write(self.template.rmd)
 
+        if self.url:
+            self.download_data()
+            data_csv = os.path.join(folder, 'data.csv')
+            with open(data_csv, 'w') as f:
+                f.write(self.data)
+
         context = {'filename': filename, 'url': self.url}
         script = render_to_string('compile.R', context)
         path = os.path.join(folder, 'temp.R')
         with open(path, 'w') as f:
             f.write(script)
 
-        cmd = 'Rscript temp.R'
+        cmd = 'Rscript temp.R > temp.log'
         retcode = subprocess.call(cmd, shell=True, cwd=folder)
+        if retcode != 0:
+            path = os.path.join(folder, 'temp.log')
+            raise Exception(path)
 
         results = {}
         for extension in ['md', 'html', 'pdf', 'docx']:

@@ -79,3 +79,16 @@ class TestRendering(TestCase):
             lines = [line for line in f]
         self.assertTrue(lines[0].startswith('Q1,Q2,Q3'))
         os.remove(d['filename'])
+
+    def test_google_spreadsheet(self):
+        rmd = '`r nrow(data)` rows.\n'
+        t = Template.objects.create(rmd=rmd, name='rows')
+        url = (
+            'http://docs.google.com/spreadsheets/d/'
+            '1n59I4NMc4ykYW540sIFnbo10fZRDdrhBbora_oDSZdY/'
+            'export?hl&exportFormat=csv'
+        ) 
+        r = Rendering.objects.create(template=t, url=url)
+        output = r.render()
+        match = re.search('^\d+ rows\.', output['md'])
+        self.assertTrue(match)
