@@ -45,3 +45,10 @@ RUN python manage.py test
 RUN python manage.py syncdb --noinput
 RUN python manage.py migrate --noinput
 RUN python manage.py collectstatic --noinput
+
+################################################
+# TODO: This is repeated in docker-compose.yml #
+################################################
+
+EXPOSE 5000
+gunicorn --bind 0.0.0.0:5000 --workers 3 --timeout 300 koboreports.wsgi
