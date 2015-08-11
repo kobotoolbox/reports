@@ -24,7 +24,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'social.apps.django_app.default',
     'reporter',
 )
 
@@ -70,9 +69,6 @@ AUTHENTICATION_BACKENDS = (
 
 LOGIN_URL = '/login/kobo/'
 
-SOCIAL_AUTH_KOBO_OAUTH_KEY = 'bNxegHZ.a1wUOv.jgiyN!i7tcd3BZRyC0ic=.VNx'
-SOCIAL_AUTH_KOBO_OAUTH_SECRET = 'Qswx;HSr9@6-GMGEGeOK9z0DQH;LX0?2-CK:_XDR=z:mQ1rtE1D:X2l;HYmsQVk6_KzO36eYWbszvxpG3.Vt!m3DzpXt5iCl=pujwkG6GpKuuvCFYA4wx15oVPlFb!3s'
-
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
     "django.template.context_processors.debug",
@@ -81,6 +77,4 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.template.context_processors.static",
     "django.template.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
-    'social.apps.django_app.context_processors.backends',
-    'social.apps.django_app.context_processors.login_redirect',
 )

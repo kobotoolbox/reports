@@ -4,7 +4,6 @@ from models import Rendering
 from django.contrib.auth.decorators import login_required
 
 
-@login_required
 def index(request):
     renderings = Rendering.objects.all()
     extensions = ['html', 'pdf', 'docx']
