@@ -3,7 +3,6 @@ postgres:
 
 koboreports:
   build: .
-  command: gunicorn --bind 0.0.0.0:5000 --workers 3 --timeout 300 koboreports.wsgi
   ports:
     - "5000:5000"
   links:
