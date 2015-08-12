@@ -2,7 +2,7 @@ from django.test import TestCase
 from reporter.models import Template, Rendering
 import os
 import re
-# from django.contrib.auth.models import User
+import requests
 import subprocess
 
 
@@ -67,18 +67,12 @@ class TestRendering(TestCase):
         self.assertEqual(output['md'].strip(), 'WARNING: Need more data.')
 
     def test_kobo_api(self):
-        d = {
-            'username': 'm4m_testing',
-            'password': 'metricsmetrics',
-            'filename': '17516.csv',
-            'url': 'https://kc.kobotoolbox.org/api/v1/data',
-        }
-        cmd = 'curl --silent --insecure --user %(username)s:%(password)s %(url)s/%(filename)s --output %(filename)s' % d
-        subprocess.call(cmd, shell=True)
-        with open(d['filename']) as f:
-            lines = [line for line in f]
-        self.assertTrue(lines[0].startswith('Q1,Q2,Q3'))
-        os.remove(d['filename'])
+        url = 'https://kc.kobotoolbox.org/api/v1/data/17516.csv'
+        api_token = '9b751c0ae200d2f2a82a05f6af510baffe1b4c83'
+        t = Template.objects.create(rmd='`r class(data)`\n', name='n')
+        r = Rendering.objects.create(template=t, url=url, api_token=api_token)
+        output = r.render()
+        self.assertEquals(output['md'].strip(), 'data.frame')
 
     def test_google_spreadsheet(self):
         rmd = '`r nrow(data)` rows.\n'

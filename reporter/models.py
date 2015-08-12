@@ -29,9 +29,13 @@ class Rendering(models.Model):
     md = models.TextField(editable=False)
     html = models.TextField(editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
+    api_token = models.TextField(blank=True)
 
     def download_data(self):
-        response = requests.get(self.url)
+        headers = {}
+        if self.api_token is not None:
+            headers['Authorization'] = 'Token %s' % self.api_token
+        response = requests.get(self.url, headers=headers)
         self.data = response.content
 
     def render(self):
