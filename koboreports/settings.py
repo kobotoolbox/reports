@@ -62,11 +62,6 @@ STATIC_ROOT = 'static'
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-AUTHENTICATION_BACKENDS = (
-    'reporter.kobo_backend.KoboOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
-
 LOGIN_URL = '/login/kobo/'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
