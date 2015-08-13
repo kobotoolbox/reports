@@ -66,18 +66,15 @@ class Rendering(models.Model):
         f = StringIO(self.data)
         df = pd.DataFrame.from_csv(f, index_col=None)
         last_submission = df['_submission_time'].max()
-
-        query = json.dumps({
-            '_submission_time': {'$gt': last_submission}
-        })
         url = self.url
-        full_url = '%(url)s&query=%(query)s' % locals()
-
-        options = '--silent --globoff --insecure'
-        api_token = self.api_token
-        cmd = "curl %(options)s -X GET '%(full_url)s' -H 'Authorization: Token %(api_token)s'" % locals()
-        text = subprocess.check_output(cmd, shell=True)
-        return text.strip()
+        headers = {'Authorization': 'Token %s' % self.api_token}
+        query = {"_submission_time": {"$gt": str(last_submission)}}
+        params = {
+            'format': 'csv',
+            'query': json.dumps(query)
+        }
+        response = requests.get(url=url, headers=headers, params=params)
+        return response.text.strip()
 
     def render(self):
         folder = tempfile.gettempdir()
