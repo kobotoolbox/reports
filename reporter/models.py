@@ -11,8 +11,9 @@ import tempfile
 
 
 class Template(models.Model):
+    user = models.ForeignKey(User, null=True)
     rmd = models.TextField()
-    name = models.TextField()
+    slug = models.SlugField(default='')
 
     @classmethod
     def create(cls, path):
@@ -20,16 +21,13 @@ class Template(models.Model):
             rmd = f.read()
         l = os.path.split(path)
         name, ext = os.path.splitext(l[-1])
-        return cls.objects.create(rmd=rmd, name=name)
+        return cls.objects.create(rmd=rmd, slug=name)
 
 
 class Rendering(models.Model):
-    user = models.ForeignKey(User, null=True, blank=True)
+    user = models.ForeignKey(User, null=True)
     template = models.ForeignKey(Template)
     url = models.URLField(blank=True)
-    md = models.TextField(editable=False)
-    html = models.TextField(editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
     api_token = models.TextField(blank=True)
     data = models.TextField(default='')
 
@@ -51,6 +49,12 @@ class Rendering(models.Model):
             self.data = self._get_csv(self.url, headers=headers)
         self.save()
 
+    def _download_new_data(self):
+        old_lines = self.data.split('\n')
+        new_lines = self._get_new_data().split('\n')
+        combined_lines = new_lines + old_lines[1:len(old_lines)]
+        self.data = '\n'.join(combined_lines)
+
     def _get_new_data(self):
         f = StringIO(self.data)
         df = pd.DataFrame.from_csv(f, index_col=None)
@@ -68,15 +72,9 @@ class Rendering(models.Model):
         text = subprocess.check_output(cmd, shell=True)
         return text.strip()
 
-    def _download_new_data(self):
-        old_lines = self.data.split('\n')
-        new_lines = self._get_new_data().split('\n')
-        combined_lines = new_lines + old_lines[1:len(old_lines)]
-        self.data = '\n'.join(combined_lines)
-
     def render(self):
         folder = tempfile.gettempdir()
-        filename = '%s.Rmd' % self.template.name
+        filename = '%s.Rmd' % self.template.slug
         path = os.path.join(folder, filename)
 
         with open(path, 'w') as f:
@@ -102,7 +100,7 @@ class Rendering(models.Model):
 
         results = {}
         for extension in ['md', 'html', 'pdf', 'docx']:
-            path = os.path.join(folder, self.template.name + '.' + extension)
+            path = os.path.join(folder, self.template.slug + '.' + extension)
             with open(path) as f:
                 results[extension] = f.read()
 

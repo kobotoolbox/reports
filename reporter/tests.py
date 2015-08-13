@@ -26,7 +26,7 @@ class TestRendering(TestCase):
         2,430 baseball games.
         '''
         rmarkdown = '`r nrow(data)`\n'
-        t = Template.objects.create(rmd=rmarkdown, name='n_observations')
+        t = Template.objects.create(rmd=rmarkdown, slug='n_observations')
         url = 'http://www.calvin.edu/~stob/data/bballgames03.csv'
         r = Rendering.objects.create(template=t, url=url)
         output = r.render()
@@ -59,7 +59,7 @@ class TestRendering(TestCase):
         above_doc_string = self.test_warning.__doc__
         lines = re.split('\s*\n\s*', above_doc_string)
         rmarkdown = '\n'.join(lines)
-        t = Template.objects.create(rmd=rmarkdown, name='warning')
+        t = Template.objects.create(rmd=rmarkdown, slug='warning')
         r = Rendering.objects.create(template=t)
         output = r.render()
         self.assertEqual(output['md'].strip(), 'WARNING: Need more data.')
@@ -67,7 +67,7 @@ class TestRendering(TestCase):
     def test_kobo_api(self):
         url = 'https://kc.kobotoolbox.org/api/v1/data/17516.csv'
         api_token = '9b751c0ae200d2f2a82a05f6af510baffe1b4c83'
-        t = Template.objects.create(rmd='`r class(data)`\n', name='n')
+        t = Template.objects.create(rmd='`r class(data)`\n', slug='n')
         r = Rendering.objects.create(template=t, url=url, api_token=api_token)
         output = r.render()
         self.assertEquals(output['md'].strip(), 'data.frame')
@@ -78,7 +78,7 @@ class TestRendering(TestCase):
 
         url = 'https://kc.kobotoolbox.org/api/v1/data/17516?format=csv'
         api_token = '9b751c0ae200d2f2a82a05f6af510baffe1b4c83'
-        t = Template.objects.create(rmd='`r class(data)`\n', name='n')
+        t = Template.objects.create(rmd='`r class(data)`\n', slug='n')
         r = Rendering.objects.create(template=t, url=url, api_token=api_token)
         r.download_data()
 
@@ -98,7 +98,7 @@ class TestRendering(TestCase):
 
     def test_google_spreadsheet(self):
         rmd = '`r nrow(data)` rows.\n'
-        t = Template.objects.create(rmd=rmd, name='rows')
+        t = Template.objects.create(rmd=rmd, slug='rows')
         url = (
             'http://docs.google.com/spreadsheets/d/'
             '1n59I4NMc4ykYW540sIFnbo10fZRDdrhBbora_oDSZdY/'
