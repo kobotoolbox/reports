@@ -1,10 +1,13 @@
-from django.db import models
+from StringIO import StringIO
 from django.contrib.auth.models import User
+from django.db import models
 from django.template.loader import render_to_string
-import tempfile
+import json
 import os
-import subprocess
+import pandas as pd
 import requests
+import subprocess
+import tempfile
 
 
 class Template(models.Model):
@@ -21,8 +24,6 @@ class Template(models.Model):
 
 
 class Rendering(models.Model):
-    # I'm putting a user here because each rendering may access
-    # private data that relies on the user for authentication.
     user = models.ForeignKey(User, null=True, blank=True)
     template = models.ForeignKey(Template)
     url = models.URLField(blank=True)
@@ -30,13 +31,48 @@ class Rendering(models.Model):
     html = models.TextField(editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
     api_token = models.TextField(blank=True)
+    data = models.TextField(default='')
+
+    @classmethod
+    def _get_csv(cls, *args, **kwargs):
+        response = requests.get(*args, **kwargs)
+        text = response.content
+        return text.strip()
 
     def download_data(self):
-        headers = {}
-        if self.api_token is not None:
-            headers['Authorization'] = 'Token %s' % self.api_token
-        response = requests.get(self.url, headers=headers)
-        self.data = response.content
+        if self.api_token is None:
+            self.data = self._get_csv(self.url)
+        elif self.data:
+            self._download_new_data()
+        else:
+            headers = {
+                'Authorization': 'Token %s' % self.api_token
+            }
+            self.data = self._get_csv(self.url, headers=headers)
+        self.save()
+
+    def _get_new_data(self):
+        f = StringIO(self.data)
+        df = pd.DataFrame.from_csv(f, index_col=None)
+        last_submission = df['_submission_time'].max()
+
+        query = json.dumps({
+            '_submission_time': {'$gt': last_submission}
+        })
+        url = self.url
+        full_url = '%(url)s&query=%(query)s' % locals()
+
+        options = '--silent --globoff --insecure'
+        api_token = self.api_token
+        cmd = "curl %(options)s -X GET '%(full_url)s' -H 'Authorization: Token %(api_token)s'" % locals()
+        text = subprocess.check_output(cmd, shell=True)
+        return text.strip()
+
+    def _download_new_data(self):
+        old_lines = self.data.split('\n')
+        new_lines = self._get_new_data().split('\n')
+        combined_lines = new_lines + old_lines[1:len(old_lines)]
+        self.data = '\n'.join(combined_lines)
 
     def render(self):
         folder = tempfile.gettempdir()

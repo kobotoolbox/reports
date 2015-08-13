@@ -2,8 +2,6 @@ from django.test import TestCase
 from reporter.models import Template, Rendering
 import os
 import re
-import requests
-import subprocess
 
 
 _rmd_path = lambda x: os.path.join(os.path.dirname(__file__), 'rmd_templates', x)
@@ -74,6 +72,30 @@ class TestRendering(TestCase):
         output = r.render()
         self.assertEquals(output['md'].strip(), 'data.frame')
 
+    def test_get_new_data(self):
+        self.maxDiff = None
+        my_split = lambda s: re.split('[\n\r]+', s)
+
+        url = 'https://kc.kobotoolbox.org/api/v1/data/17516?format=csv'
+        api_token = '9b751c0ae200d2f2a82a05f6af510baffe1b4c83'
+        t = Template.objects.create(rmd='`r class(data)`\n', name='n')
+        r = Rendering.objects.create(template=t, url=url, api_token=api_token)
+        r.download_data()
+
+        # test downloading new data
+        lines = my_split(r.data)
+        self.assertEqual(len(lines), 6)
+
+        r.data = '\n'.join([lines[0], lines[-1]])
+        r.save()
+
+        new_data = r._get_new_data()
+        new_lines = my_split(new_data)
+        self.assertEqual(len(new_lines), 5)
+
+        r.download_data()
+        self.assertEquals(my_split(r.data), lines)
+
     def test_google_spreadsheet(self):
         rmd = '`r nrow(data)` rows.\n'
         t = Template.objects.create(rmd=rmd, name='rows')
@@ -81,7 +103,7 @@ class TestRendering(TestCase):
             'http://docs.google.com/spreadsheets/d/'
             '1n59I4NMc4ykYW540sIFnbo10fZRDdrhBbora_oDSZdY/'
             'export?hl&exportFormat=csv'
-        ) 
+        )
         r = Rendering.objects.create(template=t, url=url)
         output = r.render()
         match = re.search('^\d+ rows\.', output['md'])
