@@ -11,9 +11,11 @@ import tempfile
 
 
 class Template(models.Model):
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(User, null=True, editable=False)
     rmd = models.TextField()
     slug = models.SlugField(default='')
+
+    unique_together = ('user', 'slug')
 
     @classmethod
     def create(cls, path):
@@ -23,9 +25,12 @@ class Template(models.Model):
         name, ext = os.path.splitext(l[-1])
         return cls.objects.create(rmd=rmd, slug=name)
 
+    def __unicode__(self):
+        return self.slug
+
 
 class Rendering(models.Model):
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(User, null=True, editable=False)
     template = models.ForeignKey(Template)
     url = models.URLField(blank=True)
     api_token = models.TextField(blank=True)
@@ -51,9 +56,11 @@ class Rendering(models.Model):
 
     def _download_new_data(self):
         old_lines = self.data.split('\n')
-        new_lines = self._get_new_data().split('\n')
-        combined_lines = new_lines + old_lines[1:len(old_lines)]
-        self.data = '\n'.join(combined_lines)
+        new_data = self._get_new_data()
+        if new_data:
+            new_lines = new_data.split('\n')
+            combined_lines = new_lines + old_lines[1:len(old_lines)]
+            self.data = '\n'.join(combined_lines)
 
     def _get_new_data(self):
         f = StringIO(self.data)
