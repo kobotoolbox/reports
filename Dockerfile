@@ -75,14 +75,13 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 
-RUN python manage.py test
+RUN python manage.py test --noinput
 
 #############################
 # database and static files #
 #############################
 
-RUN python manage.py syncdb --noinput && \
-    python manage.py migrate --noinput && \
+RUN python manage.py migrate --noinput && \
     python manage.py collectstatic --noinput
 
 ################################################
