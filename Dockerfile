@@ -60,7 +60,9 @@ RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O 
 ENV PATH /root/miniconda/bin:$PATH
 
 RUN conda update --yes conda && \
-    conda install pip
+    conda install \
+        pandas=0.16.2=np19py27_0 \
+        pip 
 
 RUN mkdir /app
 WORKDIR /app
