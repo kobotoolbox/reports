@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>{% block title %}koboreports{% endblock %}</title>
+
+    <link rel="stylesheet" href="/static/css/normalize.css">
+    <link rel="stylesheet" href="/static/css/skeleton.css">
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="column" style="margin-top: 10%">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
