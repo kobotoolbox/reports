@@ -1,5 +1,6 @@
-<html>
-  <body>
+{% extends 'base.html' %}
+
+{% block content %}
 
 {% if renderings.count > 0 %}
 <p>Hello {{ user.username }}, below is a list of your reports.</p>
@@ -19,12 +20,12 @@
 {% else %}
 <p>You have not created any reports yet.</p>
 {% endif %}
-    
-    <p>
-      Welcome to KoBoReports. To create, read, update, or delete
-      report templates go <a href="{% url 'templates' %}">here</a>. To
-      create, read, update, or delete renderings of those templates
-      go <a href="{% url 'renderings' %}">here</a>.
-    </p> 
-  </body>
-</html>
+
+<p>
+  Welcome to KoBoReports. To create, read, update, or delete
+  report templates go <a href="{% url 'templates' %}">here</a>. To
+  create, read, update, or delete renderings of those templates
+  go <a href="{% url 'renderings' %}">here</a>.
+</p> 
+
+{% endblock %}

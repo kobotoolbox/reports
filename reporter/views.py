@@ -2,8 +2,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from models import Template, Rendering
 from rest_framework import generics, serializers, permissions
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def index(request):
     renderings = Rendering.objects.filter(user=request.user)
     extensions = ['html', 'pdf', 'docx']
