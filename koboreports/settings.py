@@ -88,3 +88,7 @@ TEMPLATES = [{
         )
     }
 }]
+
+# django registration redux - I'm not a fan of hardcoding the site id.
+SITE_ID = 1
+ACCOUNT_ACTIVATION_DAYS = 7
