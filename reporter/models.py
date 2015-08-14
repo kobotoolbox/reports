@@ -43,7 +43,7 @@ class Rendering(models.Model):
         return text.strip()
 
     def download_data(self):
-        if self.api_token is None:
+        if not self.api_token:
             self.data = self._get_csv(self.url)
         elif self.data:
             self._download_new_data()
