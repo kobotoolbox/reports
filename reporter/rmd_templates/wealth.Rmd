@@ -4,7 +4,7 @@
 # uncomment for local development
 # data <- read.csv('../static/india_equity_nonurban_2015_07_22_11_12_30.csv')
 
-cutoff <- 50
+cutoff <- 100
 n <- nrow(data)
 warning_message <- n < cutoff
 report <- !warning_message
@@ -65,5 +65,5 @@ bottom_two <- sum(density$Percentage[density$Quintile %in% c(1, 2)])
 
 The graph above shows you the percentage of your respondents that were in each national wealth quintile.
 
-`r round(bottom_two)`% of your respondents were in the bottom two quintiles. This means that a relatively `r ifelse(bottom_two >= 40, 'large', 'small')` number of respondents were poor.
+`r round(bottom_two)`% of your respondents were in the bottom two quintiles. This means that a relatively `r ifelse(bottom_two >= 40, 'large', 'small')` number of respondents were poor. For more information on interpreting wealth quintile results, [please click here](http://www.equitytool.org/wealth-quintiles/).
 {{/report}}
