@@ -2,6 +2,8 @@ from django.test import TestCase
 from reporter.models import Template, Rendering
 import os
 import re
+import pandas as pd
+from StringIO import StringIO
 
 
 _rmd_path = lambda x: os.path.join(os.path.dirname(__file__), 'rmd_templates', x)
@@ -73,7 +75,6 @@ class TestRendering(TestCase):
         self.assertEquals(output['md'].strip(), 'data.frame')
 
     def test_get_new_data(self):
-        self.maxDiff = None
         my_split = lambda s: re.split('[\n\r]+', s)
 
         url = 'https://kc.kobotoolbox.org/api/v1/data/17516?format=csv'
@@ -82,19 +83,21 @@ class TestRendering(TestCase):
         r = Rendering.objects.create(template=t, url=url, api_token=api_token)
         r.download_data()
 
-        # test downloading new data
+        # keep only the first submission
         lines = my_split(r.data)
-        self.assertEqual(len(lines), 6)
-
-        r.data = '\n'.join([lines[0], lines[-1]])
+        nlines = len(lines)
+        df = pd.DataFrame.from_csv(StringIO(r.data), index_col=None)
+        i = df.index[df._submission_time == df._submission_time.min()].min() + 1
+        r.data = '\n'.join([lines[0], lines[i]])
         r.save()
 
+        # test downloading new data
         new_data = r._get_new_data()
         new_lines = my_split(new_data)
-        self.assertEqual(len(new_lines), 5)
+        self.assertEqual(len(new_lines), nlines - 1)
 
         r.download_data()
-        self.assertEquals(my_split(r.data), lines)
+        self.assertEquals(set(my_split(r.data)), set(lines))
 
     def test_google_spreadsheet(self):
         rmd = '`r nrow(data)` rows.\n'
