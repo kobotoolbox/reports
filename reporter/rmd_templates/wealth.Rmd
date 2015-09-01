@@ -24,7 +24,7 @@ These are the national quintile results for these respondents:
 ```{r, echo=FALSE, results='asis'}
 library(pander)
 
-density <- as.data.frame(table(data$Quintile) / nrow(data) * 100)
+density <- as.data.frame(table(data$NationalQuintile) / nrow(data) * 100)
 names(density) <- c('Quintile', 'Percentage')
 
 my_table <- data.frame(
@@ -58,7 +58,7 @@ pie_chart <- function(data, varname) {
   return(pie)  
 }
 
-pie_chart(data, 'Quintile') + ggtitle('Respondents by wealth quintile')
+pie_chart(data, 'NationalQuintile') + ggtitle('Respondents by wealth quintile')
 
 bottom_two <- sum(density$Percentage[density$Quintile %in% c(1, 2)])
 ```
