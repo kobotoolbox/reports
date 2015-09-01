@@ -8,6 +8,10 @@ import pandas as pd
 import requests
 import subprocess
 import tempfile
+import logging
+
+
+logger = logging.getLogger('TIMING')
 
 
 class Template(models.Model):
@@ -35,6 +39,9 @@ class Rendering(models.Model):
     url = models.URLField(blank=True)
     api_token = models.TextField(blank=True)
     data = models.TextField(default='')
+
+    def __unicode__(self):
+        return unicode(self.id)
 
     @classmethod
     def _get_csv(cls, *args, **kwargs):
@@ -76,7 +83,12 @@ class Rendering(models.Model):
         response = requests.get(url=url, headers=headers, params=params)
         return response.text.strip()
 
+    def _log_message(self, msg):
+        full_msg = '<Rendering: %s> | %s' % (str(self), msg)
+        logger.info(full_msg)
+
     def render(self):
+        self._log_message('render begin  ')
         folder = tempfile.gettempdir()
         filename = '%s.Rmd' % self.template.slug
         path = os.path.join(folder, filename)
@@ -85,7 +97,9 @@ class Rendering(models.Model):
             f.write(self.template.rmd)
 
         if self.url:
+            self._log_message('download begin')
             self.download_data()
+            self._log_message('download end  ')
             data_csv = os.path.join(folder, 'data.csv')
             with open(data_csv, 'w') as f:
                 f.write(self.data)
@@ -108,4 +122,5 @@ class Rendering(models.Model):
             with open(path) as f:
                 results[extension] = f.read()
 
+        self._log_message('render end    ')
         return results

@@ -92,3 +92,26 @@ TEMPLATES = [{
 # django registration redux - I'm not a fan of hardcoding the site id.
 SITE_ID = 1
 ACCOUNT_ACTIVATION_DAYS = 7
+
+# modify logging settings to see timing data
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'my_formatter': {
+            'format': '%(name)s | %(message)s | %(asctime)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'my_formatter',
+        },
+    },
+    'loggers': {
+        'TIMING': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+    },
+}
