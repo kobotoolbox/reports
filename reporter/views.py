@@ -16,8 +16,8 @@ def rendering(request, id, extension):
     r = Rendering.objects.get(id=id)
     if request.user != r.user:
         return render(request, 'not_owner.html')
-    results = r.render()
-    response = HttpResponse(results[extension])
+    result = r.render(extension)
+    response = HttpResponse(result)
     if extension != 'html':
         filename = '%(id)s.%(extension)s' % locals()
         response['Content-Disposition'] = 'attachment; filename=%s' % filename

@@ -25,10 +25,8 @@ compile <- function() {
     writeLines(rmd, '{{ filename }}')
 
     ## 4. render different formats using rmarkdown
-    formats <- list(md_document(), html_document(), word_document(), pdf_document())
-    for (of in formats) {
-        render('{{ filename }}', output_format=of, quiet=TRUE)
-    }
+    formats <- list(md=md_document(), html=html_document(), docx=word_document(), pdf=pdf_document())
+    render('{{ filename }}', output_format=formats[['{{ extension }}']], quiet=TRUE)
 }
 
 compile()

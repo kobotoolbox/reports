@@ -87,7 +87,7 @@ class Rendering(models.Model):
         full_msg = '<Rendering: %s> | %s' % (str(self), msg)
         logger.info(full_msg)
 
-    def render(self):
+    def render(self, extension):
         self._log_message('render begin  ')
         folder = tempfile.gettempdir()
         filename = '%s.Rmd' % self.template.slug
@@ -104,7 +104,7 @@ class Rendering(models.Model):
             with open(data_csv, 'w') as f:
                 f.write(self.data)
 
-        context = {'filename': filename, 'url': self.url}
+        context = {'filename': filename, 'url': self.url, 'extension': extension}
         script = render_to_string('compile.R', context)
         path = os.path.join(folder, 'temp.R')
         with open(path, 'w') as f:
@@ -116,11 +116,9 @@ class Rendering(models.Model):
             path = os.path.join(folder, 'temp.log')
             raise Exception(path)
 
-        results = {}
-        for extension in ['md', 'html', 'pdf', 'docx']:
-            path = os.path.join(folder, self.template.slug + '.' + extension)
-            with open(path) as f:
-                results[extension] = f.read()
+        path = os.path.join(folder, self.template.slug + '.' + extension)
+        with open(path) as f:
+            result = f.read()
 
         self._log_message('render end    ')
-        return results
+        return result

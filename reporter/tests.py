@@ -16,8 +16,11 @@ class TestRendering(TestCase):
         t = Template.create(path)
 
         r = Rendering.objects.create(template=t)
-        output = r.render()
-        self.assertTrue(output['md'].strip().endswith('2'))
+        output = r.render('md')
+        self.assertTrue(output.strip().endswith('2'))
+
+        for ext in ['html', 'pdf', 'docx']:
+            output = r.render(ext)
 
     def test_url(self):
         '''
@@ -31,8 +34,8 @@ class TestRendering(TestCase):
         t = Template.objects.create(rmd=rmarkdown, slug='n_observations')
         url = 'http://www.calvin.edu/~stob/data/bballgames03.csv'
         r = Rendering.objects.create(template=t, url=url)
-        output = r.render()
-        self.assertEqual(int(output['md']), 2430)
+        output = r.render('md')
+        self.assertEqual(int(output), 2430)
 
     def test_warning(self):
         '''
@@ -63,16 +66,16 @@ class TestRendering(TestCase):
         rmarkdown = '\n'.join(lines)
         t = Template.objects.create(rmd=rmarkdown, slug='warning')
         r = Rendering.objects.create(template=t)
-        output = r.render()
-        self.assertEqual(output['md'].strip(), 'WARNING: Need more data.')
+        output = r.render('md')
+        self.assertEqual(output.strip(), 'WARNING: Need more data.')
 
     def test_kobo_api(self):
         url = 'https://kc.kobotoolbox.org/api/v1/data/17516.csv'
         api_token = '9b751c0ae200d2f2a82a05f6af510baffe1b4c83'
         t = Template.objects.create(rmd='`r class(data)`\n', slug='n')
         r = Rendering.objects.create(template=t, url=url, api_token=api_token)
-        output = r.render()
-        self.assertEquals(output['md'].strip(), 'data.frame')
+        output = r.render('md')
+        self.assertEquals(output.strip(), 'data.frame')
 
     def test_get_new_data(self):
         my_split = lambda s: re.split('[\n\r]+', s)
@@ -108,6 +111,6 @@ class TestRendering(TestCase):
             'export?hl&exportFormat=csv'
         )
         r = Rendering.objects.create(template=t, url=url)
-        output = r.render()
-        match = re.search('^\d+ rows\.', output['md'])
+        output = r.render('md')
+        match = re.search('^\d+ rows\.', output)
         self.assertTrue(match)
