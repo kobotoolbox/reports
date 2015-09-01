@@ -8,7 +8,6 @@ respondents <- data
 cutoff <- 100
 n <- nrow(respondents)
 warning_message <- n < cutoff
-report <- !warning_message
 ```
 
 `r n` respondents have been interviewed.
@@ -17,7 +16,7 @@ report <- !warning_message
 Warning: Your sample is too small. Collect at least `r cutoff` responses to be representative.
 {{/warning_message}}
 
-{{#report}}
+
 ## National quintile results
 
 These are the national quintile results for these respondents:
@@ -94,4 +93,3 @@ bottom_two <- sum(density$Percentage[density$Quintile %in% c(1, 2)])
 The table above shows you the percentage of your respondents that were in each urban wealth quintile.
 
 `r round(bottom_two)`% of your respondents were in the bottom two quintiles. This means that a relatively `r ifelse(bottom_two >= 40, 'large', 'small')` number of respondents were poor. For more information on interpreting wealth quintile results, [please click here](http://www.equitytool.org/wealth-quintiles/).
-{{/report}}
