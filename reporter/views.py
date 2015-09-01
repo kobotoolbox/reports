@@ -14,6 +14,8 @@ def index(request):
 
 def rendering(request, id, extension):
     r = Rendering.objects.get(id=id)
+    if request.user != r.user:
+        return render(request, 'not_owner.html')
     results = r.render()
     response = HttpResponse(results[extension])
     if extension != 'html':
