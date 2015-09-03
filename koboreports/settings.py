@@ -27,6 +27,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'rest_framework',
     'django.contrib.sites',
+    'social.apps.django_app.default',
     'registration',
     'reporter',
 )
@@ -117,12 +118,12 @@ LOGGING = {
 }
 
 AUTHENTICATION_BACKENDS = (
-    'reporter.kobo_backend.DropboxOAuth2',
+    'social.backends.dropbox.DropboxOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 LOGIN_URL = '/login/dropbox-oauth2/'
-
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_DROPBOX_OAUTH2_KEY = '1xunuwmch3lqo1z'
 SOCIAL_AUTH_DROPBOX_OAUTH2_SECRET = 'ey0toaz6zbxvzqv'
 
