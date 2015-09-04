@@ -125,13 +125,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-LOGIN_URL = '/login/kobo-oauth2/'
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
-
-SOCIAL_AUTH_KOBO_OAUTH2_KEY = 'FLtLWQ9hI4ejTh2tkOmQM5PUZAwgd7RvNwVQHtYT'
-SOCIAL_AUTH_KOBO_OAUTH2_SECRET = 'eXiqNlt4jvFQ02EpPtamQx7BShdRKyN26h0XPTOxtcd4ClNKmBXDVVGGrAitlI6MBPXhOt2pQtTECeI8lv3AVjbzmLPtgKGAQWOXgXUlPzAcV6OAHQMfKe4xZRwfNSNh'
-
-TEMPLATE_CONTEXT_PROCESSORS = (
+TEMPLATE_CONTEXT_PROCESSORS = [
     "django.contrib.auth.context_processors.auth",
     "django.template.context_processors.debug",
     "django.template.context_processors.i18n",
@@ -141,4 +135,14 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     'social.apps.django_app.context_processors.backends',
     'social.apps.django_app.context_processors.login_redirect',
-)
+]
+
+# START: Settings for python-social-auth
+LOGIN_URL = '/login/kobo-oauth2/'
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+SOCIAL_AUTH_KOBO_OAUTH2_KEY = 'myclientid'
+SOCIAL_AUTH_KOBO_OAUTH2_SECRET = 'mysecretid'
+
+KC_URL = 'https://kc.kobotoolbox.org'
+# END: Settings for python-social-auth
