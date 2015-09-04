@@ -28,7 +28,6 @@ INSTALLED_APPS = (
     'rest_framework',
     'django.contrib.sites',
     'social.apps.django_app.default',
-    'registration',
     'reporter',
 )
 
@@ -92,10 +91,6 @@ TEMPLATES = [{
         )
     }
 }]
-
-# django registration redux - I'm not a fan of hardcoding the site id.
-SITE_ID = 1
-ACCOUNT_ACTIVATION_DAYS = 7
 
 # modify logging settings to see timing data
 LOGGING = {
