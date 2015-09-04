@@ -39,6 +39,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'koboreports.urls'
@@ -86,6 +87,8 @@ TEMPLATES = [{
             "django.template.context_processors.static",
             "django.template.context_processors.tz",
             "django.contrib.messages.context_processors.messages",
+            'social.apps.django_app.context_processors.backends',
+            'social.apps.django_app.context_processors.login_redirect',
         )
     }
 }]
@@ -118,14 +121,15 @@ LOGGING = {
 }
 
 AUTHENTICATION_BACKENDS = (
-    'social.backends.dropbox.DropboxOAuth2',
+    'reporter.kobo_backend.KoboOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
-LOGIN_URL = '/login/dropbox-oauth2/'
+LOGIN_URL = '/login/kobo-oauth2/'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
-SOCIAL_AUTH_DROPBOX_OAUTH2_KEY = '1xunuwmch3lqo1z'
-SOCIAL_AUTH_DROPBOX_OAUTH2_SECRET = 'ey0toaz6zbxvzqv'
+
+SOCIAL_AUTH_KOBO_OAUTH2_KEY = 'FLtLWQ9hI4ejTh2tkOmQM5PUZAwgd7RvNwVQHtYT'
+SOCIAL_AUTH_KOBO_OAUTH2_SECRET = 'eXiqNlt4jvFQ02EpPtamQx7BShdRKyN26h0XPTOxtcd4ClNKmBXDVVGGrAitlI6MBPXhOt2pQtTECeI8lv3AVjbzmLPtgKGAQWOXgXUlPzAcV6OAHQMfKe4xZRwfNSNh'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",

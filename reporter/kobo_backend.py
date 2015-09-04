@@ -1,31 +1,36 @@
 from social.backends.oauth import BaseOAuth2
 
 
-class DropboxOAuth2(BaseOAuth2):
-    name = 'dropbox-oauth2'
-    ID_KEY = 'uid'
-    AUTHORIZATION_URL = 'https://www.dropbox.com/1/oauth2/authorize'
-    ACCESS_TOKEN_URL = 'https://api.dropbox.com/1/oauth2/token'
-    ACCESS_TOKEN_METHOD = 'POST'
-    REDIRECT_STATE = False
-    EXTRA_DATA = [
-        ('uid', 'username'),
-    ]
+KC_URL = 'http://192.168.59.104:8000'
 
-    def get_user_details(self, response):
-        """Return user details from Dropbox account"""
-        fullname, first_name, last_name = self.get_user_names(
-            response.get('display_name')
-        )
-        return {'username': str(response.get('uid')),
-                'email': response.get('email'),
-                'fullname': fullname,
-                'first_name': first_name,
-                'last_name': last_name}
+
+class KoboOAuth2(BaseOAuth2):
+    name = 'kobo-oauth2'
+    AUTHORIZATION_URL = KC_URL + '/o/authorize/'
+    ACCESS_TOKEN_URL = KC_URL + '/o/token/'
+    ACCESS_TOKEN_METHOD = 'POST'
 
     def user_data(self, access_token, *args, **kwargs):
-        """Loads user data from service"""
+        '''
+        Loads user data from API.
+        '''
+        url = KC_URL + '/api/v1/user'
         return self.get_json(
-            'https://api.dropbox.com/1/account/info',
+            url,
             headers={'Authorization': 'Bearer {0}'.format(access_token)}
         )
+
+    def get_user_details(self, response):
+        '''
+        Return user details from API.
+        '''
+        fullname, first_name, last_name = self.get_user_names(
+            response.get('name')
+        )
+        return {
+            'username': str(response.get('username')),
+            'email': response.get('email'),
+            'fullname': fullname,
+            'first_name': first_name,
+            'last_name': last_name
+        }
