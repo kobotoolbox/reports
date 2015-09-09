@@ -29,6 +29,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'social.apps.django_app.default',
     'reporter',
+    'equitytool',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -83,6 +84,7 @@ TEMPLATES = [{
             "django.template.context_processors.debug",
             "django.template.context_processors.i18n",
             "django.template.context_processors.media",
+            "django.template.context_processors.request",
             "django.template.context_processors.static",
             "django.template.context_processors.tz",
             "django.contrib.messages.context_processors.messages",
@@ -119,18 +121,6 @@ AUTHENTICATION_BACKENDS = (
     'reporter.kobo_backend.KoboOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
-
-TEMPLATE_CONTEXT_PROCESSORS = [
-    "django.contrib.auth.context_processors.auth",
-    "django.template.context_processors.debug",
-    "django.template.context_processors.i18n",
-    "django.template.context_processors.media",
-    "django.template.context_processors.static",
-    "django.template.context_processors.tz",
-    "django.contrib.messages.context_processors.messages",
-    'social.apps.django_app.context_processors.backends',
-    'social.apps.django_app.context_processors.login_redirect',
-]
 
 # START: Settings for python-social-auth
 LOGIN_URL = '/login/kobo-oauth2/'

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if not request.user.is_authenticated %}
+<h3>Get started with the Equity Tool</h3>
+
+<ul>
+  <li>Already have an account? Sign in <a href="{% url 'social:begin' 'kobo-oauth2' %}?next={{ request.path }}">here</a>.</li>
+
+  <li>Want a new account? Register for a free account <a href="https://kf.kobotoolbox.org/accounts/register/" target="_blank">here</a>.</li>
+</ul>
+
+{% else %}
+
+<p>You have signed in as {{ request.user }}.</p>
+{% endif %}
+
+{% endblock %}
