@@ -1,0 +1,15 @@
+<nav class="navbar">
+  <div class="container">
+    <ul class="navbar-list">
+      {% if request.user.is_authenticated %}
+      <li class="navbar-item"><a style="color: red;"class="navbar-link" href="{% url 'reporter.views.index' %}">&lt;{{ request.user }}&gt;</a></li>
+      <li class="navbar-item"><a class="navbar-link" href="{% url 'templates' %}">Templates</a></li>
+      <li class="navbar-item"><a class="navbar-link" href="{% url 'renderings' %}">Renderings</a></li>
+      <li class="navbar-item"><a class="navbar-link" href="{% url 'rest_framework:logout' %}?next={% url 'reporter.views.index' %}">Logout</a></li>
+      {% else %}
+      <li class="navbar-item"><a class="navbar-link" href="{% url 'social:begin' 'kobo-oauth2' %}?next={{ request.path }}">Login</a></li>
+      <li class="navbar-item"><a class="navbar-link" href="https://kf.kobotoolbox.org/accounts/register/" target="_blank">Register</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>

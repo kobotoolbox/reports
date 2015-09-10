@@ -2,11 +2,17 @@
 
 {% block content %}
 
-{% if renderings.count > 0 %}
-<p>Hello {{ user.username }}, below is a list of your reports.</p>
+{% if not request.user.is_authenticated %}
+<h6 class="docs-header">Welcome to KoBoReports!</h6>
+<ul>
+  <li>Do you already have a KoBoToolbox account? Login <a href="{% url 'social:begin' 'kobo-oauth2' %}?next={{ request.path }}">here</a>.</li>
+  <li>Do you need a KoBoToolbox account? Register <a href="https://kf.kobotoolbox.org/accounts/register/" target="_blank">here</a>.</li>
+</ul>
+{% else %}
 
+{% if renderings.count > 0 %}
 <table>
-  <tr><th>Template name</th><th>Data source</th><th colspan="3">Formats</th></tr>
+  <tr><th>Template</th><th>Data</th><th colspan="3">Formats</th></tr>
   {% for r in renderings %}
   <tr>
     <td>{{ r.template.slug }}</td>
@@ -18,14 +24,12 @@
   {% endfor %}
 </table>
 {% else %}
-<p>You have not created any reports yet.</p>
+<p>To create a new report:</p>
+<ul>
+  <li>First, create a report <a href="{% url 'templates' %}">template</a>.</li>
+  <li>Second, create a report template <a href="{% url 'renderings' %}">rendering</a>.</li>
+</ul>
 {% endif %}
-
-<p>
-  Welcome to KoBoReports. To create, read, update, or delete
-  report templates go <a href="{% url 'templates' %}">here</a>. To
-  create, read, update, or delete renderings of those templates
-  go <a href="{% url 'renderings' %}">here</a>.
-</p> 
+{% endif %}
 
 {% endblock %}
