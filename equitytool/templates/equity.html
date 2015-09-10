@@ -23,7 +23,7 @@
     <th># Submissions</th>
     <th>Synched</th>
     <th>Enter data</th>
-    <th>Export</th>
+    <th colspan="3">Export</th>
   </tr>
   {% for r in request.user.renderings.all %}
   <tr>
@@ -31,7 +31,10 @@
     <td>{{ r.created|naturaltime }}</td>
     <td>{{ r.submission_count|intcomma }}</td>
     <td>{{ r.modified|naturaltime }}</td>
-    <td><a href="#">a link</a></td>
+    <td><a href="https://kc.kobotoolbox.org/{{ request.user.username }}/forms/equity_tool/enter-data" target="_blank">web form</a></td>
+    {% for ext in extensions %}
+    <td><a href="{% url 'rendering' id=r.id  extension=ext %}">{{ ext }}</a></td>
+    {% endfor %}
   </tr>
   {% endfor %}
 </table>

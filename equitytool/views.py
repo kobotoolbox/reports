@@ -15,7 +15,8 @@ from reporter.models import Template, Rendering
 
 @xframe_options_exempt
 def index(request):
-    return render(request, 'equity.html')
+    extensions = ['html', 'pdf', 'docx']
+    return render(request, 'equity.html', locals())
 
 
 class ProjectForm(forms.Form):
@@ -85,9 +86,11 @@ class Wrapper(object):
     def _create_form(self):
         url = self.KC_URL + '/api/v1/forms'
         # TODO: I couldn't get xls_file to work, but xls_url does.
+        # TODO: Figure out how to customize form_id. Right now all
+        # projects refer to the same form, which is not what we want.
         data = {'xls_url': 'http://koboreports.hbs-rcs.org/static/equity_tool.xls'}
         response = requests.post(url, data=data, headers=self._headers())
-        assert response.status_code == 200, response.content
+        assert response.status_code == 201, response.content
 
     def set_form(self):
         forms_by_id = self.get_forms()
