@@ -39,6 +39,13 @@ class Rendering(models.Model):
     url = models.URLField(blank=True)
     api_token = models.TextField(blank=True)
     data = models.TextField(default='')
+    name = models.TextField(default='')
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    def submission_count(self):
+        lines = self.data.split('\n')
+        return len(lines) - 1
 
     def __unicode__(self):
         return unicode(self.id)

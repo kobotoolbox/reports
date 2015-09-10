@@ -53,14 +53,17 @@ class Wrapper(object):
         return rmd
 
     def create_template(self):
-        data = {'user': self.user, 'slug': self.name, 'rmd': self.get_rmd()}
-        template, created = Template.objects.get_or_create(**data)
+        slug = 'urban' if self.urban else 'national'
+        template, created = Template.objects.get_or_create(user=self.user, slug=slug)
+        template.rmd = self.get_rmd()
+        template.save()
         return template
 
     def create_rendering(self, template):
         rendering, created = Rendering.objects.get_or_create(
             user=self.user,
             template=template,
+            name=self.name,
             url='fake'
         )
         return rendering
