@@ -74,9 +74,10 @@ class Wrapper(object):
         path = os.path.join('equitytool', 'static', 'equity_tool.xls')
         url = self.KC_URL + '/api/v1/forms'
         headers = {'Authorization': 'Token %s' % self.api_token}
-        with open(path) as f:
-            data = {'xls_file': f}
-            response = requests.post(url, data=data, headers=headers)
+        with open(path, 'rb') as f:
+            data = {'xls_file': 'equity_tool.xls'}
+            files = {'equity_tool.xls': f.read()}
+            response = requests.post(url, data=data, files=files, headers=headers)
         print url
         assert response.status_code == 200, response.content
 
@@ -92,6 +93,6 @@ class Wrapper(object):
     @classmethod
     def create_project(cls, **kwargs):
         w = cls(**kwargs)
-        w.create_form()
+        # w.create_form()
         template = w.create_template()
         rendering = w.create_rendering(template)
