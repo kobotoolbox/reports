@@ -38,8 +38,9 @@ class Rendering(models.Model):
     template = models.ForeignKey(Template)
     url = models.URLField(blank=True)
     api_token = models.TextField(blank=True)
-    data = models.TextField(default='')
     name = models.TextField(default='')
+
+    data = models.TextField(default='')
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 

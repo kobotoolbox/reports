@@ -5,6 +5,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.core.urlresolvers import reverse
 import requests
 import os
+import json
 from bs4 import BeautifulSoup
 # TODO: These objects should be made through API calls. Handling the
 # authentication required to make those calls seems a little
@@ -53,12 +54,12 @@ class Wrapper(object):
             rmd = f.read()
         return rmd
 
-    def create_template(self):
+    def set_template(self):
         slug = 'urban' if self.urban else 'national'
         template, created = Template.objects.get_or_create(user=self.user, slug=slug)
         template.rmd = self.get_rmd()
         template.save()
-        return template
+        self.template = template
 
     def set_api_token(self):
         path = '/%s/api-token' % self.user.username
@@ -69,30 +70,48 @@ class Wrapper(object):
         assert len(l) == 1, 'Should have found exactly one input element.'
         self.api_token = l[0].attrs['value']
 
-    def create_form(self):
-        # TODO: Does the form change based on urban-focus?
-        path = os.path.join('equitytool', 'static', 'equity_tool.xls')
+    def get_forms(self):
+        path = '/api/v1/forms?owner=%s' % self.user.username
+        url = self.KC_URL + path
+        response = requests.get(url, headers=self._headers())
+        l = json.loads(response.content)
+        forms_by_id = dict([(d['id_string'], d) for d in l])
+        return forms_by_id
+
+    def _headers(self):
+        return {'Authorization': 'Token %s' % self.api_token}
+
+    # TODO: Does the form change based on urban-focus?
+    def _create_form(self):
         url = self.KC_URL + '/api/v1/forms'
-        headers = {'Authorization': 'Token %s' % self.api_token}
-        with open(path, 'rb') as f:
-            data = {'xls_file': 'equity_tool.xls'}
-            files = {'equity_tool.xls': f.read()}
-            response = requests.post(url, data=data, files=files, headers=headers)
-        print url
+        # TODO: I couldn't get xls_file to work, but xls_url does.
+        data = {'xls_url': 'http://koboreports.hbs-rcs.org/static/equity_tool.xls'}
+        response = requests.post(url, data=data, headers=self._headers())
         assert response.status_code == 200, response.content
 
-    def create_rendering(self, template):
-        rendering, created = Rendering.objects.get_or_create(
+    def set_form(self):
+        forms_by_id = self.get_forms()
+        id_string = 'equity_tool'
+        created = id_string not in forms_by_id
+        if created:
+            self._create_form()
+            forms_by_id = self.get_forms()
+        self.form = forms_by_id[id_string]
+
+    def set_rendering(self):
+        path = '/api/v1/data/%d?format=csv' % self.form['formid']
+        url = self.KC_URL + path
+        self.rendering, created = Rendering.objects.get_or_create(
             user=self.user,
-            template=template,
-            name=self.name,
-            url='fake'
+            template=self.template,
+            url=url,
+            api_token=self.api_token,
+            name=self.name
         )
-        return rendering
 
     @classmethod
     def create_project(cls, **kwargs):
         w = cls(**kwargs)
-        # w.create_form()
-        template = w.create_template()
-        rendering = w.create_rendering(template)
+        w.set_form()
+        w.set_template()
+        w.set_rendering()
