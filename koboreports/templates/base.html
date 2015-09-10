@@ -10,7 +10,7 @@
 
   <body>
     <div class="container">
-      {% include 'navbar.html' %}
+      {% block navbar %}{% include 'navbar.html' %}{% endblock %}
       <div class="row">
         <div class="column" style="margin-top: 10%">
           {% block content %}{% endblock %}

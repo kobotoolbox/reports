@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
+{% block navbar %}{% include "navbar2.html" %}{% endblock %}
+
 {% block content %}
 
 {% if not request.user.is_authenticated %}
-<h3>Get started with the Equity Tool</h3>
+<h6 class="docs-header">Get started with the Equity Tool</h6>
 
 <ul>
   <li>Already have an account? Sign in <a href="{% url 'social:begin' 'kobo-oauth2' %}?next={{ request.path }}">here</a>.</li>
@@ -13,7 +15,8 @@
 
 {% else %}
 
-<p>You have signed in as {{ request.user }}.</p>
+<p>Table of projects</p>
+<p>Create a new project</p>
 {% endif %}
 
 {% endblock %}
