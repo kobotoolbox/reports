@@ -34,7 +34,7 @@ class Template(models.Model):
 
 
 class Rendering(models.Model):
-    user = models.ForeignKey(User, null=True, editable=False)
+    user = models.ForeignKey(User, null=True, editable=False, related_name='renderings')
     template = models.ForeignKey(Template)
     url = models.URLField(blank=True)
     api_token = models.TextField(blank=True)

@@ -4,7 +4,7 @@
 
 <h6 class="docs-header">Create a new project</h6>
 
-<form action="/your-name/" method="post">
+<form action="{{ request.path }}" method="post">
     {% csrf_token %}
     {{ form }}
     <br>

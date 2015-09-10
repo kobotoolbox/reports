@@ -13,7 +13,18 @@
 
 {% else %}
 
-<p>Table of projects</p>
+{% if request.user.renderings.count > 0 %}
+<h6 class="docs-header">Your projects</h6>
+<table>
+  <tr><th>Name</th></tr>
+  {% for r in request.user.renderings.all %}
+  <tr>
+    <td>{{ r.template.slug }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
 <a class="button" href="{% url 'create-project' %}">Create new project</a>
 {% endif %}
 
