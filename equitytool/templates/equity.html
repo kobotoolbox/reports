@@ -1,6 +1,4 @@
-{% extends 'base.html' %}
-
-{% block navbar %}{% include "navbar2.html" %}{% endblock %}
+{% extends 'equity-base.html' %}
 
 {% block content %}
 
@@ -16,7 +14,7 @@
 {% else %}
 
 <p>Table of projects</p>
-<p>Create a new project</p>
+<a class="button" href="{% url 'create-project' %}">Create new project</a>
 {% endif %}
 
 {% endblock %}

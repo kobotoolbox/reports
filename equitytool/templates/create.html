@@ -1,0 +1,14 @@
+{% extends 'equity-base.html' %}
+
+{% block content %}
+
+<h6 class="docs-header">Create a new project</h6>
+
+<form action="/your-name/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <br>
+    <input type="submit" value="Create" />
+</form>
+
+{% endblock %}
