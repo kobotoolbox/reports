@@ -11,3 +11,6 @@ whitenoise==2.0.2
 djangorestframework==3.2.2
 Markdown==2.6.2
 django-filter==0.10.0
+
+# equity-tool
+xlrd==0.9.4
