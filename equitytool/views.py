@@ -88,7 +88,7 @@ class Wrapper(object):
     def _create_form(self):
         url = self.KC_URL + '/api/v1/forms'
         path = os.path.join('equitytool', 'static', 'equity_tool.xls')
-        csv = xls2csv(path, self.id_string)
+        csv = xls2csv(path, form_title=self.name, form_id=self.id_string)
         data = {'text_xls_form': csv}
         response = requests.post(url, data=data, headers=self._headers())
         assert response.status_code == 201, response.content

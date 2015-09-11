@@ -7,9 +7,10 @@ class Converter(object):
     def set_excel(self, io):
         self.sheets = pd.read_excel(io, sheetname=None)
 
-    def set_form_id(self, form_id):
+    def set_settings(self, **kwargs):
         settings = self.sheets['settings']
-        settings['form_id'][0] = form_id
+        for k, v in kwargs.items():
+            settings[k][0] = v
 
     def get_csv(self):
         result = ''
@@ -22,11 +23,10 @@ class Converter(object):
         return result
 
 
-def xls2csv(io, form_id=None):
+def xls2csv(io, **kwargs):
     c = Converter()
     c.set_excel(io)
-    if form_id:
-        c.set_form_id(form_id)
+    c.set_settings(**kwargs)
     return c.get_csv()
 
 
