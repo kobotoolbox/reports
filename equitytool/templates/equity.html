@@ -35,7 +35,7 @@
     <td>{{ r.modified|naturaltime }}</td>
     <td style="text-align: right;">{{ r.submission_count|intcomma }}</td>
     <td style="text-align: center;"><a href="{% url 'sync' pk=r.id %}"><i class="fa fa-refresh" onclick="this.className = 'fa fa-refresh fa-spin';"></i></a></td>
-    <td style="text-align: center;"><a href="https://kc.kobotoolbox.org/{{ request.user.username }}/forms/equity_tool/enter-data" target="_blank"><i class="fa fa-plus"></i></a></td>
+    <td style="text-align: center;"><a href="https://kc.kobotoolbox.org/{{ request.user.username }}/forms/{{ r.name|slugify }}/enter-data" target="_blank"><i class="fa fa-plus"></i></a></td>
     {% for ext in extensions %}
     <td>
       {% if r.submission_count > 0 %}
