@@ -18,7 +18,8 @@ from xls2csv import xls2csv
 @xframe_options_exempt
 def index(request):
     extensions = ['html', 'pdf', 'docx']
-    projects = request.user.renderings.order_by('name')
+    if request.user.is_authenticated():
+        projects = request.user.renderings.order_by('name')
     return render(request, 'equity.html', locals())
 
 
