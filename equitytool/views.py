@@ -11,6 +11,8 @@ from bs4 import BeautifulSoup
 # authentication required to make those calls seems a little
 # tricky. And it seems like unnecessary work at the moment.
 from reporter.models import Template, Rendering
+from django.utils.text import slugify
+from xls2csv import xls2csv
 
 
 @xframe_options_exempt
@@ -85,21 +87,20 @@ class Wrapper(object):
     # TODO: Does the form change based on urban-focus?
     def _create_form(self):
         url = self.KC_URL + '/api/v1/forms'
-        # TODO: I couldn't get xls_file to work, but xls_url does.
-        # TODO: Figure out how to customize form_id. Right now all
-        # projects refer to the same form, which is not what we want.
-        data = {'xls_url': 'http://koboreports.hbs-rcs.org/static/equity_tool.xls'}
+        path = os.path.join('equitytool', 'static', 'equity_tool.xls')
+        csv = xls2csv(path, self.id_string)
+        data = {'text_xls_form': csv}
         response = requests.post(url, data=data, headers=self._headers())
         assert response.status_code == 201, response.content
 
     def set_form(self):
+        self.id_string = slugify(self.name)
         forms_by_id = self.get_forms()
-        id_string = 'equity_tool'
-        created = id_string not in forms_by_id
+        created = self.id_string not in forms_by_id
         if created:
             self._create_form()
             forms_by_id = self.get_forms()
-        self.form = forms_by_id[id_string]
+        self.form = forms_by_id[self.id_string]
 
     def set_rendering(self):
         path = '/api/v1/data/%d?format=csv' % self.form['formid']

@@ -1,5 +1,4 @@
 import pandas as pd
-import re
 import sys
 
 
@@ -23,9 +22,14 @@ class Converter(object):
         return result
 
 
-if __name__ == '__main__':
-    script, path, form_id = sys.argv
+def xls2csv(io, form_id=None):
     c = Converter()
-    c.set_excel(path)
-    c.set_form_id(form_id)
-    print c.get_csv()
+    c.set_excel(io)
+    if form_id:
+        c.set_form_id(form_id)
+    return c.get_csv()
+
+
+if __name__ == '__main__':
+    args = sys.argv[1:]
+    print xls2csv(*args)
