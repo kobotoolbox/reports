@@ -18,7 +18,15 @@ from xls2csv import xls2csv
 @xframe_options_exempt
 def index(request):
     extensions = ['html', 'pdf', 'docx']
+    projects = request.user.renderings.order_by('name')
     return render(request, 'equity.html', locals())
+
+
+@xframe_options_exempt
+def sync(request, pk):
+    r = Rendering.objects.get(pk=pk)
+    r.download_data()
+    return HttpResponseRedirect(reverse('equity-tool'))
 
 
 class ProjectForm(forms.Form):
@@ -112,6 +120,7 @@ class Wrapper(object):
             api_token=self.api_token,
             name=self.name
         )
+        self.rendering.download_data()
 
     @classmethod
     def create_project(cls, **kwargs):
