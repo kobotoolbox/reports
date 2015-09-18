@@ -110,7 +110,7 @@ class Rendering(models.Model):
             self._log_message('download end  ')
             data_csv = os.path.join(folder, 'data.csv')
             with open(data_csv, 'w') as f:
-                f.write(self.data)
+                f.write(self.data.encode('utf-8'))
 
         context = {'filename': filename, 'url': self.url, 'extension': extension}
         script = render_to_string('compile.R', context)
