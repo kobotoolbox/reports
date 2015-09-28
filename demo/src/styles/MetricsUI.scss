@@ -1,0 +1,114 @@
+/* Metrics branding */ 
+
+html, body {
+  height:100%;
+}
+
+body {
+	padding-left:20px;
+	padding-right: 20px;
+  background-image: url(../images/boxes-body.png);
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: contain;
+  background-color: #2990C2;
+}
+
+/* header */ 
+
+.header {
+  min-height: 110px;
+  width:calc(100%);
+  margin: 0 auto;
+  position: relative;
+  display: block;
+  text-align: right;
+}
+
+.logo {
+  width:150px;
+  height: 60px;
+  background-image: url(../images/EquityToolLogoWhiteOnly.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  display: block;
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+}
+
+.account-details {
+  position: absolute;
+  right:20px;
+  bottom: 30px;
+  color: white; 
+  font-size: 14px;
+  .account-detail {
+    border-right: 1px solid #FFF;
+    margin-right: 5px;
+    padding-right: 10px;
+    span {
+      margin-right: 5px;      
+    }
+  }
+  button.account-button {
+    background: none;
+    border: none;
+  }
+}
+
+/* content */ 
+
+#content {
+  height: 100%;
+}
+
+.main-wrap {
+  display: flex;
+  height: 100%;
+  flex-direction:column;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.content {
+  width:calc(100% - 150px);
+  background-color: #FFF;
+  margin:0 auto;
+  box-shadow:2px 2px 25px 0px #333;
+  padding:50px;
+  padding-left: 100px;
+  flex-grow:1;
+  background-image: url(../images/boxes-trans.png);
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: contain;
+  > h2 {
+  	padding-top: 40px;
+  }
+}
+
+.content button {
+	background: transparent;
+	border:2px solid #1E3664;
+	padding:10px;
+	border-radius: 6px;
+	color: #1E3664;
+	font-size: 16px;
+}
+
+.content a {
+	color: #2990C2;
+	text-decoration: none;
+}
+
+/* footer */ 
+
+.footer {
+  min-height: 40px;
+  width:calc(100% - 40px);
+  padding:20px;
+  margin: 0 auto;
+}

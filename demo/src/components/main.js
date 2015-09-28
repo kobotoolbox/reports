@@ -5,6 +5,7 @@ var GettingStarted = require('./GettingStarted');
 var ProjectList = require('./ProjectList');
 var NewProject = require('./NewProject');
 var Login = require('./Login');
+var Register = require('./Register');
 var React = require('react');
 import Router from 'react-router';
 
@@ -20,6 +21,7 @@ var Routes = (
     <DefaultRoute handler={GettingStarted} />
     <Route name="getting-started" path="/getting-started" handler={GettingStarted}/>
     <Route name="login" path="/login" handler={Login}/>
+    <Route name="register" path="/register" handler={Register}/>
     <Route name="new-project" path="/new-project" handler={NewProject}/>
     <Route name="project-list" path="/project-list" handler={ProjectList}/>
     <Route name="next" path="/next" handler={ProjectList}/>

@@ -12,6 +12,7 @@ let {
 // CSS
 require('normalize.css');
 require('../styles/main.scss');
+require('../styles/MetricsUI.scss');
 
 var MainWrap = bem('main-wrap'),
     Header = bem('header', '<header>'),

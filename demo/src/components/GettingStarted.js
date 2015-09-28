@@ -12,6 +12,7 @@ let {
 } = require('react-router');
 
 var Content = bem('content'),
+    RegisterButton = bem('register-button', '<button>'),
     Navlink = bem('navlink', '<a>');
 
 var GettingStarted = React.createClass({
@@ -27,10 +28,17 @@ var GettingStarted = React.createClass({
   render: function () {
     return (
         <Content m='getting-started'>
-          <p>Content for GettingStarted</p>
-          <Navlink href={'#/login'} m='login'>
-            Login
-          </Navlink>
+          <h2>Getting Started with EquityTool</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas faucibus mollis interdum. Nullam quis risus eget urna mollis ornare vel eu leo. Curabitur blandit tempus porttitor. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+          <RegisterButton onClick={() => this.transitionTo('register')}>
+            Create Account
+          </RegisterButton>
+          <p>
+            <span>or </span>
+            <Navlink href={'#/login'} m='login'>
+              log in here
+            </Navlink>
+          </p>
         </Content>
       );
   }
