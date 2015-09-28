@@ -25,7 +25,6 @@ var GettingStarted = React.createClass({
     };
   },
   render: function () {
-    console.log(this.state);
     return (
         <Content m='getting-started'>
           <p>Content for GettingStarted</p>
