@@ -39,6 +39,16 @@ var GettingStarted = React.createClass({
               log in here
             </Navlink>
           </p>
+          <p>
+            <Navlink href={'#/new-project'} m='new-project'>
+              new project
+            </Navlink>
+          </p>
+          <p>
+            <Navlink href={'#/projects'} m='projects'>
+              project list
+            </Navlink>
+          </p>
         </Content>
       );
   }

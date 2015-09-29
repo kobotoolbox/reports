@@ -10,10 +10,13 @@
   "mainInput": "main",
   "mainOutput": "main",
   "dependencies": {
-    "react-router": "0.13.x",
-    "reflux": "^0.2.7",
+    "normalize.css": "~3.0.3",
     "react": "0.13.x",
-    "normalize.css": "~3.0.3"
+    "react-input-autosize": "^0.5.3",
+    "react-router": "0.13.x",
+    "react-select": "^0.6.11",
+    "react-tooltip": "^0.6.4",
+    "reflux": "^0.2.7"
   },
   "devDependencies": {
     "babel": "^5.0.0",

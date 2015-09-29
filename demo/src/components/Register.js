@@ -34,7 +34,7 @@ var Register = React.createClass({
 							<br/>
 							<Inputfield name={'org'} type='text' m='required' placeholder='organisation' />
 							<br/>
-							<Inputfield name={'email'} type='text' m='required' placeholder='email' />
+							<Inputfield name={'email'} type='email' m='required' placeholder='email' />
 							<br/>
 						</FormFields>
 						<SubmitButton>
