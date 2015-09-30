@@ -1,18 +1,18 @@
 form {
 }
 
-input[type=text], 
-input[type=password], 
+input[type=text],
+input[type=password],
 input[type=email] {
-	margin:8px 0px;
-	padding:6px;
-	padding-left: 10px;
-	font-size: 15px;
-	min-width: 65%;
-	margin-right: 10px;
-	.content--login & {
-		min-width: 50%;
-	}
+  margin:8px 0px;
+  padding:6px;
+  padding-left: 10px;
+  font-size: 15px;
+  min-width: 65%;
+  margin-right: 10px;
+  .content--login & {
+    min-width: 50%;
+  }
 }
 
 .field-message {
@@ -39,50 +39,49 @@ input[type=email] {
 }
 
 input[type=checkbox] {
-	margin-right: 10px;
+  margin-right: 10px;
 }
 
 .form-fields {
-	padding-bottom: 20px;
+  padding-bottom: 20px;
 }
 
 .form-item--urban {
-	padding:10px 0px;
-	padding-bottom: 20px;
+  padding:10px 0px;
+  padding-bottom: 20px;
 }
 
 .form-item--country {
-	max-width: 50%;
+  max-width: 50%;
 }
 
 .field-tooltip {
-	background: #333;
-	margin-left: 10px;
-	padding: 3px 6px;
-	border-radius: 12px;
-	color: white;
-	font-weight: bold;
-	font-size: 12px;
-	vertical-align: text-top;
-	cursor: pointer;
+  background: #333;
+  margin-left: 10px;
+  padding: 3px 6px;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  vertical-align: text-top;
+  cursor: pointer;
 }
 
 .__react_component_tooltip {
-	max-width: 450px;
-	.multi-line {
-		text-align: left !important;
-		padding-bottom: 1em !important;
-	}
+  max-width: 450px;
+  .multi-line {
+    text-align: left !important;
+    padding-bottom: 1em !important;
+  }
 }
 
 @media only screen
 and (max-width : 650px) {
-	input.field {
-		min-width: 85%;
-	}
+  input.field {
+    min-width: 85%;
+  }
 
-	.form-item--country {
-		max-width: 75%;
-	}
-
+  .form-item--country {
+    max-width: 75%;
+  }
 }
