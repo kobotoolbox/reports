@@ -18,7 +18,8 @@ var projects = [
 ];
 
 var Content = bem('content'),
-    Navlink = bem('navlink', '<a>'),
+    // Navlink = bem('navlink', '<a>'),
+    NewProjectButton = bem('new-project-button', '<button>'),
     ProjectUl = bem('project-list', '<ul>'),
     ProjectLi = bem('project-list__item', '<li>'),
     ProjectAttribute = bem('project__attribute', '<span>'),
@@ -31,10 +32,15 @@ var ProjectList = React.createClass({
   render: function () {
     return (
         <Content m='project-list'>
+          <h2>My Projects</h2>
           <ProjectUl>
             {projects.map(function({name, submissions, enterDataLink, dateCreated}){
+              console.log(dateCreated);
               return (
                   <ProjectLi>
+                    <ProjectAttribute m='image'>
+                      image
+                    </ProjectAttribute>
                     <ProjectAttribute m='name'>
                       {name}
                     </ProjectAttribute>
@@ -51,9 +57,9 @@ var ProjectList = React.createClass({
                 );
             })}
           </ProjectUl>
-          <Navlink m={'new-project'} href={'#/new-project'}>
-            {'new project'}
-          </Navlink>
+          <NewProjectButton onClick={() => this.transitionTo('new-project')}>
+            New Project
+          </NewProjectButton>
         </Content>
       );
   }

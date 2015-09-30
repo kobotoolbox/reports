@@ -1,3 +1,26 @@
-.ProjectList {
-  border: 1px dashed #f00;
+.content--project-list {
+	background:#FFF url(../images/icon-list.png) 60px 70px no-repeat;
+}
+
+ul.project-list {
+	margin:40px 0px;
+	list-style-type: none;
+	padding:0px;
+	li {
+		border:2px solid #CCC;
+		padding:10px;
+		margin-bottom: 10px;
+		display: flex;
+		justify-content: space-between;
+	}
+}
+
+span.project__attribute--image {
+	border:1px solid #CCC;
+	width: 80px;
+	height: 80px;
+	background-color: #DDD;
+	text-align: center;
+	color: #999;
+	line-height: 2em;
 }
