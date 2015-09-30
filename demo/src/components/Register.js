@@ -58,9 +58,7 @@ var Register = React.createClass({
                             name={att}
                             type={att === 'password' ? 'password' : 'text'}
                             value={this.state[att]}
-                            m={{
-                              required: true,
-                            }}
+                            m='required'
                             placeholder={t(att)}
                             onBlur={this.formFieldBlur}
                             onChange={this.formFieldChange} />
