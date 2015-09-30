@@ -23,7 +23,7 @@ var Routes = (
     <Route name="login" path="/login" handler={Login}/>
     <Route name="register" path="/register" handler={Register}/>
     <Route name="new-project" path="/new-project" handler={NewProject}/>
-    <Route name="project-list" path="/project-list" handler={ProjectList}/>
+    <Route name="project-list" path="/projects" handler={ProjectList}/>
     <Route name="next" path="/next" handler={ProjectList}/>
   </Route>
 );

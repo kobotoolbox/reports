@@ -2,7 +2,7 @@ form {
 }
 
 input[type=text], 
-input[type=pass], 
+input[type=password], 
 input[type=email] {
 	margin:8px 0px;
 	padding:6px;
@@ -13,6 +13,29 @@ input[type=email] {
 	.content--login & {
 		min-width: 50%;
 	}
+}
+
+.field-message {
+  height: 1em;
+  font-size: 11px;
+  margin-top: -8px;
+}
+.field-wrap--error {
+  input {
+    border-color: #f00;
+  }
+  .field-message {
+    color: #f00;
+  }
+}
+.field-wrap--warning {
+  input:focus {
+    border-color: orange;
+  }
+  .field-message {
+    color: orange;
+    opacity: 0.8;
+  }
 }
 
 input[type=checkbox] {
@@ -52,7 +75,7 @@ input[type=checkbox] {
 	}
 }
 
-@media only screen 
+@media only screen
 and (max-width : 650px) {
 	input.field {
 		min-width: 85%;
