@@ -7,10 +7,6 @@ import demoReportHtml from './demoReportHtml';
 
 require('styles/Report.scss');
 
-let {
-  Navigation,
-} = require('react-router');
-
 var Content = bem('content'),
     Backlink = bemRouterLink('backlink');
 

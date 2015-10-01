@@ -3,6 +3,7 @@
 
 import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
+import bemRouterLink from '../libs/bemRouterLink';
 import moment from 'moment';
 
 require('styles/ProjectList.scss');
@@ -19,7 +20,7 @@ var projects = [
 ];
 
 var Content = bem('content'),
-    // Navlink = bem('navlink', '<a>'),
+    Navlink = bemRouterLink('navlink'),
     NewProjectButton = bem('new-project-button', '<button>'),
     ProjectUl = bem('project-list', '<ul>'),
     ProjectLi = bem('project-list__item', '<li>'),
@@ -54,6 +55,9 @@ var ProjectList = React.createClass({
                     <ProjectAttributeLink m='enter-data' href={enterDataLink}>
                       enter data
                     </ProjectAttributeLink>
+                    <Navlink m='view-report' to='report' params={{ id: 'aBcXyZ' }}>
+                      view report
+                    </Navlink>
                   </ProjectLi>
                 );
             })}
