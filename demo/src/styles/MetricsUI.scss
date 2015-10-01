@@ -1,12 +1,12 @@
-/* Metrics branding */ 
+/* Metrics branding */
 
 html, body {
   height:100%;
 }
 
 body {
-	padding-left:20px;
-	padding-right: 20px;
+  padding-left:20px;
+  padding-right: 20px;
   background-image: url(../images/boxes-body.png);
   background-repeat: no-repeat;
   background-position: right bottom;
@@ -14,7 +14,7 @@ body {
   background-color: #2990C2;
 }
 
-/* header */ 
+/* header */
 
 .header {
   min-height: 110px;
@@ -42,14 +42,14 @@ body {
   position: absolute;
   right:20px;
   bottom: 30px;
-  color: white; 
+  color: white;
   font-size: 14px;
   .account-detail {
     border-right: 1px solid #FFF;
     margin-right: 5px;
     padding-right: 10px;
     span {
-      margin-right: 5px;      
+      margin-right: 5px;
     }
   }
   button.account-button {
@@ -58,7 +58,7 @@ body {
   }
 }
 
-/* content */ 
+/* content */
 
 #content {
   height: 100%;
@@ -86,27 +86,33 @@ body {
   background-position: right bottom;
   background-size: contain;
   > h2 {
-    margin:0px;
-  	padding-top: 40px;
+    margin: 0px;
+    padding-top: 40px;
     padding-bottom: 20px;
   }
 }
 
 .content button {
-	background: transparent;
-	border:2px solid #1E3664;
-	padding:10px;
-	border-radius: 6px;
-	color: #1E3664;
-	font-size: 16px;
+  background: transparent;
+  border: 2px solid #1E3664;
+  padding: 10px;
+  border-radius: 6px;
+  color: #1E3664;
+  font-size: 16px;
 }
 
 .content a {
-	color: #2990C2;
-	text-decoration: none;
+  color: #2990C2;
+
+  /* links were getting hidden over the blue background
+  and it was difficult to find them. this can be deleted
+  when the wrapper expands to include these links */
+  color: darken(#2990C2, 20%);
+
+  text-decoration: none;
 }
 
-/* footer */ 
+/* footer */
 
 .footer {
   min-height: 40px;
