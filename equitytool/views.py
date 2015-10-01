@@ -12,8 +12,8 @@ from bs4 import BeautifulSoup
 # tricky. And it seems like unnecessary work at the moment.
 from reporter.models import Template, Rendering
 from django.utils.text import slugify
-from xls2csv import xls2csv
 from models import Form
+from django.template import Template as DjangoTemplate, Context
 
 
 @xframe_options_exempt
@@ -96,8 +96,13 @@ class Wrapper(object):
 
     def _create_form(self):
         form = Form.objects.get(name=self.country)
+        template = DjangoTemplate(form.csv_form)
+        context = Context({
+            'form_title': self.name,
+            'form_id': self.id_string,
+        })
+        csv = template.render(context)
         url = self.KC_URL + '/api/v1/forms'
-        csv = xls2csv(form.xls_form, form_title=self.name, form_id=self.id_string)
         data = {'text_xls_form': csv}
         response = requests.post(url, data=data, headers=self._headers())
         assert response.status_code == 201, response.content
