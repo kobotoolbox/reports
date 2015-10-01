@@ -82,19 +82,26 @@ body {
 }
 
 .content-bg {
-  padding:50px;
-  padding-left: 150px;
-  padding-bottom: 150px;
-  background-image: url(../images/boxes-trans.png);
-  background-repeat: no-repeat;
-  background-position: right bottom;
-  background-size: contain;
+  padding:30px;
 }
 
-h2.content-title {
-  margin: 0px;
-  padding-top: 40px;
-  padding-bottom: 20px;
+@media only screen and (min-width : 650px) {
+  .content-bg {
+    padding:50px;
+    padding-left: 150px;
+    padding-bottom: 150px;
+    background-image: url(../images/boxes-trans.png);
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    background-size: contain;
+  }
+
+  h2.content-title {
+    margin: 0px;
+    padding-top: 40px;
+    padding-bottom: 20px;
+  }
+
 }
 
 .content button {

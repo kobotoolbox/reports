@@ -1,5 +1,7 @@
-.content--project-list {
-	background:#FFF url(../images/icon-list.png) 60px 70px no-repeat;
+@media only screen and (min-width : 650px) {
+	.content--project-list {
+		background:#FFF url(../images/icon-list.png) 60px 70px no-repeat;
+	}
 }
 
 ul.project-list {
