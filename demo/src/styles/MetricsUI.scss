@@ -74,22 +74,27 @@ body {
 }
 
 .content {
-  width:calc(100% - 200px);
+  width:calc(100%);
   background-color: #FFF;
   margin:0 auto;
   box-shadow:2px 2px 25px 0px #333;
+  flex-grow:1;
+}
+
+.content-bg {
   padding:50px;
   padding-left: 150px;
-  flex-grow:1;
+  padding-bottom: 150px;
   background-image: url(../images/boxes-trans.png);
   background-repeat: no-repeat;
   background-position: right bottom;
   background-size: contain;
-  > h2 {
-    margin: 0px;
-    padding-top: 40px;
-    padding-bottom: 20px;
-  }
+}
+
+h2.content-title {
+  margin: 0px;
+  padding-top: 40px;
+  padding-bottom: 20px;
 }
 
 .content button {

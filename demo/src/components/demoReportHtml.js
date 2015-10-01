@@ -1,11 +1,11 @@
 var demoReportHtml = `
 <div class="container-fluid main-container">
   <div id="wealth-quintile-results" class="section level1">
-    <h1>Wealth Quintile Results</h1>
+    <h3>Wealth Quintile Results</h3>
     <p>2 respondents have been interviewed.</p>
     <p>Warning: Your sample is too small. Collect at least 100 responses to be representative.</p>
     <div id="national-quintile-results" class="section level2">
-      <h2>National quintile results</h2>
+      <h3>National quintile results</h3>
       <p>These are the national quintile results for these respondents:</p>
       <table class="table table-condensed">
         <caption>Respondents by wealth quintile</caption>

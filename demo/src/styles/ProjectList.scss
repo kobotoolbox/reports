@@ -11,8 +11,14 @@ ul.project-list {
 		padding:10px;
 		margin-bottom: 10px;
 		display: flex;
-		justify-content: space-between;
 	}
+}
+
+span.project__attribute--content {
+	flex-grow:1;
+	padding:0px 15px;
+	display: block;
+	position: relative;
 }
 
 span.project__attribute--image {
@@ -21,6 +27,29 @@ span.project__attribute--image {
 	height: 80px;
 	background-color: #DDD;
 	text-align: center;
-	color: #999;
+	color: #FFF;
 	line-height: 2em;
+}
+
+.project__attribute--name {
+	display: block;
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.project__attribute--date-created {
+	font-size: 12px;
+	opacity: 0.75;
+}
+
+.project__links {
+	position: absolute;
+	bottom: 0px;
+}
+
+.project__attribute--submissions, 
+.project__attribute-link--enter-data, 
+.navlink--view-report {
+	margin-right: 15px;
+	font-size: 13px;
 }

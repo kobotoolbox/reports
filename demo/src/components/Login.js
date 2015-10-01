@@ -12,6 +12,8 @@ let {
 } = require('react-router');
 
 var Content = bem('content'),
+    ContentBg = bem('content-bg'),
+    ContentTitle = bem('content-title', '<h2>'),
     FormFields = bem('form-fields'),
     SubmitButton = bem('submit-button', '<button>'),
     Inputfield = bem('field', '<input>'),
@@ -25,26 +27,28 @@ var Login = React.createClass({
   render: function () {
     return (
         <Content m='login'>
-          <h2>Login</h2>
-          <form>
-            <FormFields m='login'>
-              <Inputfield name={'uname'} type='text' m='required' placeholder='username' />
-              <br/>
-              <Inputfield name={'pass'} type='pass' m='required' placeholder='password' />
-              <Navlink href={'#/'} m='forgot'>
-                forgot?
-              </Navlink>
-              <br/>
-            </FormFields>
-            <SubmitButton>
-              Log In
-            </SubmitButton>
-            <p>
-              <BackLink href={'#/'}>
-                go back
-              </BackLink>
-            </p>
-          </form>
+          <ContentBg>
+            <ContentTitle>Login</ContentTitle>
+            <form>
+              <FormFields m='login'>
+                <Inputfield name={'uname'} type='text' m='required' placeholder='username' />
+                <br/>
+                <Inputfield name={'pass'} type='pass' m='required' placeholder='password' />
+                <Navlink href={'#/'} m='forgot'>
+                  forgot?
+                </Navlink>
+                <br/>
+              </FormFields>
+              <SubmitButton>
+                Log In
+              </SubmitButton>
+              <p>
+                <BackLink href={'#/'}>
+                  go back
+                </BackLink>
+              </p>
+            </form>
+          </ContentBg>
         </Content>
       );
   }

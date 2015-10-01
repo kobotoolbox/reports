@@ -20,11 +20,14 @@ var projects = [
 ];
 
 var Content = bem('content'),
+    ContentBg = bem('content-bg'),
+    ContentTitle = bem('content-title', '<h2>'),
     Navlink = bemRouterLink('navlink'),
     NewProjectButton = bem('new-project-button', '<button>'),
     ProjectUl = bem('project-list', '<ul>'),
     ProjectLi = bem('project-list__item', '<li>'),
     ProjectAttribute = bem('project__attribute', '<span>'),
+    ProjectLinks = bem('project__links'),
     ProjectAttributeLink = bem('project__attribute-link', '<a>');
 
 var ProjectList = React.createClass({
@@ -34,37 +37,44 @@ var ProjectList = React.createClass({
   render: function () {
     return (
         <Content m='project-list'>
-          <h2>My Projects</h2>
-          <ProjectUl>
-            {projects.map(function({name, submissions, enterDataLink, dateCreated}){
-              var dateStr = moment(dateCreated).fromNow();
-              return (
-                  <ProjectLi>
-                    <ProjectAttribute m='image'>
-                      image
-                    </ProjectAttribute>
-                    <ProjectAttribute m='name'>
-                      {name}
-                    </ProjectAttribute>
-                    <ProjectAttribute m='date-created'>
-                      {dateStr}
-                    </ProjectAttribute>
-                    <ProjectAttribute m='submissions'>
-                      {submissions}
-                    </ProjectAttribute>
-                    <ProjectAttributeLink m='enter-data' href={enterDataLink}>
-                      enter data
-                    </ProjectAttributeLink>
-                    <Navlink m='view-report' to='report' params={{ id: 'aBcXyZ' }}>
-                      view report
-                    </Navlink>
-                  </ProjectLi>
-                );
-            })}
-          </ProjectUl>
-          <NewProjectButton onClick={() => this.transitionTo('new-project')}>
-            New Project
-          </NewProjectButton>
+          <ContentBg>
+            <ContentTitle>My Projects</ContentTitle>
+            <ProjectUl>
+              {projects.map(function({name, submissions, enterDataLink, dateCreated}){
+                var dateStr = moment(dateCreated).fromNow();
+                return (
+                    <ProjectLi>
+                      <ProjectAttribute m='image'>
+                        image
+                      </ProjectAttribute>
+                      <ProjectAttribute m='content'>
+                        <ProjectAttribute m='name'>
+                          {name}
+                        </ProjectAttribute>
+                        <ProjectLinks>
+                          <ProjectAttribute m='submissions'>
+                            {submissions} submissions
+                          </ProjectAttribute>
+                          <ProjectAttributeLink m='enter-data' href={enterDataLink}>
+                            enter data
+                          </ProjectAttributeLink>
+                          <Navlink m='view-report' to='report' params={{ id: 'aBcXyZ' }}>
+                            <i class="fa fa-cog"> </i>
+                            view report
+                          </Navlink>
+                        </ProjectLinks>
+                      </ProjectAttribute>
+                      <ProjectAttribute m='date-created'>
+                        {dateStr}
+                      </ProjectAttribute>
+                    </ProjectLi>
+                  );
+              })}
+            </ProjectUl>
+            <NewProjectButton onClick={() => this.transitionTo('new-project')}>
+              New Project
+            </NewProjectButton>
+          </ContentBg>
         </Content>
       );
   }
