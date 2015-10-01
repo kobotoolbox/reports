@@ -15,10 +15,11 @@ class Converter(object):
     def get_csv(self):
         result = ''
         for name, sheet in self.sheets.items():
-            result += name + '\n'
-            csv = sheet.to_csv(index=False)
+            result += str(name) + '\n'
+            csv = sheet.to_csv(index=False, encoding='utf-8')
             lines = csv.strip().split('\n')
             shifted = '\n'.join([',' + line for line in lines])
+            print type(result), type(shifted)
             result += shifted + '\n'
         return result
 
