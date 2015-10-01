@@ -132,3 +132,5 @@ SOCIAL_AUTH_KOBO_OAUTH2_SECRET = 'mysecretid'
 
 KC_URL = 'https://kc.kobotoolbox.org'
 # END: Settings for python-social-auth
+
+MEDIA_ROOT = 'media'

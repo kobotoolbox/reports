@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 from reporter.models import Template, Rendering
 from django.utils.text import slugify
 from xls2csv import xls2csv
+from models import Form
 
 
 @xframe_options_exempt
@@ -31,6 +32,7 @@ def sync(request, pk):
 
 
 class ProjectForm(forms.Form):
+    country = forms.ModelChoiceField(queryset=Form.objects.all())
     name = forms.CharField(label='Project name', max_length=1000)
     urban = forms.BooleanField(label='This is an urban-focused project', required=False)
 
@@ -53,10 +55,9 @@ class Wrapper(object):
 
     KC_URL = 'https://kc.kobotoolbox.org'
 
-    def __init__(self, user, name, urban):
-        self.user = user
-        self.name = name
-        self.urban = urban
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
         self.set_api_token()
 
     def get_rmd(self):
@@ -93,11 +94,10 @@ class Wrapper(object):
     def _headers(self):
         return {'Authorization': 'Token %s' % self.api_token}
 
-    # TODO: Does the form change based on urban-focus?
     def _create_form(self):
+        form = Form.objects.get(name=self.country)
         url = self.KC_URL + '/api/v1/forms'
-        path = os.path.join('equitytool', 'static', 'equity_tool.xls')
-        csv = xls2csv(path, form_title=self.name, form_id=self.id_string)
+        csv = xls2csv(form.xls_form, form_title=self.name, form_id=self.id_string)
         data = {'text_xls_form': csv}
         response = requests.post(url, data=data, headers=self._headers())
         assert response.status_code == 201, response.content
