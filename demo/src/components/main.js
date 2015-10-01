@@ -7,6 +7,7 @@ var NewProject = require('./NewProject');
 var Login = require('./Login');
 var Register = require('./Register');
 var React = require('react');
+import Report from './Report';
 import Router from 'react-router';
 
 let {
@@ -24,6 +25,7 @@ var Routes = (
     <Route name="register" path="/register" handler={Register}/>
     <Route name="new-project" path="/new-project" handler={NewProject}/>
     <Route name="project-list" path="/projects" handler={ProjectList}/>
+    <Route name="report" path="/report/:id" handler={Report}/>
     <Route name="next" path="/next" handler={ProjectList}/>
   </Route>
 );
