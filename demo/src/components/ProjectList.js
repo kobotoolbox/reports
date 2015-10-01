@@ -3,6 +3,7 @@
 
 import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
+import moment from 'moment';
 
 require('styles/ProjectList.scss');
 
@@ -35,7 +36,7 @@ var ProjectList = React.createClass({
           <h2>My Projects</h2>
           <ProjectUl>
             {projects.map(function({name, submissions, enterDataLink, dateCreated}){
-              console.log(dateCreated);
+              var dateStr = moment(dateCreated).fromNow();
               return (
                   <ProjectLi>
                     <ProjectAttribute m='image'>
@@ -45,7 +46,7 @@ var ProjectList = React.createClass({
                       {name}
                     </ProjectAttribute>
                     <ProjectAttribute m='date-created'>
-                      {dateCreated}
+                      {dateStr}
                     </ProjectAttribute>
                     <ProjectAttribute m='submissions'>
                       {submissions}
