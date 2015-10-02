@@ -6,6 +6,7 @@ import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import moment from 'moment';
 import {requireLoggedInMixin} from '../mixins/requireLogins';
+import Identicon from '../libs/react-identicon';
 
 require('styles/ProjectList.scss');
 
@@ -44,10 +45,11 @@ var ProjectList = React.createClass({
             <ProjectUl>
               {projects.map(function({name, submissions, enterDataLink, dateCreated}){
                 var dateStr = moment(dateCreated).fromNow();
+                var identiconSeed = `equity-tool-project-${name}`;
                 return (
                     <ProjectLi key={`project-${name}`}>
                       <ProjectAttribute m='image'>
-                        image
+                        <Identicon id={identiconSeed} size={80} />
                       </ProjectAttribute>
                       <ProjectAttribute m='content'>
                         <ProjectAttribute m='name'>

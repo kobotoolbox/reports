@@ -40,6 +40,7 @@
     "karma-script-launcher": "~0.1.0",
     "karma-webpack": "^1.5.0",
     "load-grunt-tasks": "~0.6.0",
+    "md5": "^2.0.0",
     "moment": "^2.10.6",
     "react-hot-loader": "^1.0.7",
     "sass-loader": "^1.0.1",

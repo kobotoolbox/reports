@@ -27,15 +27,21 @@
 	position: relative;
 }
 
-span.project__attribute--image {
+// span.project__attribute--image
+.project__attribute--image {
 	border:1px solid #CCC;
 	width: 80px;
 	height: 80px;
-	background-color: #DDD;
 	text-align: center;
 	color: #FFF;
 	line-height: 2em;
+	background-color: #bbb;
 }
+// img.identicon
+.identicon {
+  opacity: 0.5;
+}
+
 
 .project__attribute--name {
 	display: block;
