@@ -3,6 +3,8 @@
 
 import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
+import bemRouterLink from '../libs/bemRouterLink';
+import actions from '../actions/actions';
 
 require('styles/Forms.scss');
 require('styles/Login.scss');
@@ -15,15 +17,19 @@ var Content = bem('content'),
     ContentBg = bem('content-bg'),
     ContentTitle = bem('content-title', '<h2>'),
     FormFields = bem('form-fields'),
-    SubmitButton = bem('submit-button', '<button>'),
+    BorderedButton = bem('bordered-button', '<button>'),
     Inputfield = bem('field', '<input>'),
-    Navlink = bem('navlink', '<a>'),
-    BackLink = bem('backlink', '<a>');
+    Navlink = bemRouterLink('navlink'),
+    BorderedNavlink = bemRouterLink('bordered-navlink');
 
 var Login = React.createClass({
   mixins: [
     Navigation,
   ],
+  login (evt) {
+    evt.preventDefault();
+    actions.placeholder('login');
+  },
   render: function () {
     return (
         <Content m='login'>
@@ -33,20 +39,19 @@ var Login = React.createClass({
               <FormFields m='login'>
                 <Inputfield name={'uname'} type='text' m='required' placeholder='username' />
                 <br/>
-                <Inputfield name={'pass'} type='pass' m='required' placeholder='password' />
-                <Navlink href={'#/'} m='forgot'>
+                <Inputfield name={'password'} type='password' m='required' placeholder='password' />
+                <Navlink href='#forgot' m='forgot' className='disabled'>
                   forgot?
                 </Navlink>
                 <br/>
               </FormFields>
-              <SubmitButton>
+              <BorderedButton onClick={this.login}>
                 Log In
-              </SubmitButton>
-              <p>
-                <BackLink href={'#/'}>
-                  go back
-                </BackLink>
-              </p>
+              </BorderedButton>
+              <span> or </span>
+              <BorderedNavlink to='getting-started' m='back'>
+                go back
+              </BorderedNavlink>
             </form>
           </ContentBg>
         </Content>

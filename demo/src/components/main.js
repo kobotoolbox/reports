@@ -26,7 +26,6 @@ var Routes = (
     <Route name="new-project" path="/new-project" handler={NewProject}/>
     <Route name="project-list" path="/projects" handler={ProjectList}/>
     <Route name="report" path="/report/:id" handler={Report}/>
-    <Route name="next" path="/next" handler={ProjectList}/>
   </Route>
 );
 

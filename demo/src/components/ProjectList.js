@@ -23,7 +23,7 @@ var Content = bem('content'),
     ContentBg = bem('content-bg'),
     ContentTitle = bem('content-title', '<h2>'),
     Navlink = bemRouterLink('navlink'),
-    NewProjectButton = bem('new-project-button', '<button>'),
+    BorderedNavlink = bemRouterLink('bordered-navlink'),
     ProjectUl = bem('project-list', '<ul>'),
     ProjectLi = bem('project-list__item', '<li>'),
     ProjectAttribute = bem('project__attribute', '<span>'),
@@ -43,7 +43,7 @@ var ProjectList = React.createClass({
               {projects.map(function({name, submissions, enterDataLink, dateCreated}){
                 var dateStr = moment(dateCreated).fromNow();
                 return (
-                    <ProjectLi>
+                    <ProjectLi key={`project-${name}`}>
                       <ProjectAttribute m='image'>
                         image
                       </ProjectAttribute>
@@ -59,7 +59,7 @@ var ProjectList = React.createClass({
                             enter data
                           </ProjectAttributeLink>
                           <Navlink m='view-report' to='report' params={{ id: 'aBcXyZ' }}>
-                            <i class="fa fa-cog"> </i>
+                            <i className="fa fa-cog" />
                             view report
                           </Navlink>
                         </ProjectLinks>
@@ -71,9 +71,13 @@ var ProjectList = React.createClass({
                   );
               })}
             </ProjectUl>
-            <NewProjectButton onClick={() => this.transitionTo('new-project')}>
+            <BorderedNavlink m='new-project' to='new-project'>
               New Project
-            </NewProjectButton>
+            </BorderedNavlink>
+            <span> or </span>
+            <BorderedNavlink m='back' to='getting-started'>
+              Back
+            </BorderedNavlink>
           </ContentBg>
         </Content>
       );

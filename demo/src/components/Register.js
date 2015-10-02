@@ -3,7 +3,9 @@
 
 import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
+import bemRouterLink from '../libs/bemRouterLink';
 import {registration} from './registrationForm';
+import actions from '../actions/actions';
 
 require('styles/Forms.scss');
 
@@ -19,7 +21,8 @@ var Content = bem('content'),
     Inputfield = bem('field', '<input>'),
     InputWrap = bem('field-wrap'),
     InputfieldMessage = bem('field-message'),
-    BackLink = bem('backlink', '<a>');
+    BorderedButton = bem('bordered-button', '<button>'),
+    BorderedNavlink = bemRouterLink('bordered-navlink');
 
 function t(str) { return str; }
 
@@ -39,6 +42,10 @@ var Register = React.createClass({
     var _et = evt.target;
     registration.updateField(_et.name, _et.value, true);
     this.setState(registration.state);
+  },
+  submitForm (evt) {
+    evt.preventDefault();
+    actions.placeholder('create account');
   },
   render: function () {
     return (
@@ -75,15 +82,18 @@ var Register = React.createClass({
                   })
                 }
               </FormFields>
-              <SubmitButton>
+              <BorderedButton m={{
+                'create-account': true,
+              }}
+                onClick={this.submitForm}
+              >
                 Create Account
-              </SubmitButton>
-            </form>
-            <p>
-              <BackLink href={'#/'}>
+              </BorderedButton>
+              <span> or </span>
+              <BorderedNavlink m='back' to='getting-started'>
                 go back
-              </BackLink>
-            </p>
+              </BorderedNavlink>
+            </form>
           </ContentBg>
         </Content>
       );

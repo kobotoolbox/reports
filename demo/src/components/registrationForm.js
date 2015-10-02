@@ -9,6 +9,7 @@ class RegistrationForm {
       errors: {},
     };
     this._hasBeenEdited = {};
+    this.enabled = true;
     this._isBlurred = {};
   }
   _fieldRequired (name, value) {

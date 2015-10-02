@@ -32,8 +32,14 @@ export default function(baseKls) {
     ],
     componentWillMount () {
       var props = assign({}, this.props);
-      props.href = this.makeHref(props.to, props.params, props.query);
+      if (props.mTo) {
+        props.m = props.to = props.mTo;
+      }
+      if (!props.href) {
+        props.href = this.makeHref(props.to, props.params, props.query);
+      }
       delete props.to;
+      delete props.mTo;
       delete props.params;
       delete props.query;
       this._Props = props;

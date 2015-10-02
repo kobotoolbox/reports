@@ -8,10 +8,16 @@ export var sessionStore = Reflux.createStore({
       email: 'your@email.com',
     };
     window.setTimeout((() => {
-      console.log('simulating logging in', this);
-      this.state.loggedIn = true;
+      var willBeLoggedIn = Math.random() < 0.5;
+      this.state.loggedIn = willBeLoggedIn;
+      console.log('simulating logging in? ', this.state.loggedIn);
       this.trigger(this.state);
-    }), 5000);
+      window.setTimeout(() => {
+        this.state.loggedIn = !willBeLoggedIn;
+        console.log('simulating opposite log in: ', this.state.loggedIn);
+        this.trigger(this.state);
+      }, 20000);
+    }), 2000);
   },
   logout () {
     this.state.loggedIn = false;

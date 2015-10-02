@@ -2,7 +2,9 @@
 
 import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
+import bemRouterLink from '../libs/bemRouterLink';
 import Countries from '../libs/metrics-countries';
+import actions from '../actions/actions';
 var Select = require('react-select');
 require('../../node_modules/react-select/dist/default.css');
 
@@ -19,15 +21,19 @@ var Content = bem('content'),
     ContentBg = bem('content-bg'),
     ContentTitle = bem('content-title', '<h2>'),
     FormFields = bem('form-fields'),
-    SubmitButton = bem('submit-button', '<button>'),
     FormItem = bem('form-item'),
     InputField = bem('field', '<input>'),
-    BackLink = bem('backlink', '<a>');
+    BorderedNavlink = bemRouterLink('bordered-navlink'),
+    BorderedButton = bem('bordered-button', '<button>');
 
 var NewProject = React.createClass({
   mixins: [
     Navigation,
   ],
+  createNewProject (evt) {
+    evt.preventDefault();
+    actions.placeholder('create new');
+  },
   render: function () {
     var effect = 'solid';
     var tooltip = 'If your respondents will all be from urban areas, and you are interested to see how wealthy they are compared to the rest of the urban population, you should check this box.<br/>The equity tool will always tell you how wealthy your clients are relative to the rest of the whole country. Some programs that serve urban clients only are also interested to see how wealthy their clients are relative to the urban population in their country. If you check this box, you will get two sets of results at the end of the survey – you will see which national wealth quintiles your clients are in and also which urban quintiles your clients are in.<br/>Note you should only check this box if all your clients will be from urban areas – the urban results are only relevant to urban clients.';
@@ -57,15 +63,14 @@ var NewProject = React.createClass({
                 />
                 </FormItem>
               </FormFields>
-              <SubmitButton>
+              <BorderedButton onClick={this.createNewProject}>
                 Create
-              </SubmitButton>
-            </form>
-            <p>
-              <BackLink href={'#/'}>
+              </BorderedButton>
+              <span> or </span>
+              <BorderedNavlink m={'back'} to='project-list'>
                 go back
-              </BackLink>
-            </p>
+              </BorderedNavlink>
+            </form>
           </ContentBg>
         </Content>
       );

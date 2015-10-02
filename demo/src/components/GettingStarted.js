@@ -3,6 +3,7 @@
 import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
 import sessionStore from '../stores/session';
+import bemRouterLink from '../libs/bemRouterLink';
 import Reflux from 'reflux';
 
 require('styles/GettingStarted.scss');
@@ -14,8 +15,8 @@ let {
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
     ContentTitle = bem('content-title', '<h2>'),
-    RegisterButton = bem('register-button', '<button>'),
-    Navlink = bem('navlink', '<a>');
+    BorderedNavlink = bemRouterLink('bordered-navlink'),
+    Navlink = bemRouterLink('navlink');
 
 var GettingStarted = React.createClass({
   mixins: [
@@ -33,25 +34,29 @@ var GettingStarted = React.createClass({
           <ContentBg>
             <ContentTitle>Getting Started with EquityTool</ContentTitle>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas faucibus mollis interdum. Nullam quis risus eget urna mollis ornare vel eu leo. Curabitur blandit tempus porttitor. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-            <RegisterButton onClick={() => this.transitionTo('register')}>
-              Create Account
-            </RegisterButton>
-            <p>
-              <span>or </span>
-              <Navlink href={'#/login'} m='login'>
-                log in here
-              </Navlink>
-            </p>
-            <p>
-              <Navlink href={'#/new-project'} m='new-project'>
-                new project
-              </Navlink>
-            </p>
-            <p>
-              <Navlink href={'#/projects'} m='projects'>
-                project list
-              </Navlink>
-            </p>
+            { this.state.session.loggedIn ?
+              <div>
+                <p>
+                  <BorderedNavlink m='new-project' to='new-project'>
+                    new project
+                  </BorderedNavlink>
+                  <span> or </span>
+                  <BorderedNavlink m='projects' to='project-list'>
+                    project list
+                  </BorderedNavlink>
+                </p>
+              </div>
+            :
+              <div>
+                <BorderedNavlink to='register' m='register'>
+                  Create Account
+                </BorderedNavlink>
+                <span> or </span>
+                <BorderedNavlink m='login' to='login'>
+                  log in here
+                </BorderedNavlink>
+              </div>
+            }
           </ContentBg>
         </Content>
       );

@@ -104,13 +104,25 @@ body {
 
 }
 
-.content button {
+%content-button {
   background: transparent;
   border: 2px solid #1E3664;
   padding: 10px;
   border-radius: 6px;
   color: #1E3664;
   font-size: 16px;
+}
+%content-button--disabled {
+  opacity: 0.3;
+}
+// .content button {
+//   @extend %content-button;
+// }
+.bordered-navlink, .bordered-button {
+  @extend %content-button;
+}
+.bordered-navlink--disabled, .bordered-button--disabled {
+  @extend %content-button--disabled;
 }
 
 .content a {
