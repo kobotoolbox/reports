@@ -4,19 +4,23 @@
 	}
 }
 
-ul.project-list {
+// ul.project-list
+.project-list {
 	margin:40px 0px;
 	list-style-type: none;
 	padding:0px;
-	li {
-		border:2px solid #CCC;
-		padding:10px;
-		margin-bottom: 10px;
-		display: flex;
-	}
 }
 
-span.project__attribute--content {
+// li.project-list__item
+.project-list__item {
+	border:2px solid #CCC;
+	padding:10px;
+	margin-bottom: 10px;
+	display: flex;
+}
+
+// span.project__attribute--content
+.project__attribute--content {
 	flex-grow:1;
 	padding:0px 15px;
 	display: block;
@@ -49,8 +53,8 @@ span.project__attribute--image {
 	bottom: 0px;
 }
 
-.project__attribute--submissions, 
-.project__attribute-link--enter-data, 
+.project__attribute--submissions,
+.project__attribute-link--enter-data,
 .navlink--view-report {
 	margin-right: 15px;
 	font-size: 13px;
