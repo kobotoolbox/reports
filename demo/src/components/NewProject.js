@@ -5,6 +5,7 @@ import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import Countries from '../libs/metrics-countries';
 import actions from '../actions/actions';
+import {requireLoggedInMixin} from '../mixins/requireLogins';
 var Select = require('react-select');
 require('../../node_modules/react-select/dist/default.css');
 
@@ -29,6 +30,7 @@ var Content = bem('content'),
 var NewProject = React.createClass({
   mixins: [
     Navigation,
+    requireLoggedInMixin({failTo: 'getting-started'}),
   ],
   createNewProject (evt) {
     evt.preventDefault();

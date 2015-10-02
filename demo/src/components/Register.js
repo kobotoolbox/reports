@@ -6,6 +6,7 @@ import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import {registration} from './registrationForm';
 import actions from '../actions/actions';
+import {requireNotLoggedInMixin} from '../mixins/requireLogins';
 
 require('styles/Forms.scss');
 
@@ -17,7 +18,6 @@ var Content = bem('content'),
     ContentBg = bem('content-bg'),
     ContentTitle = bem('content-title', '<h2>'),
     FormFields = bem('form-fields'),
-    // SubmitButton = bem('submit-button', '<button>'),
     Inputfield = bem('field', '<input>'),
     InputWrap = bem('field-wrap'),
     InputfieldMessage = bem('field-message'),
@@ -29,6 +29,7 @@ function t(str) { return str; }
 var Register = React.createClass({
   mixins: [
     Navigation,
+    requireNotLoggedInMixin({failTo: 'getting-started'}),
   ],
   getInitialState () {
     return registration.state;

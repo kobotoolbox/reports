@@ -5,6 +5,7 @@ import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import moment from 'moment';
+import {requireLoggedInMixin} from '../mixins/requireLogins';
 
 require('styles/ProjectList.scss');
 
@@ -33,6 +34,7 @@ var Content = bem('content'),
 var ProjectList = React.createClass({
   mixins: [
     Navigation,
+    requireLoggedInMixin({failTo: 'getting-started'}),
   ],
   render: function () {
     return (

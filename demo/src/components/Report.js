@@ -4,6 +4,8 @@ import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import demoReportHtml from './demoReportHtml';
+import {Navigation} from 'react-router';
+import {requireLoggedInMixin} from '../mixins/requireLogins';
 
 require('styles/Report.scss');
 
@@ -13,6 +15,10 @@ var Content = bem('content'),
     Backlink = bemRouterLink('backlink');
 
 var Report = React.createClass({
+  mixins: [
+    Navigation,
+    requireLoggedInMixin({failTo: 'getting-started'}),
+  ],
   render: function () {
     return (
         <Content m='report'>

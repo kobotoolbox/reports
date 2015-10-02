@@ -5,6 +5,7 @@ import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import actions from '../actions/actions';
+import {requireNotLoggedInMixin} from '../mixins/requireLogins';
 
 require('styles/Forms.scss');
 require('styles/Login.scss');
@@ -25,6 +26,7 @@ var Content = bem('content'),
 var Login = React.createClass({
   mixins: [
     Navigation,
+    requireNotLoggedInMixin({failTo: 'getting-started'}),
   ],
   login (evt) {
     evt.preventDefault();

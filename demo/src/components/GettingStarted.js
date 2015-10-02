@@ -16,7 +16,6 @@ var Content = bem('content'),
     ContentBg = bem('content-bg'),
     ContentTitle = bem('content-title', '<h2>'),
     BorderedNavlink = bemRouterLink('bordered-navlink');
-    // Navlink = bemRouterLink('navlink');
 
 var GettingStarted = React.createClass({
   mixins: [

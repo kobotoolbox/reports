@@ -2,6 +2,7 @@
 
 import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
+import bemRouterLink from '../libs/bemRouterLink';
 import sessionStore from '../stores/session';
 import Reflux from 'reflux';
 
@@ -20,6 +21,7 @@ var MainWrap = bem('main-wrap'),
     AccountDetails = bem('account-details'),
     AccountDetail = bem('account-detail', '<span>'),
     AccountButton = bem('account-button', '<button>'),
+    AccountLink = bemRouterLink('account-link'),
     Logo = bem('logo', '<span>');
 
 var MetricsUiApp = React.createClass({
@@ -49,7 +51,16 @@ var MetricsUiApp = React.createClass({
                 Log out
               </AccountButton>
             </AccountDetails>
-          : null }
+          :
+            <AccountDetails>
+              <AccountLink m='login' to='login'>
+                login
+              </AccountLink>
+              <AccountLink m='register' to='register'>
+                register
+              </AccountLink>
+            </AccountDetails>
+          }
         </Header>
         <RouteHandler />
         <Footer>
