@@ -1,4 +1,3 @@
-import Router from 'react-router';
 import sessionStore from '../stores/session';
 
 export var [requireLoggedInMixin, requireNotLoggedInMixin] = (function(){
@@ -19,15 +18,10 @@ export var [requireLoggedInMixin, requireNotLoggedInMixin] = (function(){
         },
         statics: {
           willTransitionTo: function (transition, o1, o2, cb) {
-            console.log('loginBool, sessionStore.state.loggedIn', loginBool, sessionStore.state.loggedIn)
             if (loginBool && sessionStore.state.loggedIn === false) {
-              console.log('fail');
               transition.redirect(failTo, failToParams);
             } else if (!loginBool && sessionStore.state.loggedIn) {
-              console.log('fail');
               transition.redirect(failTo, failToParams);
-            } else {
-              console.log('succeed');
             }
             cb();
           }
