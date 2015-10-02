@@ -10,8 +10,45 @@ img {
   height: auto;
 }
 
+.columns + .columns {
+	padding-top: 40px;
+	border-top:1px solid #EEE;
+	margin-top:40px;
+}
+
 @media only screen and (min-width : 650px) {
 	.content.content--report {
 		background:#FFF url(../images/icon-bullseye.png) 60px 70px no-repeat;
 	} 
+	.columns {
+		display: flex;
+		justify-content:space-between;
+	}
+	.column-desc, .column-graph {
+		width: 48%;
+		order:2;
+	}
+
+	.column-graph {
+		order:1;
+	}
+}
+
+table {
+	border:1px solid #2F8AB5;
+	margin:0 auto;
+	font-size: 12px;
+}
+
+table td, table th {
+	padding:5px;
+	border:1px solid #2F8AB5;
+	color:#2F8AB5;
+}
+
+table caption {
+	font-style: italic;
+	opacity: 0.75;
+	padding-bottom: 8px;
+	color:#2F8AB5;
 }
