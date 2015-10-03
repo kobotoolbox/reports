@@ -127,10 +127,11 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_URL = '/login/kobo-oauth2/'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
-SOCIAL_AUTH_KOBO_OAUTH2_KEY = 'myclientid'
-SOCIAL_AUTH_KOBO_OAUTH2_SECRET = 'mysecretid'
+SOCIAL_AUTH_KOBO_OAUTH2_KEY = os.environ.get('OAUTH_CLIENT_ID', 'myclientid')
+SOCIAL_AUTH_KOBO_OAUTH2_SECRET = os.environ.get(
+    'OAUTH_CLIENT_SECRET', 'mysecretid')
 
-KC_URL = 'https://kc.kobotoolbox.org'
+KC_URL = os.environ.get('KOBOCAT_URL', 'https://kc.kobotoolbox.org')
 # END: Settings for python-social-auth
 
 MEDIA_ROOT = 'media'
