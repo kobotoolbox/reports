@@ -1,7 +1,10 @@
+import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from models import Template, Rendering
 from rest_framework import generics, serializers, permissions
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 def index(request):
@@ -10,6 +13,24 @@ def index(request):
     extensions = ['html', 'pdf', 'docx']
     return render(request, 'index.html', dictionary=locals())
 
+@api_view(['GET'])
+def current_user(request):
+    user = request.user
+    if user.is_anonymous():
+        return Response({'message': 'user is not logged in'})
+    else:
+        return Response({'username': user.username,
+                         'first_name': user.first_name,
+                         'last_name': user.last_name,
+                         'email': user.email,
+                         'server_time': str(datetime.datetime.utcnow()),
+                         'is_superuser': user.is_superuser,
+                         'is_staff': user.is_staff,
+                         'last_login': user.last_login,
+                         })
+
+def demo(request):
+    return render(request, 'demo.html')
 
 def rendering(request, id, extension):
     r = Rendering.objects.get(id=id)

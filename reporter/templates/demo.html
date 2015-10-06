@@ -1,0 +1,13 @@
+<html>
+  <head>
+    <title>{% block title %}koboreports{% endblock %}</title>
+    {% load staticfiles %}
+    {% if csrf_token %}<meta name="csrf-token" content="{{csrf_token}}">{% endif %}
+  </head>
+  <body>
+    <div id="content">
+      asdf
+    </div>
+    <script src="{% static 'assets/main.js' %}"></script>
+  </body>
+</html>
