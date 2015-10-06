@@ -1,12 +1,14 @@
 <html>
   <head>
     <title>{% block title %}koboreports{% endblock %}</title>
-
+    {% load staticfiles %}
     <link rel="stylesheet" href="/static/css/normalize.css">
     <link rel="stylesheet" href="/static/css/skeleton.css">
     <link rel="stylesheet" href="/static/css/custom.css">
     <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    {% if csrf_token %}<meta name="csrf-token" content="{{csrf_token}}">{% endif %}
+    <script src="{% static 'assets/main.js' %}"></script>
   </head>
 
   <body>

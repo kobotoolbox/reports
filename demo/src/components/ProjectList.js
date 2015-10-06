@@ -7,19 +7,14 @@ import bemRouterLink from '../libs/bemRouterLink';
 import moment from 'moment';
 import {requireLoggedInMixin} from '../mixins/requireLogins';
 import Identicon from '../libs/react-identicon';
+import actions from '../actions/actions';
+import renderingsStore from '../stores/renderings';
 
 require('styles/ProjectList.scss');
 
 let {
   Navigation,
 } = require('react-router');
-
-var projects = [
-  {name: 'a1', dateCreated: new Date(), submissions: 2, enterDataLink: '1234'},
-  {name: 'a2', dateCreated: new Date(), submissions: 3, enterDataLink: '1234'},
-  {name: 'a3', dateCreated: new Date(), submissions: 4, enterDataLink: '1234'},
-  {name: 'a4', dateCreated: new Date(), submissions: 2, enterDataLink: '1234'},
-];
 
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
@@ -37,13 +32,27 @@ var ProjectList = React.createClass({
     Navigation,
     requireLoggedInMixin({failTo: 'getting-started'}),
   ],
+  getInitialState () {
+    return {
+      projects: [],
+    };
+  },
+  componentDidMount () {
+    this.listenTo(renderingsStore, this.renderingsStoreChanged);
+    actions.listRenderings();
+  },
+  renderingsStoreChanged (state) {
+    this.setState({
+      projects: state.projects,
+    });
+  },
   render: function () {
     return (
         <Content m='project-list'>
           <ContentBg>
             <ContentTitle>My Projects</ContentTitle>
             <ProjectUl>
-              {projects.map(function({name, submissions, enterDataLink, dateCreated}){
+              {this.state.projects.map(function({name, submissions, enterDataLink, dateCreated}){
                 var dateStr = moment(dateCreated).fromNow();
                 var identiconSeed = `equity-tool-project-${name}`;
                 return (

@@ -5,3 +5,4 @@
 /db.sqlite
 /static/
 /.env
+/koboreports/static/assets
