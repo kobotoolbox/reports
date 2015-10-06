@@ -2,6 +2,7 @@
 'use strict';
 
 import React from 'react/addons';
+import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import moment from 'moment';
@@ -31,6 +32,7 @@ var ProjectList = React.createClass({
   mixins: [
     Navigation,
     requireLoggedInMixin({failTo: 'getting-started'}),
+    Reflux.ListenerMixin,
   ],
   getInitialState () {
     return {
@@ -42,9 +44,7 @@ var ProjectList = React.createClass({
     actions.listRenderings();
   },
   renderingsStoreChanged (state) {
-    this.setState({
-      projects: state.projects,
-    });
+    this.setState(state);
   },
   render: function () {
     return (
@@ -52,6 +52,11 @@ var ProjectList = React.createClass({
           <ContentBg>
             <ContentTitle>My Projects</ContentTitle>
             <ProjectUl>
+              {this.state.projects.length === 0 ?
+                <ProjectLi m={'notification'}>
+                  {'You have no projects to display. Click "new project" below.'}
+                </ProjectLi>
+              : null}
               {this.state.projects.map(function({name, submissions, enterDataLink, dateCreated}){
                 var dateStr = moment(dateCreated).fromNow();
                 var identiconSeed = `equity-tool-project-${name}`;

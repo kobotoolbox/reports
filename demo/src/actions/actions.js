@@ -22,6 +22,9 @@ var dataInterface = (function(){
       data: postData,
     });
   };
+  this.confirmLogin = () => {
+    return $.getJSON(rootUrl + '/me/');
+  };
 
   return this;
 }).call({});
@@ -55,6 +58,12 @@ var actions = Reflux.createActions({
 
 actions.placeholder.listen(function(desc){
   console.log(`placeholder action called: '${desc}'`);
+});
+
+actions.listRenderings.listen(function () {
+  dataInterface.listRenderings()
+    .done(actions.listRenderings.completed)
+    .fail(actions.listRenderings.failed);
 });
 
 actions.confirmLogin.listen(function() {

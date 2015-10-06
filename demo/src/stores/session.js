@@ -1,5 +1,6 @@
 import Reflux from 'reflux';
 import actions from '../actions/actions';
+import assign from 'react/lib/Object.assign';
 
 var sessionStore = Reflux.createStore({
   init () {
@@ -7,16 +8,16 @@ var sessionStore = Reflux.createStore({
       loggedIn: null,
     };
     this.listenTo(actions.confirmLogin.completed, this.confirmLoginCompleted);
-    this.listenTo(actions.confirmLigin.failed, this.confirmLoginFailed);
+    this.listenTo(actions.confirmLogin.failed, this.confirmLoginFailed);
     actions.confirmLogin();
 
+    /*
     function extendFakeCredentials(st){
       st.fullName = 'your name';
       st.email = 'your@email.com';
       st.loggedIn = true;
     }
     extendFakeCredentials(this.state);
-    /*
     window.setTimeout((() => {
       var willBeLoggedIn = true; //Math.random() < 0.5;
       this.state.loggedIn = willBeLoggedIn;
@@ -32,8 +33,17 @@ var sessionStore = Reflux.createStore({
     }), 2000);
     */
   },
-  confirmLoginCompleted () {
-    console.log('confirm login completed');
+  confirmLoginCompleted (data) {
+    if (data.username) {
+      this.state = assign({
+        loggedIn: true,
+      }, data);
+    } else {
+      this.state = assign({
+        loggedIn: false,
+      }, data);
+    }
+    this.trigger(this.state);
   },
   confirmLoginFailed () {
     console.log('confirm login failed');
