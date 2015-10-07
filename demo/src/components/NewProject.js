@@ -32,9 +32,24 @@ var NewProject = React.createClass({
     Navigation,
     requireLoggedInMixin({failTo: 'getting-started'}),
   ],
+  getInitialState () {
+    return {
+      country: null,
+    };
+  },
   createNewProject (evt) {
     evt.preventDefault();
-    actions.placeholder('create new');
+    actions.createTemplate({
+      name: this.refs.name.getDOMNode().value,
+      description: this.refs.desc.getDOMNode().value,
+      urban: this.refs.urban.getDOMNode().checked ? 'on' : 'off',
+      country: this.state.country,
+    });
+  },
+  changeCountry (country) {
+    this.setState({
+      country: country,
+    });
   },
   render: function () {
     var effect = 'solid';
@@ -46,13 +61,13 @@ var NewProject = React.createClass({
             <form>
               <FormFields m='register'>
                 <FormItem>
-                  <InputField name={'projectname'} type='text' m='required' placeholder='Project Name' />
+                  <InputField name={'projectname'} type='text' m='required' placeholder='Project Name' ref='name' />
                 </FormItem>
                 <FormItem>
-                <InputField name={'projectdesc'} type='text' m='required' placeholder='Project Description' />
+                <InputField name={'projectdesc'} type='text' m='required' placeholder='Project Description' ref='desc' />
                 </FormItem>
                 <FormItem m='urban'>
-                <InputField name={'urbanfocused'} type='checkbox' value='urbanfocused' id='urbancheckbox' />
+                <InputField name={'urbanfocused'} type='checkbox' value='urbanfocused' id='urbancheckbox' ref='urban' />
                 <label htmlFor='urbancheckbox'>This is an urban-focused project</label>
                 <span className='field-tooltip' data-tip={tooltip}>?</span>
                 <ReactTooltip effect={effect} multiline={true}/>
@@ -62,6 +77,9 @@ var NewProject = React.createClass({
                     name="country"
                     options={Countries}
                     placeholder='Country'
+                    value={this.state.country || null}
+                    ref='country'
+                    onChange={this.changeCountry}
                 />
                 </FormItem>
               </FormFields>

@@ -1,6 +1,7 @@
 import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.template import RequestContext
 from models import Template, Rendering
 from rest_framework import generics, serializers, permissions
 from rest_framework.decorators import api_view
@@ -30,7 +31,8 @@ def current_user(request):
                          })
 
 def demo(request):
-    return render(request, 'demo.html')
+    context = RequestContext(request)
+    return render(request, 'demo.html', context_instance=context)
 
 def rendering(request, id, extension):
     r = Rendering.objects.get(id=id)

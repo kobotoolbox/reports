@@ -2,7 +2,10 @@ import Reflux from 'reflux';
 import $ from 'jquery';
 import assign from 'react/lib/Object.assign';
 
-var token = '';
+var token = (function(){
+  var _m = document.head.querySelector('meta[name=csrf-token]');
+  return _m && _m.content || '';
+})();
 
 var dataInterface = (function(){
   var rootUrl = '';
@@ -58,6 +61,12 @@ var actions = Reflux.createActions({
 
 actions.placeholder.listen(function(desc){
   console.log(`placeholder action called: '${desc}'`);
+});
+
+actions.createTemplate.listen(function (templateData) {
+  dataInterface.createTemplate(templateData)
+    .done(actions.createTemplate.completed)
+    .fail(actions.createTemplate.failed);
 });
 
 actions.listRenderings.listen(function () {
