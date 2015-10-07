@@ -60,9 +60,9 @@ var ProjectList = React.createClass({
                   {'You have no projects to display. Click "new project" below.'}
                 </ProjectLi>
               : null}
-              {this.state.projects.map(({name, submissions, enterDataLink, dateCreated, id}) => {
-                var dateStr = moment(dateCreated).fromNow();
-                var identiconSeed = `equity-tool-project-${name}`;
+              {this.state.projects.map(({name, submission_count, enter_data_link, created, id}) => {
+                var dateStr = moment(new Date(date_created)).fromNow();
+                var identiconSeed = `equity-tool-project-${id}`;
                 return (
                     <ProjectLi key={`project-${name}`}>
                       <ProjectAttribute m='image'>
@@ -74,9 +74,9 @@ var ProjectList = React.createClass({
                         </ProjectAttribute>
                         <ProjectLinks>
                           <ProjectAttribute m='submissions'>
-                            {submissions} submissions
+                            {submission_count} submissions
                           </ProjectAttribute>
-                          <ProjectAttributeLink m='enter-data' href={enterDataLink}>
+                          <ProjectAttributeLink m='enter-data' href={enter_data_link}>
                             enter data
                           </ProjectAttributeLink>
                           <ProjectAttributeLink m='sync' onClick={this.syncProject} data-project-id={id}>
