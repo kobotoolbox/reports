@@ -43,6 +43,9 @@ var ProjectList = React.createClass({
     this.listenTo(renderingsStore, this.renderingsStoreChanged);
     actions.listRenderings();
   },
+  syncProject (evt) {
+    actions.syncProject(evt.target.dataset.projectId);
+  },
   renderingsStoreChanged (state) {
     this.setState(state);
   },
@@ -57,7 +60,7 @@ var ProjectList = React.createClass({
                   {'You have no projects to display. Click "new project" below.'}
                 </ProjectLi>
               : null}
-              {this.state.projects.map(function({name, submissions, enterDataLink, dateCreated}){
+              {this.state.projects.map(({name, submissions, enterDataLink, dateCreated, id}) => {
                 var dateStr = moment(dateCreated).fromNow();
                 var identiconSeed = `equity-tool-project-${name}`;
                 return (
@@ -75,6 +78,9 @@ var ProjectList = React.createClass({
                           </ProjectAttribute>
                           <ProjectAttributeLink m='enter-data' href={enterDataLink}>
                             enter data
+                          </ProjectAttributeLink>
+                          <ProjectAttributeLink m='sync' onClick={this.syncProject} data-project-id={id}>
+                            sync
                           </ProjectAttributeLink>
                           <Navlink m='view-report' to='report' params={{ id: 'aBcXyZ' }}>
                             <i className="fa fa-cog" />

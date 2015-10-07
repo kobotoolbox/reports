@@ -17,6 +17,7 @@ var renderingsStore = Reflux.createStore({
     this.listenTo(actions.listRenderings.failed, this.listRenderingsFailed);
   },
   listRenderingsCompleted (data) {
+    console.log('listRenderingsCompleted', data);
     this.state.projects = data;
     this.trigger(this.state);
   },
