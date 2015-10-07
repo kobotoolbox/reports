@@ -7,8 +7,8 @@ KC_URL = settings.KC_URL
 
 class KoboOAuth2(BaseOAuth2):
     name = 'kobo-oauth2'
-    AUTHORIZATION_URL = KC_URL + '/o/authorize/'
-    ACCESS_TOKEN_URL = KC_URL + '/o/token/'
+    AUTHORIZATION_URL = settings.OAUTH2_AUTHORIZATION_URL
+    ACCESS_TOKEN_URL = settings.OAUTH2_ACCESS_TOKEN_URL
     ACCESS_TOKEN_METHOD = 'POST'
     REDIRECT_STATE = False
     ID_KEY = 'username'

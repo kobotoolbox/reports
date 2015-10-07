@@ -132,6 +132,14 @@ SOCIAL_AUTH_KOBO_OAUTH2_SECRET = 'mysecretid'
 # Don't prompt for authorization if we already have it.
 # http://django-oauth-toolkit.readthedocs.org/en/latest/advanced_topics.html#skip-authorization-form
 SOCIAL_AUTH_KOBO_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'approval_prompt': 'auto'}
+OAUTH2_AUTHORIZATION_URL = os.environ.get(
+    'OAUTH2_AUTHORIZATION_URL',
+    'https://kf.kobotoolbox.org/forms/o/authorize/'
+)
+OAUTH2_ACCESS_TOKEN_URL = os.environ.get(
+    'OAUTH2_ACCESS_TOKEN_URL',
+    'https://kf.kobotoolbox.org/forms/o/token/'
+)
 
 KC_URL = 'https://kc.kobotoolbox.org'
 
