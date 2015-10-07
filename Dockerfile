@@ -28,7 +28,9 @@ RUN python manage.py migrate --noinput && \
 # install and build build node project #
 ########################################
 
-RUN add-apt-repository ppa:chris-lea/node.js
+RUN apt-get -y install software-properties-common
+RUN apt-get -y install python-software-properties
+RUN add-apt-repository -y ppa:chris-lea/node.js
 RUN apt-get update
 RUN apt-get install -y nodejs
 
