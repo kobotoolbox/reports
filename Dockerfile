@@ -28,6 +28,10 @@ RUN python manage.py migrate --noinput && \
 # install and build build node project #
 ########################################
 
+RUN add-apt-repository ppa:chris-lea/node.js
+RUN apt-get update
+RUN apt-get install -y nodejs
+
 WORKDIR /app/demo
 RUN npm install
 RUN grunt build
