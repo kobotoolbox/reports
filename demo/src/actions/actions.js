@@ -47,7 +47,7 @@ var actions = Reflux.createActions({
   },
 */
   createTemplate: {
-    asyncResults: true,
+    asyncResult: true,
   },
   listRenderings: {
     asyncResult: true,
