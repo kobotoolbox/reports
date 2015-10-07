@@ -127,11 +127,28 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_URL = '/login/kobo-oauth2/'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
-SOCIAL_AUTH_KOBO_OAUTH2_KEY = os.environ.get('OAUTH_CLIENT_ID', 'myclientid')
-SOCIAL_AUTH_KOBO_OAUTH2_SECRET = os.environ.get(
-    'OAUTH_CLIENT_SECRET', 'mysecretid')
+SOCIAL_AUTH_KOBO_OAUTH2_KEY = 'myclientid'
+SOCIAL_AUTH_KOBO_OAUTH2_SECRET = 'mysecretid'
+# Don't prompt for authorization if we already have it.
+# http://django-oauth-toolkit.readthedocs.org/en/latest/advanced_topics.html#skip-authorization-form
+SOCIAL_AUTH_KOBO_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'approval_prompt': 'auto'}
+OAUTH2_AUTHORIZATION_URL = os.environ.get(
+    'OAUTH2_AUTHORIZATION_URL',
+    'https://kf.kobotoolbox.org/forms/o/authorize/'
+)
+OAUTH2_ACCESS_TOKEN_URL = os.environ.get(
+    'OAUTH2_ACCESS_TOKEN_URL',
+    'https://kf.kobotoolbox.org/forms/o/token/'
+)
 
-KC_URL = os.environ.get('KOBOCAT_URL', 'https://kc.kobotoolbox.org')
+KC_URL = 'https://kc.kobotoolbox.org'
+
+
+# Enable SNI support (see
+# http://urllib3.readthedocs.org/en/latest/security.html#openssl-pyopenssl)
+import urllib3.contrib.pyopenssl
+urllib3.contrib.pyopenssl.inject_into_urllib3()
+
 # END: Settings for python-social-auth
 
 MEDIA_ROOT = 'media'
