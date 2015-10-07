@@ -2,6 +2,8 @@ from StringIO import StringIO
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import render_to_string
+from django.conf import settings
+from urlparse import urlparse
 import json
 import os
 import pandas as pd
@@ -130,3 +132,36 @@ class Rendering(models.Model):
 
         self._log_message('render end    ')
         return result
+
+    def _get_kc_form_data(self):
+        ''' Attempt to extract the ID from `self.url`, then query KC to
+        retrieve data about the form '''
+        # Assume the numeric ID is the last component of the URL path before
+        # the query string
+        parsed_url = urlparse(self.url)
+        numeric_id = int(parsed_url.path.split('/')[-1])
+        # Assume the forms endpoint is /api/v1/forms/[numeric id]?format=json
+        form_url = '{}://{}/api/v1/forms/{}?format=json'.format(
+            parsed_url.scheme, parsed_url.netloc, numeric_id)
+        headers = {}
+        if self.api_token:
+            headers['Authorization'] = 'Token {}'.format(self.api_token)
+        response = requests.get(form_url, headers=headers)
+        return json.loads(response.content)
+
+    def get_enter_data_link(self):
+        ''' Retrieve the form's id string and username of its owner from KC,
+        then construct a URL for entering data '''
+        form_data = self._get_kc_form_data()
+        id_string = form_data['id_string']
+        username = form_data['owner'].split('/')[-1]
+        parsed_url = urlparse(self.url)
+        # Assume the enter-data endpoint is
+        # /[owner username]/forms/[id string]/enter-data
+        return '{scheme}://{netloc}/{username}/' \
+               'forms/{id_string}/enter-data'.format(
+                    scheme=parsed_url.scheme,
+                    netloc=parsed_url.netloc,
+                    username=username,
+                    id_string=id_string
+                )

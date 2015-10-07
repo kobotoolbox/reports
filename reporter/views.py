@@ -1,3 +1,4 @@
+from urlparse import urlparse
 from django.http import HttpResponse
 from django.shortcuts import render
 from models import Template, Rendering
@@ -36,9 +37,22 @@ class TemplateSerializer(serializers.ModelSerializer):
 
 
 class RenderingSerializer(serializers.ModelSerializer):
+    enter_data_link = serializers.SerializerMethodField()
+    def get_enter_data_link(self, obj):
+        return obj.get_enter_data_link()
     class Meta:
         model = Rendering
-        fields = ('id', 'template', 'url', 'api_token')
+        fields = (
+            'id',
+            'template',
+            'url',
+            'api_token',
+            'name',
+            'created',
+            'modified',
+            'submission_count',
+            'enter_data_link',
+        )
 
 
 # API endpoints for templates
