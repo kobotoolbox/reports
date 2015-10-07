@@ -131,6 +131,13 @@ SOCIAL_AUTH_KOBO_OAUTH2_KEY = 'myclientid'
 SOCIAL_AUTH_KOBO_OAUTH2_SECRET = 'mysecretid'
 
 KC_URL = 'https://kc.kobotoolbox.org'
+
+
+# Enable SNI support (see
+# http://urllib3.readthedocs.org/en/latest/security.html#openssl-pyopenssl)
+import urllib3.contrib.pyopenssl
+urllib3.contrib.pyopenssl.inject_into_urllib3()
+
 # END: Settings for python-social-auth
 
 MEDIA_ROOT = 'media'
