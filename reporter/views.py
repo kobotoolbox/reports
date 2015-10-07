@@ -18,6 +18,7 @@ def index(request):
 @api_view(['GET'])
 def current_user(request):
     user = request.user
+    countries = Form.objects.all().values('id', 'name')
     if user.is_anonymous():
         return Response({'message': 'user is not logged in'})
     else:
@@ -25,6 +26,7 @@ def current_user(request):
                          'first_name': user.first_name,
                          'last_name': user.last_name,
                          'email': user.email,
+                         'countries': countries,
                          'server_time': str(datetime.datetime.utcnow()),
                          'is_superuser': user.is_superuser,
                          'is_staff': user.is_staff,
