@@ -7,6 +7,7 @@ from models import Template, Rendering
 from rest_framework import generics, serializers, permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from equitytool.models import Form
 
 
 def index(request):
