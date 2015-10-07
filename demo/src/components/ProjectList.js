@@ -61,7 +61,7 @@ var ProjectList = React.createClass({
                 </ProjectLi>
               : null}
               {this.state.projects.map(({name, submission_count, enter_data_link, created, id}) => {
-                var dateStr = moment(new Date(date_created)).fromNow();
+                var dateStr = moment(new Date(created)).fromNow();
                 var identiconSeed = `equity-tool-project-${id}`;
                 return (
                     <ProjectLi key={`project-${name}`}>
