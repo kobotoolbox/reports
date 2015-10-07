@@ -14,6 +14,8 @@ RUN apt-get install -y nodejs
 # Python #
 ##########
 
+# pyopenssl fails to run in docker when installed by pip
+RUN conda install pyopenssl==0.15.1
 RUN mkdir /app
 WORKDIR /app
 COPY requirements.txt /app/
