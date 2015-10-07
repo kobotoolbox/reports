@@ -41,7 +41,7 @@ RUN python manage.py migrate --noinput && \
 
 
 WORKDIR /app/demo
-RUN npm install grunt-cli
+RUN npm install -g grunt-cli
 RUN npm install
 RUN grunt build
 
