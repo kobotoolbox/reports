@@ -129,6 +129,9 @@ SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 SOCIAL_AUTH_KOBO_OAUTH2_KEY = 'myclientid'
 SOCIAL_AUTH_KOBO_OAUTH2_SECRET = 'mysecretid'
+# Don't prompt for authorization if we already have it.
+# http://django-oauth-toolkit.readthedocs.org/en/latest/advanced_topics.html#skip-authorization-form
+SOCIAL_AUTH_KOBO_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'approval_prompt': 'auto'}
 
 KC_URL = 'https://kc.kobotoolbox.org'
 
