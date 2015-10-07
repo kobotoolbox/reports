@@ -79,9 +79,9 @@ var ProjectList = React.createClass({
                           <ProjectAttributeLink m='enter-data' href={enter_data_link}>
                             enter data
                           </ProjectAttributeLink>
-                          <ProjectAttributeLink m='sync' onClick={this.syncProject} data-project-id={id}>
+                          <ProjectAttribute m='sync' onClick={this.syncProject} data-project-id={id}>
                             sync
-                          </ProjectAttributeLink>
+                          </ProjectAttribute>
                           <Navlink m='view-report' to='report' params={{ id: 'aBcXyZ' }}>
                             <i className="fa fa-cog" />
                             view report
