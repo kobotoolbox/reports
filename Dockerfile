@@ -1,5 +1,15 @@
 FROM kobojohn/kobo-reports-base
 
+################
+# install node #
+################
+
+RUN apt-get -y install software-properties-common
+RUN apt-get -y install python-software-properties
+RUN add-apt-repository -y ppa:chris-lea/node.js
+RUN apt-get update
+RUN apt-get install -y nodejs
+
 ##########
 # Python #
 ##########
@@ -8,6 +18,7 @@ RUN mkdir /app
 WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt
+
 
 ###############
 # koboreports #
@@ -28,11 +39,6 @@ RUN python manage.py migrate --noinput && \
 # install and build build node project #
 ########################################
 
-RUN apt-get -y install software-properties-common
-RUN apt-get -y install python-software-properties
-RUN add-apt-repository -y ppa:chris-lea/node.js
-RUN apt-get update
-RUN apt-get install -y nodejs
 
 WORKDIR /app/demo
 RUN npm install grunt-cli
