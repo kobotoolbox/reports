@@ -35,6 +35,7 @@ RUN apt-get update
 RUN apt-get install -y nodejs
 
 WORKDIR /app/demo
+RUN npm install grunt-cli
 RUN npm install
 RUN grunt build
 
