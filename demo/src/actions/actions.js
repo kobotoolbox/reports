@@ -29,6 +29,11 @@ var dataInterface = (function(){
   this.confirmLogin = () => {
     return $.getJSON(rootUrl + '/me/');
   };
+  this.syncProject = (projectId) => {
+    return $.ajax({
+      url: `/equitytool/sync/${projectId}`,
+    });
+  };
 
   return this;
 }).call({});
@@ -53,6 +58,9 @@ var actions = Reflux.createActions({
     asyncResult: true,
   },
   confirmLogin: {
+    asyncResult: true,
+  },
+  syncProject: {
     asyncResult: true,
   },
   placeholder: {
@@ -82,6 +90,16 @@ actions.confirmLogin.listen(function() {
   }).fail(function(data) {
     actions.confirmLogin.failed(data);
   });
+});
+
+actions.syncProject.listen(function (projectId) {
+  dataInterface.syncProject(projectId)
+    .done(actions.syncProject.completed)
+    .fail(actions.syncProject.failed);
+});
+
+actions.syncProject.completed.listen(function() {
+  actions.listRenderings();
 });
 
 export default actions;
