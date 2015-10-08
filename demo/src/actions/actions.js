@@ -8,14 +8,16 @@ var token = (function(){
 })();
 
 var dataInterface = (function(){
-  var rootUrl = '';
+  var rootUrl = 'http://localhost:8001';
   this.listRenderings = ()=> {
     return $.getJSON(rootUrl + '/renderings/');
   };
 
+  /*
   this.syncRendering = (renderingId) => {
     return $.getJSON(rootUrl + '/renderings/' + renderingId);
   };
+  */
 
   this.createTemplate = (templateData) => {
     var postData = assign({csrfmiddlewaretoken: token}, templateData);
@@ -36,7 +38,7 @@ var dataInterface = (function(){
   };
   this.getRendering = (projectId) => {
     return $.ajax({
-      url: `${rootUrl}/renderings/${projectId}.html`
+      url: `${rootUrl}/rendering/${projectId}.html`
     });
   };
 
