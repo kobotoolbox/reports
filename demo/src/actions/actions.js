@@ -8,7 +8,7 @@ var token = (function(){
 })();
 
 var dataInterface = (function(){
-  var rootUrl = 'http://localhost:8001';
+  var rootUrl = '';
   this.listRenderings = ()=> {
     return $.getJSON(rootUrl + '/renderings/');
   };
