@@ -13,7 +13,7 @@ var projects = [
 var renderingsStore = Reflux.createStore({
   init () {
     this.state = {
-      projects: projects,
+      projects: [],
     };
     this.listenTo(actions.listRenderings.completed, this.listRenderingsCompleted);
     this.listenTo(actions.listRenderings.failed, this.listRenderingsFailed);
