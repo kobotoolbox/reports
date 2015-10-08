@@ -9,7 +9,7 @@ import moment from 'moment';
 import {requireLoggedInMixin} from '../mixins/requireLogins';
 import Identicon from '../libs/react-identicon';
 import actions from '../actions/actions';
-import renderingsStore from '../stores/renderings';
+import {renderingsStore} from '../stores/renderings';
 
 require('styles/ProjectList.scss');
 
@@ -82,7 +82,7 @@ var ProjectList = React.createClass({
                           <ProjectAttribute m='sync' onClick={this.syncProject} data-project-id={id}>
                             sync
                           </ProjectAttribute>
-                          <Navlink m='view-report' to='report' params={{ id: 'aBcXyZ' }}>
+                          <Navlink m='view-report' to='report' params={{ id: id }}>
                             <i className="fa fa-cog" />
                             view report
                           </Navlink>

@@ -31,7 +31,12 @@ var dataInterface = (function(){
   };
   this.syncProject = (projectId) => {
     return $.ajax({
-      url: `/equitytool/sync/${projectId}`,
+      url: `${rootUrl}/equitytool/sync/${projectId}`,
+    });
+  };
+  this.getRendering = (projectId) => {
+    return $.ajax({
+      url: `${rootUrl}/renderings/${projectId}.html`
     });
   };
 
@@ -52,6 +57,9 @@ var actions = Reflux.createActions({
   },
 */
   createTemplate: {
+    asyncResult: true,
+  },
+  getRendering: {
     asyncResult: true,
   },
   listRenderings: {
@@ -85,11 +93,9 @@ actions.listRenderings.listen(function () {
 });
 
 actions.confirmLogin.listen(function() {
-  dataInterface.confirmLogin().done(function(data) {
-    actions.confirmLogin.completed(data);
-  }).fail(function(data) {
-    actions.confirmLogin.failed(data);
-  });
+  dataInterface.confirmLogin()
+    .done(actions.confirmLogin.completed)
+    .fail(actions.confirmLogin.failed);
 });
 
 actions.syncProject.listen(function (projectId) {
@@ -101,5 +107,14 @@ actions.syncProject.listen(function (projectId) {
 actions.syncProject.completed.listen(function() {
   actions.listRenderings();
 });
+
+actions.getRendering.listen(function (projId) {
+  dataInterface.getRendering(projId)
+    .done(function(html){
+      actions.getRendering.completed(projId, html);
+    })
+    .fail(actions.getRendering.failed);
+});
+
 
 export default actions;

@@ -12,12 +12,13 @@ var projects = [
 
 var renderingsStore = Reflux.createStore({
   init () {
-    this.state = {};
+    this.state = {
+      projects: projects,
+    };
     this.listenTo(actions.listRenderings.completed, this.listRenderingsCompleted);
     this.listenTo(actions.listRenderings.failed, this.listRenderingsFailed);
   },
   listRenderingsCompleted (data) {
-    console.log('listRenderingsCompleted', data);
     this.state.projects = data;
     this.trigger(this.state);
   },
@@ -28,4 +29,16 @@ var renderingsStore = Reflux.createStore({
   },
 });
 
-export default renderingsStore;
+var individualRenderingStore = Reflux.createStore({
+  init () {
+    this.listenTo(actions.getRendering.completed, this.getRenderingCompleted);
+  },
+  getRenderingCompleted (id, html) {
+    this.trigger(id, html);
+  },
+});
+
+export default {
+  renderingsStore: renderingsStore,
+  individualRenderingStore: individualRenderingStore,
+};
