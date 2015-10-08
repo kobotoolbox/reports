@@ -21,13 +21,18 @@ WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 
+RUN mkdir /app/demo
+COPY demo/package.json /app/demo/package.json
+WORKDIR /app/demo
+RUN npm install -g grunt-cli
+RUN npm install
+WORKDIR /app
 
 ###############
 # koboreports #
 ###############
 
 COPY . /app
-
 RUN python manage.py test --noinput
 
 #############################
@@ -41,12 +46,8 @@ RUN python manage.py migrate --noinput && \
 # install and build build node project #
 ########################################
 
-
 WORKDIR /app/demo
-RUN npm install -g grunt-cli
-RUN npm install
 RUN grunt build
-
 WORKDIR /app
 
 
