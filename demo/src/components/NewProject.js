@@ -53,7 +53,7 @@ var NewProject = React.createClass({
   },
   componentDidMount () {
     actions.createTemplate.completed.listen(() => {
-      this.transitionTo('projects');
+      this.transitionTo('project-list');
     });
   },
   render: function () {
