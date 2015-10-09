@@ -63,6 +63,7 @@ var ProjectList = React.createClass({
               {this.state.projects.map(({name, submission_count, enter_data_link, created, id}) => {
                 var dateStr = moment(new Date(created)).fromNow();
                 var identiconSeed = `equity-tool-project-${id}`;
+                var hasSubmissions = submission_count > 0;
                 return (
                     <ProjectLi key={`project-${name}`}>
                       <ProjectAttribute m='image'>
@@ -82,10 +83,12 @@ var ProjectList = React.createClass({
                           <ProjectAttribute m='sync' onClick={this.syncProject} data-project-id={id}>
                             sync
                           </ProjectAttribute>
-                          <Navlink m='view-report' to='report' params={{ id: id }}>
-                            <i className="fa fa-cog" />
-                            view report
-                          </Navlink>
+                          {hasSubmissions ? 
+                            <Navlink m='view-report' to='report' params={{ id: id }}>
+                              <i className="fa fa-cog" />
+                              view report
+                            </Navlink>
+                          :null}
                         </ProjectLinks>
                       </ProjectAttribute>
                       <ProjectAttribute m='date-created'>
