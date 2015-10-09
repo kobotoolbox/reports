@@ -34,6 +34,15 @@ var sessionStore = Reflux.createStore({
     */
   },
   confirmLoginCompleted (data) {
+    if (data.countries) {
+      this.countries = data.countries.map(function(c){
+        return {
+          value: c.id,
+          label: c.name,
+        };
+      });
+      delete data.countries;
+    }
     if (data.username) {
       this.state = assign({
         loggedIn: true,
