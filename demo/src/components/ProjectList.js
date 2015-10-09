@@ -83,12 +83,12 @@ var ProjectList = React.createClass({
                           <ProjectAttribute m='sync' onClick={this.syncProject} data-project-id={id}>
                             sync
                           </ProjectAttribute>
-                          {hasSubmissions ? 
+                          {hasSubmissions ?
                             <Navlink m='view-report' to='report' params={{ id: id }}>
                               <i className="fa fa-cog" />
                               view report
                             </Navlink>
-                          :null}
+                          : null}
                         </ProjectLinks>
                       </ProjectAttribute>
                       <ProjectAttribute m='date-created'>
