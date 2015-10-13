@@ -82,7 +82,7 @@ var ProjectList = React.createClass({
                           <ProjectAttribute m='submissions'>
                             {submission_count} submissions
                           </ProjectAttribute>
-                          <ProjectAttributeLink m='enter-data' href={enter_data_link}>
+                          <ProjectAttributeLink m='enter-data' href={enter_data_link} target='_blank'>
                             enter data
                           </ProjectAttributeLink>
                           <ProjectAttribute m={{
@@ -93,7 +93,7 @@ var ProjectList = React.createClass({
                             sync
                           </ProjectAttribute>
                           {hasSubmissions ?
-                            <Navlink m='view-report' to='report' params={{ id: id }}>
+                            <Navlink m='view-report' to='report' params={{ id: id }} target='_blank'>
                               <i className="fa fa-cog" />
                               view report
                             </Navlink>
