@@ -37,6 +37,7 @@ var ProjectList = React.createClass({
   getInitialState () {
     return {
       projects: [],
+      syncingProject: false,
     };
   },
   componentDidMount () {
@@ -45,6 +46,9 @@ var ProjectList = React.createClass({
   },
   syncProject (evt) {
     actions.syncProject(evt.target.dataset.projectId);
+    this.setState({
+      syncingProject: evt.target.dataset.projectId,
+    });
   },
   renderingsStoreChanged (state) {
     this.setState(state);
@@ -64,6 +68,7 @@ var ProjectList = React.createClass({
                 var dateStr = moment(new Date(created)).fromNow();
                 var identiconSeed = `equity-tool-project-${id}`;
                 var hasSubmissions = submission_count > 0;
+                var isSyncing = this.state.syncingProject === id;
                 return (
                     <ProjectLi key={`project-${name}`}>
                       <ProjectAttribute m='image'>
@@ -80,7 +85,11 @@ var ProjectList = React.createClass({
                           <ProjectAttributeLink m='enter-data' href={enter_data_link}>
                             enter data
                           </ProjectAttributeLink>
-                          <ProjectAttribute m='sync' onClick={this.syncProject} data-project-id={id}>
+                          <ProjectAttribute m={{
+                            sync: true,
+                            syncpending: isSyncing,
+                          }} onClick={this.syncProject} data-project-id={id}>
+                            <i />
                             sync
                           </ProjectAttribute>
                           {hasSubmissions ?
