@@ -69,9 +69,6 @@ var NewProject = React.createClass({
                 <FormItem>
                   <InputField name={'projectname'} type='text' m='required' placeholder='Project Name' ref='name' />
                 </FormItem>
-                <FormItem>
-                <InputField name={'projectdesc'} type='text' m='required' placeholder='Project Description' ref='desc' />
-                </FormItem>
                 <FormItem m='urban'>
                 <InputField name={'urbanfocused'} type='checkbox' value='urbanfocused' id='urbancheckbox' ref='urban' />
                 <label htmlFor='urbancheckbox'>This is an urban-focused project</label>
