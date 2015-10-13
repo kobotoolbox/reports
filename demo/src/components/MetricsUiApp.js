@@ -20,7 +20,6 @@ var MainWrap = bem('main-wrap'),
     Footer = bem('footer', '<footer>'),
     AccountDetails = bem('account-details'),
     AccountDetail = bem('account-detail', '<span>'),
-    AccountButton = bem('account-button', '<button>'),
     AccountLink = bemRouterLink('account-link'),
     Logo = bem('logo', '<span>');
 
@@ -47,16 +46,16 @@ var MetricsUiApp = React.createClass({
                 Welcome
                 <code>{this.state.session.username}</code>
               </AccountDetail>
-              <AccountButton onClick={this.logout}>
-                Log out
-              </AccountButton>
+              <AccountLink m='logout' href='/api-auth/logout/'>
+                log out
+              </AccountLink>
             </AccountDetails>
           :
             <AccountDetails>
               <AccountLink m='login' href='/login/kobo-oauth2/'>
                 login
               </AccountLink>
-              <AccountLink m='register' href='/api-auth/logout/'>
+              <AccountLink m='register' to='register'>
                 register
               </AccountLink>
             </AccountDetails>
