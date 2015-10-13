@@ -45,7 +45,7 @@ var MetricsUiApp = React.createClass({
             <AccountDetails>
               <AccountDetail>
                 Welcome
-                <code>{this.state.session.fullName}</code>
+                <code>{this.state.session.username}</code>
               </AccountDetail>
               <AccountButton onClick={this.logout}>
                 Log out
@@ -53,10 +53,10 @@ var MetricsUiApp = React.createClass({
             </AccountDetails>
           :
             <AccountDetails>
-              <AccountLink m='login' to='login'>
+              <AccountLink m='login' href='/login/kobo-oauth2/'>
                 login
               </AccountLink>
-              <AccountLink m='register' to='register'>
+              <AccountLink m='register' href='/api-auth/logout/'>
                 register
               </AccountLink>
             </AccountDetails>
