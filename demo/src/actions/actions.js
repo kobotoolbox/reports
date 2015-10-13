@@ -82,10 +82,16 @@ actions.placeholder.listen(function(desc){
   console.log(`placeholder action called: '${desc}'`);
 });
 
-actions.createTemplate.listen(function (templateData) {
+actions.createTemplate.listen(function (templateData, {onComplete}) {
+  function successOrFail () {
+      if (onComplete) {
+        onComplete(d);
+      }
+      actions.createTemplate.completed(d);
+  }
   dataInterface.createTemplate(templateData)
-    .done(actions.createTemplate.completed)
-    .fail(actions.createTemplate.failed);
+    .done(successOrFail)
+    .fail(successOrFail);
 });
 
 actions.listRenderings.listen(function () {
