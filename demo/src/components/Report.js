@@ -14,7 +14,6 @@ require('styles/Report.scss');
 
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
-    ContentTitle = bem('content-title', '<h2>'),
     Backlink = bemRouterLink('backlink');
 
 var Report = React.createClass({
@@ -43,7 +42,6 @@ var Report = React.createClass({
     return (
         <Content m='report'>
           <ContentBg>
-            <ContentTitle>Project Results</ContentTitle>
             <div dangerouslySetInnerHTML={{ __html: this.state.renderingHtml }} />
             <p>
               <Backlink to='project-list'>
