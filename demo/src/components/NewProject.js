@@ -43,16 +43,15 @@ var NewProject = React.createClass({
       name: this.refs.name.getDOMNode().value,
       urban: this.refs.urban.getDOMNode().checked ? 'on' : 'off',
       country: this.state.country,
+    }, {
+      onComplete: () => {
+        this.transitionTo('project-list');
+      }
     });
   },
   changeCountry (country) {
     this.setState({
       country: country,
-    });
-  },
-  componentDidMount () {
-    actions.createTemplate.completed.listen(() => {
-      this.transitionTo('project-list');
     });
   },
   render: function () {
