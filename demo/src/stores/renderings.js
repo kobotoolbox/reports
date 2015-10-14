@@ -1,5 +1,6 @@
 import Reflux from 'reflux';
 import actions from '../actions/actions';
+import $ from 'jquery';
 
 /*
 var projects = [
