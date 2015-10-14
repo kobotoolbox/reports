@@ -21,6 +21,7 @@ var MainWrap = bem('main-wrap'),
     AccountDetails = bem('account-details'),
     AccountDetail = bem('account-detail', '<span>'),
     AccountLink = bemRouterLink('account-link'),
+    LogoutLink = bemRouterLink('account-link'),
     Logo = bem('logo', '<span>');
 
 var MetricsUiApp = React.createClass({
@@ -46,9 +47,9 @@ var MetricsUiApp = React.createClass({
                 Welcome
                 <code>{this.state.session.username}</code>
               </AccountDetail>
-              <AccountLink m='logout' href='/api-auth/logout/'>
+              <LogoutLink m='logout' href='/api-auth/logout/'>
                 log out
-              </AccountLink>
+              </LogoutLink>
             </AccountDetails>
           :
             <AccountDetails>
