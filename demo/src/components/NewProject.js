@@ -46,6 +46,7 @@ var NewProject = React.createClass({
     }, {
       onComplete: () => {
         this.transitionTo('project-list');
+        actions.listRenderings();
       }
     });
   },
