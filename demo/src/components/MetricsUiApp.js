@@ -15,6 +15,11 @@ require('normalize.css');
 require('../styles/main.scss');
 require('../styles/MetricsUI.scss');
 
+const authUrls = {
+  login: '/login/kobo-oauth2/',
+  logout: '/api-auth/logout/?next=/',
+};
+
 var MainWrap = bem('main-wrap'),
     Header = bem('header', '<header>'),
     Footer = bem('footer', '<footer>'),
@@ -47,13 +52,13 @@ var MetricsUiApp = React.createClass({
                 Welcome
                 <code>{this.state.session.username}</code>
               </AccountDetail>
-              <LogoutLink m='logout' href='/api-auth/logout/'>
+              <LogoutLink m='logout' href={authUrls.logout}>
                 log out
               </LogoutLink>
             </AccountDetails>
           :
             <AccountDetails>
-              <AccountLink m='login' href='/login/kobo-oauth2/'>
+              <AccountLink m='login' href={authUrls.login}>
                 login
               </AccountLink>
               <AccountLink m='register' to='register'>
