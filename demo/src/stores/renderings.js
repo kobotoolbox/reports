@@ -35,7 +35,7 @@ var individualRenderingStore = Reflux.createStore({
     this.listenTo(actions.getRendering.completed, this.getRenderingCompleted);
   },
   getRenderingCompleted (id, html) {
-    this.trigger(id, html);
+    this.trigger(id, $('<div>').html(html).find('div').get(0).innerHTML);
   },
 });
 
