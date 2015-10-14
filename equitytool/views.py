@@ -3,6 +3,8 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.core.urlresolvers import reverse
+from rest_framework import exceptions
+from rest_framework import status
 import requests
 import os
 import json
@@ -36,20 +38,36 @@ class ProjectForm(forms.Form):
     name = forms.CharField(label='Project name', max_length=1000)
     urban = forms.BooleanField(label='This is an urban-focused project', required=False)
 
+def _create_project(posted_data, user):
+    form = ProjectForm(posted_data, user)
+    if form.is_valid():
+        d = form.cleaned_data.copy()
+        d['user'] = user
+        return Wrapper.create_project(**d)
 
 @xframe_options_exempt
 def create(request):
     if request.method == 'POST':
-        form = ProjectForm(request.POST)
-        if form.is_valid():
-            d = form.cleaned_data.copy()
-            d['user'] = request.user
-            Wrapper.create_project(**d)
+        proj = _create_project(request.POST, request.user)
+        if proj:
             return HttpResponseRedirect(reverse('equity-tool'))
     else:
         form = ProjectForm()
     return render(request, 'create.html', {'form': form})
 
+
+def create_friendly(request):
+    '''
+    A version of the 'create' method that returns a 201 "CREATED" code
+    on successful creation
+    '''
+    if request.method != 'POST':
+        raise exceptions.MethodNotAllowed('Only accepts POST requests')
+    proj = _create_project(request.POST, request.user)
+    if proj:
+        return Response({}, status=status.HTTP_201_CREATED)
+    else:
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 class Wrapper(object):
 
