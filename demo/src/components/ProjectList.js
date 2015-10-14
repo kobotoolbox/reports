@@ -45,9 +45,10 @@ var ProjectList = React.createClass({
     actions.listRenderings();
   },
   syncProject (evt) {
-    actions.syncProject(evt.target.dataset.projectId);
+    var $ect = evt.currentTarget;
+    actions.syncProject($ect.dataset.projectId);
     this.setState({
-      syncingProject: evt.target.dataset.projectId,
+      syncingProject: $ect.dataset.projectId,
     });
   },
   renderingsStoreChanged (state) {
