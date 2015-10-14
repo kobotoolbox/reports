@@ -83,7 +83,7 @@ actions.placeholder.listen(function(desc){
 });
 
 actions.createTemplate.listen(function (templateData, {onComplete}) {
-  function successOrFail () {
+  function successOrFail (d) {
       if (onComplete) {
         onComplete(d);
       }
