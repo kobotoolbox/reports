@@ -4,6 +4,7 @@ import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import sessionStore from '../stores/session';
+import authUrls from '../stores/authUrls';
 import Reflux from 'reflux';
 
 let {
@@ -15,10 +16,6 @@ require('normalize.css');
 require('../styles/main.scss');
 require('../styles/MetricsUI.scss');
 
-const authUrls = {
-  login: '/login/kobo-oauth2/',
-  logout: '/api-auth/logout/?next=/',
-};
 
 var MainWrap = bem('main-wrap'),
     Header = bem('header', '<header>'),
@@ -61,7 +58,7 @@ var MetricsUiApp = React.createClass({
               <AccountLink m='login' href={authUrls.login}>
                 login
               </AccountLink>
-              <AccountLink m='register' to='register'>
+              <AccountLink m='register' href={authUrls.register}>
                 register
               </AccountLink>
             </AccountDetails>

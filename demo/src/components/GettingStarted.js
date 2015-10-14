@@ -5,6 +5,7 @@ import bem from '../libs/react-create-bem-element';
 import sessionStore from '../stores/session';
 import bemRouterLink from '../libs/bemRouterLink';
 import Reflux from 'reflux';
+import authUrls from '../stores/authUrls';
 
 require('styles/GettingStarted.scss');
 
@@ -47,11 +48,11 @@ var GettingStarted = React.createClass({
               </div>
             :
               <div>
-                <BorderedNavlink to='register' m='register'>
+                <BorderedNavlink href={authUrls.register} m='register'>
                   Create Account
                 </BorderedNavlink>
                 <span> or </span>
-                <BorderedNavlink m='login' to='login'>
+                <BorderedNavlink href={authUrls.login} to='login'>
                   log in here
                 </BorderedNavlink>
               </div>
