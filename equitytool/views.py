@@ -3,6 +3,7 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.core.urlresolvers import reverse
+from rest_framework.response import Response
 from rest_framework import exceptions
 from rest_framework import status
 import requests
