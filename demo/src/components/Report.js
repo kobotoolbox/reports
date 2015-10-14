@@ -14,7 +14,7 @@ require('styles/Report.scss');
 
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
-    Backlink = bemRouterLink('backlink');
+    BorderedNavlink = bemRouterLink('bordered-navlink');
 
 var Report = React.createClass({
   mixins: [
@@ -44,9 +44,9 @@ var Report = React.createClass({
           <ContentBg>
             <div dangerouslySetInnerHTML={{ __html: this.state.renderingHtml }} />
             <p>
-              <Backlink to='project-list'>
+              <BorderedNavlink to='project-list'>
                 go back
-              </Backlink>
+              </BorderedNavlink>
             </p>
           </ContentBg>
         </Content>
