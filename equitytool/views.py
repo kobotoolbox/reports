@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.response import Response
 from rest_framework import exceptions
 from rest_framework import status
+from rest_framework.decorators import api_view
 import requests
 import os
 import json
@@ -57,13 +58,12 @@ def create(request):
     return render(request, 'create.html', {'form': form})
 
 
+@api_view(['POST'])
 def create_friendly(request):
     '''
     A version of the 'create' method that returns a 201 "CREATED" code
     on successful creation
     '''
-    if request.method != 'POST':
-        raise exceptions.MethodNotAllowed('Only accepts POST requests')
     proj = _create_project(request.POST, request.user)
     if proj:
         return Response({}, status=status.HTTP_201_CREATED)
