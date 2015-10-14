@@ -4,9 +4,9 @@ import views
 
 urlpatterns = patterns(
     '',
-    url(r'^$', views.index, name='index'),
+    url(r'^$', views.demo, name='demo'),
     url(r'^me/$', views.current_user, name='current_user'),
-    url(r'^demo/$', views.demo, name='demo'),
+    url(r'^reports/$', views.index, name='index'),
     url(r'^rendering/(?P<id>[^\.]+).(?P<extension>[^\.]+)$', views.rendering, name='rendering'),
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
