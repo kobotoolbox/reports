@@ -95,6 +95,8 @@ TEMPLATES = [{
     }
 }]
 
+LOGIN_REDIRECT_URL = '/'
+
 # modify logging settings to see timing data
 LOGGING = {
     'version': 1,
