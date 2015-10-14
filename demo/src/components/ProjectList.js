@@ -93,8 +93,8 @@ var ProjectList = React.createClass({
                             sync
                           </ProjectAttribute>
                           {hasSubmissions ?
-                            <Navlink m='view-report' to='report' params={{ id: id }} target='_blank'>
-                              <i className="fa fa-cog" />
+                            <Navlink m='view-report' to='report' params={{ id: id }}>
+                              <i />
                               view report
                             </Navlink>
                           : null}
