@@ -46,7 +46,11 @@ var Register = React.createClass({
   },
   submitForm (evt) {
     evt.preventDefault();
-    actions.placeholder('create account');
+    var data = {};
+    ['username', 'password', 'name', 'organization', 'email'].forEach((key) => {
+      data[key] = this.refs[key].getDOMNode().value;
+    });
+    actions.registerAccount(data);
   },
   render: function () {
     return (

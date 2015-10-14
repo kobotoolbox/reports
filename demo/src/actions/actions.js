@@ -42,6 +42,14 @@ var dataInterface = (function(){
     });
   };
 
+  this.registerAccount = (accountData) => {
+    console.log("Account data: ", accountData);
+    return $.ajax({
+      url: '/register?',
+      data: accountData,
+    });
+  };
+
   return this;
 }).call({});
 
@@ -59,6 +67,9 @@ var actions = Reflux.createActions({
   },
 */
   createTemplate: {
+    asyncResult: true,
+  },
+  registerAccount: {
     asyncResult: true,
   },
   getRendering: {
@@ -80,6 +91,12 @@ var actions = Reflux.createActions({
 
 actions.placeholder.listen(function(desc){
   console.log(`placeholder action called: '${desc}'`);
+});
+
+actions.registerAccount.listen(function (accountData) {
+  dataInterface.registerAccount(accountData)
+    .done(actions.registerAccount.completed)
+    .fail(actions.registerAccount.failed);
 });
 
 actions.createTemplate.listen(function (templateData, {onComplete}) {
