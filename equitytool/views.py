@@ -153,3 +153,4 @@ class Wrapper(object):
         w.set_form()
         w.set_template()
         w.set_rendering()
+        return w
