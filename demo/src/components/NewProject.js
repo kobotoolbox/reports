@@ -41,7 +41,7 @@ var NewProject = React.createClass({
     evt.preventDefault();
     actions.createTemplate({
       name: this.refs.name.getDOMNode().value,
-      urban: this.refs.urban.getDOMNode().checked ? 'on' : 'off',
+      urban: this.refs.urban.getDOMNode().checked ? 'true' : 'false',
       country: this.state.country,
     }, {
       onComplete: () => {
