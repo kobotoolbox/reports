@@ -37,6 +37,7 @@ var ProjectList = React.createClass({
   getInitialState () {
     return {
       projects: [],
+      projectsLoading: true,
       syncingProject: false,
     };
   },
@@ -61,8 +62,12 @@ var ProjectList = React.createClass({
             <ContentTitle>My Projects</ContentTitle>
             <ProjectUl>
               {this.state.projects.length === 0 ?
-                <ProjectLi m={'notification'}>
-                  {'You have no projects to display. Click "new project" below.'}
+                <ProjectLi m={this.state.projectsLoading ? 'loadingmessage' : 'notification'}>
+                  {this.state.projectsLoading ?
+                    'Loading project list'
+                  :
+                    'You have no projects to display. Click "new project" below.'
+                  }
                 </ProjectLi>
               : null}
               {this.state.projects.map(({name, submission_count, enter_data_link, created, id}) => {
