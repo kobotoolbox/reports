@@ -17,11 +17,9 @@ logger = logging.getLogger('TIMING')
 
 
 class Template(models.Model):
-    user = models.ForeignKey(User, null=True, editable=False)
     rmd = models.TextField()
     slug = models.SlugField(default='')
-
-    unique_together = ('user', 'slug')
+    name = models.TextField(default='')
 
     @classmethod
     def create(cls, path):
@@ -111,6 +109,8 @@ class Rendering(models.Model):
             self.download_data()
             self._log_message('download end  ')
             data_csv = os.path.join(folder, 'data.csv')
+            if not self.data.endswith('\n'):
+                self.data += '\n'
             with open(data_csv, 'w') as f:
                 f.write(self.data.encode('utf-8'))
 
