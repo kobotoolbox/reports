@@ -10,6 +10,7 @@ urlpatterns = patterns(
     url(r'^rendering/(?P<id>[^\.]+).(?P<extension>[^\.]+)$', views.rendering, name='rendering'),
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^register/', views.proxy_create_user),
     url(r'^templates/$', views.TemplateListCreate.as_view(), name='templates'),
     url(r'^templates/(?P<pk>[0-9]+)/$', views.TemplateRetrieveUpdateDestroy.as_view()),
     url(r'^renderings/$', views.RenderingListCreate.as_view(), name='renderings'),

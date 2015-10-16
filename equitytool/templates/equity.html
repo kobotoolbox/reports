@@ -7,7 +7,7 @@
 <h6 class="docs-header">Get started with the Equity Tool</h6>
 
 <ul>
-  <li>Already have an account? Sign in <a href="{% url 'social:begin' 'kobo-oauth2' %}?next={{ request.path }}">here</a>.</li>
+  <li>Already have an account? Sign in <a href="{% url 'rest_framework:login' %}?next={{ request.path }}">here</a>.</li>
 
   <li>Want a new account? Register for a free account <a href="https://kf.kobotoolbox.org/accounts/register/" target="_blank">here</a>.</li>
 </ul>

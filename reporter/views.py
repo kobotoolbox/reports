@@ -1,8 +1,10 @@
 import datetime
+import requests
 from urlparse import urlparse
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import RequestContext
+from django.conf import settings
 from models import Template, Rendering
 from rest_framework import generics, serializers, permissions
 from rest_framework.decorators import api_view
@@ -119,3 +121,16 @@ class RenderingRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Rendering.objects.all()
     serializer_class = RenderingSerializer
     permission_classes = (IsOwner, )
+
+
+def proxy_create_user(request):
+    url = '{}authorized-application/users/'.format(
+        settings.KPI_URL)
+    headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}
+    response = requests.post(url, data=request.POST, headers=headers)
+    content_type = response.headers.get('content-type')
+    return HttpResponse(
+        response.content,
+        content_type=content_type,
+        status=response.status_code
+    )

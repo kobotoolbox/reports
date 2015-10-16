@@ -44,9 +44,12 @@ var dataInterface = (function(){
 
   this.registerAccount = (accountData) => {
     console.log("Account data: ", accountData);
+    var postData = assign({csrfmiddlewaretoken: token}, accountData);
     return $.ajax({
-      url: '/register?',
-      data: accountData,
+      url: '/register/',
+      dataType: 'json',
+      method: 'POST',
+      data: postData,
     });
   };
 
@@ -97,6 +100,10 @@ actions.registerAccount.listen(function (accountData) {
   dataInterface.registerAccount(accountData)
     .done(actions.registerAccount.completed)
     .fail(actions.registerAccount.failed);
+});
+
+actions.registerAccount.completed.listen(function() {
+  console.log('Registration successful');
 });
 
 actions.createTemplate.listen(function (templateData, {onComplete}) {

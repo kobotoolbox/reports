@@ -1,5 +1,5 @@
 const authUrls = {
-  login: '/login/kobo-oauth2/',
+  login: '/api-auth/login/',
   logout: '/api-auth/logout/?next=/',
   register: '#/register',
 };
