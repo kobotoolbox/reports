@@ -64,6 +64,8 @@ RUN conda update --yes conda && \
         pandas=0.16.2=np19py27_0 \
         pip 
 
+# pyopenssl fails to run in docker when installed by pip
+RUN conda install pyopenssl==0.15.1
 RUN mkdir /app
 WORKDIR /app
 COPY requirements.txt /app/
