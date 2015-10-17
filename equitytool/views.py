@@ -69,9 +69,10 @@ class Wrapper(object):
 
     def set_template(self):
         slug = 'urban' if self.urban else 'national'
-        template, created = Template.objects.get_or_create(user=self.user, slug=slug)
-        template.rmd = self.get_rmd()
-        template.save()
+        template, created = Template.objects.get_or_create(slug=slug)
+        if created:
+            template.rmd = self.get_rmd()
+            template.save()
         self.template = template
 
     def set_api_token(self):
