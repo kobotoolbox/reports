@@ -2,10 +2,12 @@
 'use strict';
 
 import React from 'react/addons';
+import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import {registration} from './registrationForm';
 import actions from '../actions/actions';
+import accountStore from '../stores/account';
 import {requireNotLoggedInMixin} from '../mixins/requireLogins';
 
 require('styles/Forms.scss');
@@ -30,7 +32,19 @@ var Register = React.createClass({
   mixins: [
     Navigation,
     requireNotLoggedInMixin({failTo: 'getting-started'}),
+    Reflux.ListenerMixin,
   ],
+  componentDidMount () {
+    this.listenTo(accountStore, this.accountStoreChanged);
+  },
+  accountStoreChanged (acctState) {
+    console.log('accountStoreChanged:');
+    if (acctState.errors) {
+      console.log('errors: ', acctState);
+    } else {
+      console.log('no errors: ', acctState);
+    }
+  },
   getInitialState () {
     return registration.state;
   },
