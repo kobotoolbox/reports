@@ -4,7 +4,9 @@ import {registration} from '../registrationForm';
 
 var accountStore = Reflux.createStore({
   init () {
-    this.state = {};
+    this.state = {
+      registrationForm: registration,
+    };
     this.listenTo(actions.registerAccount.completed, this.registerAccountCompleted);
     this.listenTo(actions.registerAccount.failed, this.registerAccountFailed);
   },
