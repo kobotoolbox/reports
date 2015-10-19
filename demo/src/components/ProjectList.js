@@ -47,10 +47,10 @@ var ProjectList = React.createClass({
   },
   syncProject (evt) {
     var $ect = evt.currentTarget;
-    actions.syncProject($ect.dataset.projectId);
     this.setState({
-      syncingProject: $ect.dataset.projectId,
+      syncingProject: parseInt($ect.dataset.projectId),
     });
+    actions.syncProject($ect.dataset.projectId);
   },
   renderingsStoreChanged (state) {
     this.setState(state);
@@ -63,6 +63,7 @@ var ProjectList = React.createClass({
             <ProjectUl>
               {this.state.projects.length === 0 ?
                 <ProjectLi m={this.state.projectsLoading ? 'loadingmessage' : 'notification'}>
+                  <i />
                   {this.state.projectsLoading ?
                     'Loading project list'
                   :
@@ -74,7 +75,7 @@ var ProjectList = React.createClass({
                 var dateStr = moment(new Date(created)).fromNow();
                 var identiconSeed = `equity-tool-project-${id}`;
                 var hasSubmissions = submission_count > 0;
-                var isSyncing = this.state.syncingProject === id;
+                var isSyncing = this.state.syncingProject !== false && this.state.syncingProject === id;
                 return (
                     <ProjectLi key={`project-${name}`}>
                       <ProjectAttribute m='image'>
