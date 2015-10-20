@@ -10,7 +10,6 @@ from rest_framework.decorators import api_view
 import requests
 import os
 import json
-from bs4 import BeautifulSoup
 # TODO: These objects should be made through API calls. Handling the
 # authentication required to make those calls seems a little
 # tricky. And it seems like unnecessary work at the moment.
@@ -77,7 +76,13 @@ class Wrapper(object):
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             setattr(self, k, v)
-        self.set_api_token()
+
+    @property
+    def api_token(self):
+        try:
+            return self.user.external_api_token.key
+        except UserExternalApiToken.DoesNotExist:
+            return None
 
     def get_rmd(self):
         filename = 'wealth2.Rmd' if self.urban else 'wealth.Rmd'
@@ -92,15 +97,6 @@ class Wrapper(object):
         template.rmd = self.get_rmd()
         template.save()
         self.template = template
-
-    def set_api_token(self):
-        path = '/%s/api-token' % self.user.username
-        url = self.KC_URL + path
-        response = requests.get(url)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        l = soup.find_all('input')
-        assert len(l) == 1, 'Should have found exactly one input element.'
-        self.api_token = l[0].attrs['value']
 
     def get_forms(self):
         path = '/api/v1/forms?owner=%s' % self.user.username
@@ -142,7 +138,6 @@ class Wrapper(object):
             user=self.user,
             template=self.template,
             url=url,
-            api_token=self.api_token,
             name=self.name
         )
         self.rendering.download_data()

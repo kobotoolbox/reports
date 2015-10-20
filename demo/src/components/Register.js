@@ -2,10 +2,11 @@
 'use strict';
 
 import React from 'react/addons';
+import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
-import {registration} from './registrationForm';
 import actions from '../actions/actions';
+import accountStore from '../stores/account';
 import {requireNotLoggedInMixin} from '../mixins/requireLogins';
 
 require('styles/Forms.scss');
@@ -24,13 +25,36 @@ var Content = bem('content'),
     BorderedButton = bem('bordered-button', '<button>'),
     BorderedNavlink = bemRouterLink('bordered-navlink');
 
-function t(str) { return str; }
+var registration = accountStore.state.registrationForm;
+
+const FIELDS = ['username', 'password', 'password_confirmation',
+                'first_name', 'last_name', 'organization', 'email'];
+
+const fieldLabels = {
+  first_name: 'first name',
+  last_name: 'last name',
+  password_confirmation: 'password confirmation',
+};
 
 var Register = React.createClass({
   mixins: [
     Navigation,
     requireNotLoggedInMixin({failTo: 'getting-started'}),
+    Reflux.ListenerMixin,
   ],
+  componentDidMount () {
+    this.listenTo(accountStore, this.accountStoreChanged);
+  },
+  accountStoreChanged (acctState) {
+    if (acctState.errors) {
+      console.log('errors: ', acctState);
+      this.setState(acctState);
+    } else {
+      console.log('success: ', acctState);
+      actions.confirmLogin();
+      this.transitionTo('getting-started');
+    }
+  },
   getInitialState () {
     return registration.state;
   },
@@ -47,7 +71,7 @@ var Register = React.createClass({
   submitForm (evt) {
     evt.preventDefault();
     var data = {};
-    ['username', 'password', 'name', 'organization', 'email'].forEach((key) => {
+    FIELDS.forEach((key) => {
       data[key] = this.refs[key].getDOMNode().value;
     });
     actions.registerAccount(data);
@@ -60,7 +84,7 @@ var Register = React.createClass({
             <form>
               <FormFields m='register'>
                 {
-                  ['username', 'password', 'name', 'organization', 'email'].map((att) => {
+                  FIELDS.map((att) => {
                     var error = this.state.errors[att],
                         isBlurred = registration._isBlurred[att];
 
@@ -71,10 +95,10 @@ var Register = React.createClass({
                           }}>
                         <Inputfield ref={att}
                               name={att}
-                              type={att === 'password' ? 'password' : 'text'}
+                              type={att.match(/^password/) ? 'password' : 'text'}
                               value={this.state[att]}
                               m='required'
-                              placeholder={t(att)}
+                              placeholder={fieldLabels[att] || att}
                               onBlur={this.formFieldBlur}
                               onChange={this.formFieldChange} />
                         <InputfieldMessage>

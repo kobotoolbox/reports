@@ -5,6 +5,7 @@ import bem from '../libs/react-create-bem-element';
 import sessionStore from '../stores/session';
 import bemRouterLink from '../libs/bemRouterLink';
 import Reflux from 'reflux';
+import accountStore from '../stores/account';
 import authUrls from '../stores/authUrls';
 
 require('styles/GettingStarted.scss');
@@ -16,6 +17,8 @@ let {
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
     ContentTitle = bem('content-title', '<h2>'),
+    InfoMessage = bem('info-message'),
+    InfoMessage__link = bemRouterLink('info-message__link'),
     BorderedNavlink = bemRouterLink('bordered-navlink');
 
 var GettingStarted = React.createClass({
@@ -23,8 +26,19 @@ var GettingStarted = React.createClass({
     Navigation,
     Reflux.connect(sessionStore, 'session'),
   ],
+  componentDidMount () {
+    this.listenTo(accountStore, this.accountStoreUpdated);
+  },
+  accountStoreUpdated ({created}) {
+    if (created) {
+      this.setState({
+        accountCreated: created,
+      });
+    }
+  },
   getInitialState() {
     return {
+      accountCreated: accountStore.state.created,
       session: sessionStore.state,
     };
   },
@@ -57,6 +71,17 @@ var GettingStarted = React.createClass({
                 </BorderedNavlink>
               </div>
             }
+            { this.state.accountCreated ?
+              <InfoMessage m='account-created'>
+                {'You have created an account with the username "' +
+                  this.state.accountCreated.username +
+                 '". Please '}
+                <InfoMessage__link href={authUrls.login} to='login'>
+                  log in
+                </InfoMessage__link>
+                {'.'}
+              </InfoMessage>
+            : null}
           </ContentBg>
         </Content>
       );

@@ -5,7 +5,7 @@
 {% if not request.user.is_authenticated %}
 <h6 class="docs-header">Welcome to KoBoReports!</h6>
 <ul>
-  <li>Do you already have a KoBoToolbox account? Login <a href="{% url 'social:begin' 'kobo-oauth2' %}?next={{ request.path }}">here</a>.</li>
+  <li>Do you already have a KoBoToolbox account? Login <a href="{% url 'rest_framework:login' %}?next={{ request.path }}">here</a>.</li>
   <li>Do you need a KoBoToolbox account? Register <a href="https://kf.kobotoolbox.org/accounts/register/" target="_blank">here</a>.</li>
 </ul>
 {% else %}

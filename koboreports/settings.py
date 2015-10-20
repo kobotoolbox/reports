@@ -121,12 +121,13 @@ LOGGING = {
 }
 
 AUTHENTICATION_BACKENDS = (
+    'reporter.kobo_backend.KoboApiAuthBackend',
     'reporter.kobo_backend.KoboOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 # START: Settings for python-social-auth
-LOGIN_URL = '/login/kobo-oauth2/'
+#LOGIN_URL = '/login/kobo-oauth2/'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_KOBO_OAUTH2_KEY = os.environ.get('OAUTH_CLIENT_ID', 'myclientid')
 SOCIAL_AUTH_KOBO_OAUTH2_SECRET = os.environ.get(
@@ -151,5 +152,13 @@ import urllib3.contrib.pyopenssl
 urllib3.contrib.pyopenssl.inject_into_urllib3()
 
 # END: Settings for python-social-auth
+
+# KPI now used for user registration and authentication
+KPI_URL = os.environ.get('KPI_URL', 'https://kf.kobotoolbox.org/forms/')
+KPI_API_KEY = os.environ.get(
+    'KPI_API_KEY',
+    '8qg3bx7#a2j$o4tuplq==bhdo(4g^d_59ztq&je%pj%tv^!kwgo7&61duo-!'
+)
+LOGIN_URL = '/api-auth/login/'
 
 MEDIA_ROOT = 'media'

@@ -1,6 +1,9 @@
 import Reflux from 'reflux';
 import $ from 'jquery';
 import assign from 'react/lib/Object.assign';
+import alertify from 'alertifyjs';
+
+require('../styles/libs/alertify.scss');
 
 var token = (function(){
   var _m = document.head.querySelector('meta[name=csrf-token]');
@@ -43,10 +46,12 @@ var dataInterface = (function(){
   };
 
   this.registerAccount = (accountData) => {
-    console.log("Account data: ", accountData);
+    var postData = assign({csrfmiddlewaretoken: token}, accountData);
     return $.ajax({
-      url: '/register?',
-      data: accountData,
+      url: '/register/',
+      dataType: 'json',
+      method: 'POST',
+      data: postData,
     });
   };
 
@@ -94,9 +99,23 @@ actions.placeholder.listen(function(desc){
 });
 
 actions.registerAccount.listen(function (accountData) {
+  // window.setTimeout((() => {
+  //   actions.registerAccount.failed({
+  //     username: [
+  //       "this field must be unique"
+  //     ]
+  //   });
+  // }), 2000);
   dataInterface.registerAccount(accountData)
     .done(actions.registerAccount.completed)
     .fail(actions.registerAccount.failed);
+});
+
+actions.registerAccount.completed.listen(function() {
+  alertify.success('Registration successful!');
+});
+actions.registerAccount.failed.listen(function() {
+  alertify.warning('Registration failed!');
 });
 
 actions.createTemplate.listen(function (templateData, {onComplete}) {
