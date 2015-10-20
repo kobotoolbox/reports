@@ -3,6 +3,9 @@ import $ from 'jquery';
 import assign from 'react/lib/Object.assign';
 import alertify from 'alertifyjs';
 
+require('../../node_modules/alertifyjs/src/less/alertify.less');
+require('../../node_modules/alertifyjs/src/less/themes/semantic.less');
+
 var token = (function(){
   var _m = document.head.querySelector('meta[name=csrf-token]');
   return _m && _m.content || '';
@@ -111,10 +114,10 @@ actions.registerAccount.listen(function (accountData) {
 });
 
 actions.registerAccount.completed.listen(function() {
-  alertify.log.info('Registration successful!');
+  alertify.success('Registration successful!');
 });
 actions.registerAccount.failed.listen(function() {
-  alertify.log.info('Registration failed!');
+  alertify.warning('Registration failed!');
 });
 
 actions.createTemplate.listen(function (templateData, {onComplete}) {

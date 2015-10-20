@@ -1,3 +1,30 @@
+var validators = (function(){
+  function _fieldRequired(fieldName, value) {
+    if (value.length === 0) {
+      return `${fieldName} required`;
+    }
+  }
+  function _fieldRequiredPasswordMatch(fieldName, value) {
+    if (value.length === 0) {
+      return `${fieldName} required`;
+    }
+  }
+
+  return {
+    first_name: _fieldRequired,
+    last_name: _fieldRequired,
+    username: _fieldRequired,
+    password: _fieldRequiredPasswordMatch,
+    password_confirmation: _fieldRequiredPasswordMatch,
+    organization: _fieldRequired,
+    email: function (fieldName, value, isBlurEvent) {
+      if (isBlurEvent && !value.match(/@/)) {
+        return 'invalid email address';
+      }
+    },
+  };
+})();
+
 class RegistrationForm {
   constructor () {
     this.state = {
@@ -14,13 +41,6 @@ class RegistrationForm {
     this.enabled = true;
     this._isBlurred = {};
   }
-  _fieldRequired (name, value) {
-    return function() {
-      if (value.length === 0) {
-        return `${name} required`;
-      }
-    };
-  }
   setError (fld, errMsg) {
     this.state.errors[fld] = errMsg;
   }
@@ -29,19 +49,10 @@ class RegistrationForm {
       this._hasBeenEdited[whichField] = true;
     }
 
-    var errMsg = {
-      first_name: this._fieldRequired(whichField, value),
-      last_name: this._fieldRequired(whichField, value),
-      username: this._fieldRequired(whichField, value),
-      password: this._fieldRequired(whichField, value),
-      password_confirmation: this._fieldRequired(whichField, value),
-      organization: this._fieldRequired(whichField, value),
-      email: () => {
-        if (isBlurEvent && !value.match(/@/)) {
-          return 'invalid email address';
-        }
-      },
-    }[whichField](value);
+    var errMsg, validator = validators[whichField];
+    if (validator) {
+      errMsg = validator.call(this, whichField, value, isBlurEvent);
+    }
 
     this._isBlurred[whichField] = isBlurEvent;
 
