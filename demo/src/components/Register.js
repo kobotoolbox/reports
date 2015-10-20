@@ -29,6 +29,9 @@ var registration = accountStore.state.registrationForm;
 
 function t(str) { return str; }
 
+const FIELDS = ['username', 'password', 'password_confirmation',
+                'first_name', 'last_name', 'organization', 'email'];
+
 var Register = React.createClass({
   mixins: [
     Navigation,
@@ -64,7 +67,7 @@ var Register = React.createClass({
   submitForm (evt) {
     evt.preventDefault();
     var data = {};
-    ['username', 'password', 'name', 'organization', 'email'].forEach((key) => {
+    FIELDS.forEach((key) => {
       data[key] = this.refs[key].getDOMNode().value;
     });
     actions.registerAccount(data);
@@ -77,7 +80,7 @@ var Register = React.createClass({
             <form>
               <FormFields m='register'>
                 {
-                  ['username', 'password', 'name', 'organization', 'email'].map((att) => {
+                  FIELDS.map((att) => {
                     var error = this.state.errors[att],
                         isBlurred = registration._isBlurred[att];
 
@@ -88,7 +91,7 @@ var Register = React.createClass({
                           }}>
                         <Inputfield ref={att}
                               name={att}
-                              type={att === 'password' ? 'password' : 'text'}
+                              type={att.match(/^password/) ? 'password' : 'text'}
                               value={this.state[att]}
                               m='required'
                               placeholder={t(att)}

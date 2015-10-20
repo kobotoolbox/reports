@@ -1,8 +1,10 @@
 class RegistrationForm {
   constructor () {
     this.state = {
-      name: '',
+      first_name: '',
+      last_name: '',
       password: '',
+      password_confirmation: '',
       username: '',
       organization: '',
       email: '',
@@ -28,9 +30,11 @@ class RegistrationForm {
     }
 
     var errMsg = {
-      name: this._fieldRequired(whichField, value),
+      first_name: this._fieldRequired(whichField, value),
+      last_name: this._fieldRequired(whichField, value),
       username: this._fieldRequired(whichField, value),
       password: this._fieldRequired(whichField, value),
+      password_confirmation: this._fieldRequired(whichField, value),
       organization: this._fieldRequired(whichField, value),
       email: () => {
         if (isBlurEvent && !value.match(/@/)) {
