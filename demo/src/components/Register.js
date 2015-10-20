@@ -5,7 +5,6 @@ import React from 'react/addons';
 import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
-import {registration} from './registrationForm';
 import actions from '../actions/actions';
 import accountStore from '../stores/account';
 import {requireNotLoggedInMixin} from '../mixins/requireLogins';
@@ -26,6 +25,8 @@ var Content = bem('content'),
     BorderedButton = bem('bordered-button', '<button>'),
     BorderedNavlink = bemRouterLink('bordered-navlink');
 
+var registration = accountStore.state.registrationForm;
+
 function t(str) { return str; }
 
 var Register = React.createClass({
@@ -44,6 +45,7 @@ var Register = React.createClass({
     } else {
       console.log('no errors: ', acctState);
     }
+    this.setState(acctState);
   },
   getInitialState () {
     return registration.state;

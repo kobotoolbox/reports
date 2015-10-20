@@ -20,7 +20,7 @@ class RegistrationForm {
     };
   }
   setError (fld, errMsg) {
-    this.state.errors[errMsg] = errMsg;
+    this.state.errors[fld] = errMsg;
   }
   updateField(whichField, value, isBlurEvent) {
     if (value) {

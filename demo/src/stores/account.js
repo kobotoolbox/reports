@@ -1,6 +1,6 @@
 import Reflux from 'reflux';
 import actions from '../actions/actions';
-import {registration} from '../registrationForm';
+import {registration} from '../components/registrationForm';
 
 var accountStore = Reflux.createStore({
   init () {
@@ -19,7 +19,7 @@ var accountStore = Reflux.createStore({
       registration.setError(errKey, errors[errKey]);
     });
     this.trigger({
-      errors: true,
+      errors: errors,
       registrationForm: registration,
     });
   },
