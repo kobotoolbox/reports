@@ -39,13 +39,14 @@ var Register = React.createClass({
     this.listenTo(accountStore, this.accountStoreChanged);
   },
   accountStoreChanged (acctState) {
-    console.log('accountStoreChanged:');
     if (acctState.errors) {
       console.log('errors: ', acctState);
+      this.setState(acctState);
     } else {
-      console.log('no errors: ', acctState);
+      console.log('success: ', acctState);
+      actions.confirmLogin();
+      this.transitionTo('getting-started');
     }
-    this.setState(acctState);
   },
   getInitialState () {
     return registration.state;
