@@ -14,7 +14,9 @@ var accountStore = Reflux.createStore({
     console.log('registerAccountCompleted. data: ', data);
     this.trigger(this.state);
   },
-  registerAccountFailed (errors) {
+  registerAccountFailed (jqxhr) {
+    console.log('jqxhr', jqxhr, jqxhr.responseJSON);
+    var errors = JSON.parse(jqxhr.responseJSON);
     Object.keys(errors).forEach((errKey) => {
       registration.setError(errKey, errors[errKey]);
     });
