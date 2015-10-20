@@ -1,6 +1,7 @@
 import Reflux from 'reflux';
 import $ from 'jquery';
 import assign from 'react/lib/Object.assign';
+import alertify from 'alertifyjs';
 
 var token = (function(){
   var _m = document.head.querySelector('meta[name=csrf-token]');
@@ -97,13 +98,23 @@ actions.placeholder.listen(function(desc){
 });
 
 actions.registerAccount.listen(function (accountData) {
+  // window.setTimeout((() => {
+  //   actions.registerAccount.failed({
+  //     username: [
+  //       "this field must be unique"
+  //     ]
+  //   });
+  // }), 2000);
   dataInterface.registerAccount(accountData)
     .done(actions.registerAccount.completed)
     .fail(actions.registerAccount.failed);
 });
 
 actions.registerAccount.completed.listen(function() {
-  console.log('Registration successful');
+  alertify.log.info('Registration successful!');
+});
+actions.registerAccount.failed.listen(function() {
+  alertify.log.info('Registration failed!');
 });
 
 actions.createTemplate.listen(function (templateData, {onComplete}) {
