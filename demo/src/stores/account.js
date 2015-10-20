@@ -11,16 +11,17 @@ var accountStore = Reflux.createStore({
     this.listenTo(actions.registerAccount.failed, this.registerAccountFailed);
   },
   registerAccountCompleted (data) {
-    console.log('registerAccountCompleted. data: ', data);
+    this.state.created = data;
     this.trigger(this.state);
   },
   registerAccountFailed (jqxhr) {
     var responseJSON = jqxhr.responseJSON;
-    if (jqxhr) {
-      throw new Error('Whats wrong?');
-    }
     Object.keys(responseJSON).forEach((errKey) => {
-      registration.setError(errKey, responseJSON[errKey]);
+      var err = responseJSON[errKey];
+      if (err instanceof Array && err.length === 1) {
+        err = err[0];
+      }
+      registration.setError(errKey, err);
     });
     this.trigger({
       errors: responseJSON,

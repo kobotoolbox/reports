@@ -51,9 +51,6 @@ module.exports = {
       test: /\.scss/,
       loader: 'style-loader!css-loader!sass-loader?outputStyle=expanded'
     }, {
-      test: /\.less/,
-      loader: 'style!css!less?strictMath&noIeCompat'
-    }, {
       test: /\.css$/,
       loader: 'style-loader!css-loader'
     }, {

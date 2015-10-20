@@ -4,7 +4,6 @@ import React from 'react/addons';
 import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
-// import demoReportHtml from './demoReportHtml';
 import {Navigation} from 'react-router';
 import {requireLoggedInMixin} from '../mixins/requireLogins';
 import actions from '../actions/actions';

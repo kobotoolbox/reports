@@ -3,8 +3,7 @@ import $ from 'jquery';
 import assign from 'react/lib/Object.assign';
 import alertify from 'alertifyjs';
 
-require('../../node_modules/alertifyjs/src/less/alertify.less');
-require('../../node_modules/alertifyjs/src/less/themes/semantic.less');
+require('../styles/libs/alertify.scss');
 
 var token = (function(){
   var _m = document.head.querySelector('meta[name=csrf-token]');
@@ -47,7 +46,6 @@ var dataInterface = (function(){
   };
 
   this.registerAccount = (accountData) => {
-    console.log("Account data: ", accountData);
     var postData = assign({csrfmiddlewaretoken: token}, accountData);
     return $.ajax({
       url: '/register/',

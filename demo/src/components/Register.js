@@ -27,10 +27,14 @@ var Content = bem('content'),
 
 var registration = accountStore.state.registrationForm;
 
-function t(str) { return str; }
-
 const FIELDS = ['username', 'password', 'password_confirmation',
                 'first_name', 'last_name', 'organization', 'email'];
+
+const fieldLabels = {
+  first_name: 'first name',
+  last_name: 'last name',
+  password_confirmation: 'password confirmation',
+};
 
 var Register = React.createClass({
   mixins: [
@@ -94,7 +98,7 @@ var Register = React.createClass({
                               type={att.match(/^password/) ? 'password' : 'text'}
                               value={this.state[att]}
                               m='required'
-                              placeholder={t(att)}
+                              placeholder={fieldLabels[att] || att}
                               onBlur={this.formFieldBlur}
                               onChange={this.formFieldChange} />
                         <InputfieldMessage>
