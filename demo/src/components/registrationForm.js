@@ -1,3 +1,5 @@
+const PASSWORD_MISMATCH_MESSAGE = 'password and confirmation must match';
+
 var validators = (function(){
   function _fieldRequired(fieldName, value) {
     if (value.length === 0) {
@@ -5,8 +7,14 @@ var validators = (function(){
     }
   }
   function _fieldRequiredPasswordMatch(fieldName, value) {
-    if (value.length === 0) {
-      return `${fieldName} required`;
+    var isC = fieldName === 'password_confirmation',
+        otherP = isC ? this.state.password : this.state.password_confirmation;
+    var bothDefined = value && otherP;
+    if (bothDefined && value !== otherP) {
+      return PASSWORD_MISMATCH_MESSAGE;
+    } else {
+      // if no error, then we can reset password related errors
+      this.state.errors[isC ? 'password' : 'password_confirmation'] = false;
     }
   }
 
