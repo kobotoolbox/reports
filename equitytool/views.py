@@ -52,6 +52,8 @@ def create(request):
 
 
 class Wrapper(object):
+    ''' Allows the user to create useful "projects" by tying together
+    `equitytool.Form`, `reporter.Template`, and `reporter.Rendering` '''
 
     KC_URL = 'https://kc.kobotoolbox.org'
 
