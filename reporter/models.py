@@ -17,6 +17,8 @@ logger = logging.getLogger('TIMING')
 
 
 class Template(models.Model):
+    ''' Global R Markdown templates. Available read-only to all users, but
+    require model-level permissions or superuser access to modify '''
     rmd = models.TextField()
     slug = models.SlugField(default='', unique=True)
     name = models.TextField(default='')
@@ -34,6 +36,9 @@ class Template(models.Model):
 
 
 class Rendering(models.Model):
+    ''' Retrieves data from KoBoCAT and processes it through a Template. The
+    data comes from KoBoCAT XForms, which KC calls "forms" in the API and
+    "projects" in the UI '''
     user = models.ForeignKey(User, null=True, editable=False, related_name='renderings')
     template = models.ForeignKey(Template)
     url = models.URLField(blank=True)
