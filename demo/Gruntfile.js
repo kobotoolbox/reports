@@ -54,6 +54,17 @@ module.exports = function (grunt) {
         }
       }
     },
+    sass: {
+      dist: {
+        files: {
+          '../koboreports/static/login.css': [
+            'src/styles/MetricsUI.scss',
+            'src/styles/Forms.scss',
+            'src/styles/Login.scss'
+          ]
+        }
+      }
+    },
 
     open: {
       options: {
@@ -119,7 +130,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', ['karma']);
 
-  grunt.registerTask('build', ['clean', 'copy', 'webpack']);
+  grunt.registerTask('build', ['clean', 'sass', 'copy', 'webpack']);
 
   grunt.registerTask('default', []);
 };

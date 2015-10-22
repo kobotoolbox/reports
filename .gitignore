@@ -7,3 +7,4 @@
 /.env
 /koboreports/static/assets
 /media/
+/koboreports/static/login.css

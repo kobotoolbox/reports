@@ -3,18 +3,7 @@
     <title>{% block title %}Equity Tool{% endblock %}</title>
     {% load staticfiles %}
     {% if csrf_token %}<meta name="csrf-token" content="{{csrf_token}}">{% endif %}
-    <style type="text/css">
-    body.loading {
-      background-color: #2990C2;
-    }
-    body.loading #content {
-      text-align: center;
-      font-size: 20px;
-      padding: 30px;
-      margin: 30px;
-      color: #fff;
-    }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'base.css' %}">
   </head>
   <body class="loading">
     <div id="content">
