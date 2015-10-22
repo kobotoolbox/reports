@@ -52,6 +52,23 @@ class RegistrationForm {
   setError (fld, errMsg) {
     this.state.errors[fld] = errMsg;
   }
+  isValid () {
+    for (var key in this.state.errors) {
+      if (this.state.errors[key]) {
+        return false;
+      }
+    }
+    return true;
+  }
+  getData () {
+    var data = {};
+    Object.keys(this.state).forEach(() => {
+      if (key !== 'errors') {
+        data[key] = this.state[key];
+      }
+    });
+    return data;
+  }
   updateField(whichField, value, isBlurEvent) {
     if (value) {
       this._hasBeenEdited[whichField] = true;

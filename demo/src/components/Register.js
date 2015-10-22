@@ -70,11 +70,14 @@ var Register = React.createClass({
   },
   submitForm (evt) {
     evt.preventDefault();
-    var data = {};
     FIELDS.forEach((key) => {
-      data[key] = this.refs[key].getDOMNode().value;
+      registration.updateField(key, this.refs[key].getDOMNode().value, true);
     });
-    actions.registerAccount(data);
+    if (registration.isValid()) {
+      actions.registerAccount(
+        registration.getData()
+        );
+    }
   },
   render: function () {
     return (
