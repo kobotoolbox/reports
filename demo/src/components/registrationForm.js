@@ -7,6 +7,9 @@ var validators = (function(){
     }
   }
   function _fieldRequiredPasswordMatch(fieldName, value) {
+    if (value.length === 0) {
+      return `${fieldName} required`;
+    }
     var isC = fieldName === 'password_confirmation',
         otherP = isC ? this.state.password : this.state.password_confirmation;
     var bothDefined = value && otherP;
@@ -45,18 +48,30 @@ class RegistrationForm {
       email: '',
       errors: {},
     };
-    this._hasBeenEdited = {};
     this.enabled = true;
     this._isBlurred = {};
   }
   setError (fld, errMsg) {
     this.state.errors[fld] = errMsg;
   }
-  updateField(whichField, value, isBlurEvent) {
-    if (value) {
-      this._hasBeenEdited[whichField] = true;
+  isValid () {
+    for (var key in this.state.errors) {
+      if (this.state.errors[key]) {
+        return false;
+      }
     }
-
+    return true;
+  }
+  getData () {
+    var data = {};
+    Object.keys(this.state).forEach((key) => {
+      if (key !== 'errors') {
+        data[key] = this.state[key];
+      }
+    });
+    return data;
+  }
+  updateField(whichField, value, isBlurEvent) {
     var errMsg, validator = validators[whichField];
     if (validator) {
       errMsg = validator.call(this, whichField, value, isBlurEvent);
@@ -64,9 +79,7 @@ class RegistrationForm {
 
     this._isBlurred[whichField] = isBlurEvent;
 
-    if (!this._hasBeenEdited[whichField]) {
-      return;
-    } else if (errMsg) {
+    if (errMsg) {
       this.state.errors[whichField] = errMsg;
     } else {
       this.state.errors[whichField] = false;
