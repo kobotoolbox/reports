@@ -20,4 +20,9 @@ class Migration(migrations.Migration):
             name='name',
             field=models.TextField(default=b''),
         ),
+        migrations.AlterField(
+            model_name='template',
+            name='slug',
+            field=models.SlugField(default=b'', unique=True),
+        ),
     ]

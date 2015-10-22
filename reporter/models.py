@@ -18,7 +18,7 @@ logger = logging.getLogger('TIMING')
 
 class Template(models.Model):
     rmd = models.TextField()
-    slug = models.SlugField(default='')
+    slug = models.SlugField(default='', unique=True)
     name = models.TextField(default='')
 
     @classmethod
