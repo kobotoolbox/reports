@@ -62,7 +62,7 @@ class RegistrationForm {
   }
   getData () {
     var data = {};
-    Object.keys(this.state).forEach(() => {
+    Object.keys(this.state).forEach((key) => {
       if (key !== 'errors') {
         data[key] = this.state[key];
       }
