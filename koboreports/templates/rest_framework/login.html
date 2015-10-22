@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load rest_framework %}
+<html>
+<head>
+    <title>Log in</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'login.css' %}">
+</head>
+<body>
+    <div id="content">
+        <div class="main-wrap">
+            <header class="header">
+                <span class="logo"></span>
+                <div class="account-details">
+                    <a class="account-link account-link--login" style="visibility: hidden" href="/api-auth/login/">login</a><a class=
+                    "account-link account-link--register" href="/#/register">register</a>
+                </div>
+            </header>
+            <div class="content content--login">
+                <div class="content-bg">
+                    <h2 class="content-title">
+                    Login</h2>
+                    <form action="{% url 'rest_framework:login' %}" role="form" method="post">
+                      <div class="form-fields form-fields--login">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="{{ next }}" />
+
+                      <div id="div_id_username" class="clearfix control-group {% if form.username.errors %}error{% endif %}">
+                        <div class="form-group">
+                           <input type="text" name="username" maxlength="100"
+                              autocapitalize="off"
+                              placeholder="username"
+                              autocorrect="off" class="field field--required form-control textinput textInput"
+                              id="id_username" required
+                              {% if form.username.value %}value="{{ form.username.value }}"{% endif %}>
+                          {% if form.username.errors %}
+                            <p class="text-error">
+                              {{ form.username.errors|striptags }}
+                            </p>
+                          {% endif %}
+                        </div>
+                      </div>
+
+                      <div id="div_id_password" class="clearfix control-group {% if form.password.errors %}error{% endif %}">
+                        <div class="form-group">
+                          <input type="password" name="password" maxlength="100" autocapitalize="off"
+                            placeholder="password"
+                            autocorrect="off" class="form-control textinput textInput field field--required" id="id_password" required>
+                          {% if form.password.errors %}
+                            <p class="text-error">
+                              {{ form.password.errors|striptags }}
+                            </p>
+                          {% endif %}
+                        </div>
+                      </div>
+
+                      {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                          <div class="well well-small text-error" style="border: none">{{ error }}</div>
+                        {% endfor %}
+                      {% endif %}
+                        <button class="bordered-button">Log In</button>
+                        <span>or</span>
+                        <a class="bordered-navlink bordered-navlink--back" href="/#/getting-started">go back</a>
+                      </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
