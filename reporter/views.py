@@ -2,7 +2,7 @@ from urlparse import urlparse
 from django.http import HttpResponse
 from django.shortcuts import render
 from models import Template, Rendering
-from rest_framework import generics, serializers, permissions
+from rest_framework import generics, serializers, permissions, viewsets
 
 
 def index(request):
@@ -56,23 +56,10 @@ class RenderingSerializer(serializers.ModelSerializer):
 
 
 # API endpoints for templates
-class TemplateListCreate(generics.ListCreateAPIView):
+class TemplateView(viewsets.ModelViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-
-    def get_queryset(self):
-        user = self.request.user
-        return Template.objects.filter(user=user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class TemplateRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Template.objects.all()
-    serializer_class = TemplateSerializer
-    permission_classes = (IsOwner, )
+    permission_classes = (permissions.DjangoModelPermissions, )
 
 
 # API endpoints for renderings
