@@ -77,6 +77,8 @@ var Register = React.createClass({
       actions.registerAccount(
         registration.getData()
         );
+    } else {
+      this.setState(registration.state);
     }
   },
   render: function () {
