@@ -62,7 +62,7 @@ var NewProject = React.createClass({
     return (
         <Content m='new-project'>
           <ContentBg>
-            <ContentTitle>Create a New Project</ContentTitle>
+            <ContentTitle>Create a New Survey</ContentTitle>
             <form>
               <FormFields m='register'>
                 <FormItem>
@@ -70,7 +70,7 @@ var NewProject = React.createClass({
                 </FormItem>
                 <FormItem m='urban'>
                 <InputField name={'urbanfocused'} type='checkbox' value='urbanfocused' id='urbancheckbox' ref='urban' />
-                <label htmlFor='urbancheckbox'>This is an urban-focused project</label>
+                <label htmlFor='urbancheckbox'>This is an urban-focused survey</label>
                 <span className='field-tooltip' data-tip={tooltip}>?</span>
                 <ReactTooltip effect={effect} multiline={true}/>
                 </FormItem>
@@ -90,7 +90,7 @@ var NewProject = React.createClass({
               </BorderedButton>
               <span> or </span>
               <BorderedNavlink m={'back'} to='project-list'>
-                go back
+                Back
               </BorderedNavlink>
             </form>
           </ContentBg>
