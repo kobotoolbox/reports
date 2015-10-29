@@ -49,6 +49,8 @@ class Rendering(models.Model):
     template = models.ForeignKey(Template)
     url = models.URLField(blank=True)
     name = models.TextField(default='')
+    # Getting this requires a slow API call, so store it in our local DB
+    _enter_data_link = models.URLField(blank=True)
 
     data = models.TextField(default='')
     created = models.DateTimeField(auto_now_add=True)
@@ -152,35 +154,31 @@ class Rendering(models.Model):
         self._log_message('render end    ')
         return result
 
-    def _get_kc_form_data(self):
+    def _get_kc_form_data(self, endpoint='/forms/{pk}'):
         ''' Attempt to extract the ID from `self.url`, then query KC to
-        retrieve data about the form '''
+        retrieve data about the form. The extracted ID is available within the
+        optional ``endpoint`` parameter as `{pk}`. '''
         # Assume the numeric ID is the last component of the URL path before
         # the query string
         parsed_url = urlparse(self.url)
         numeric_id = int(parsed_url.path.split('/')[-1])
-        # Assume the forms endpoint is /api/v1/forms/[numeric id]?format=json
-        form_url = '{}://{}/api/v1/forms/{}?format=json'.format(
-            parsed_url.scheme, parsed_url.netloc, numeric_id)
+        form_url = '{}://{}/api/v1{}?format=json'.format(
+            parsed_url.scheme,
+            parsed_url.netloc,
+            endpoint.format(pk=numeric_id),
+        )
         headers = {}
         if self.api_token:
             headers['Authorization'] = 'Token {}'.format(self.api_token)
         response = requests.get(form_url, headers=headers)
         return json.loads(response.content)
 
-    def get_enter_data_link(self):
-        ''' Retrieve the form's id string and username of its owner from KC,
-        then construct a URL for entering data '''
-        form_data = self._get_kc_form_data()
-        id_string = form_data['id_string']
-        username = form_data['owner'].split('/')[-1]
-        parsed_url = urlparse(self.url)
-        # Assume the enter-data endpoint is
-        # /[owner username]/forms/[id string]/enter-data
-        return '{scheme}://{netloc}/{username}/' \
-               'forms/{id_string}/enter-data'.format(
-                    scheme=parsed_url.scheme,
-                    netloc=parsed_url.netloc,
-                    username=username,
-                    id_string=id_string
-                )
+    @property
+    def enter_data_link(self):
+        ''' Return the Enketo data-entry link, retrieving it from KC if
+        necessary '''
+        if not len(self._enter_data_link):
+            form_data = self._get_kc_form_data(endpoint='/forms/{pk}/enketo')
+            self._enter_data_link = form_data['enketo_url']
+            self.save(update_fields=['_enter_data_link'])
+        return self._enter_data_link
