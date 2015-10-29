@@ -46,28 +46,32 @@ var GettingStarted = React.createClass({
     return (
         <Content m='getting-started'>
           <ContentBg>
-            <ContentTitle>Getting Started with EquityTool</ContentTitle>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas faucibus mollis interdum. Nullam quis risus eget urna mollis ornare vel eu leo. Curabitur blandit tempus porttitor. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
             { this.state.session.loggedIn ?
+            <ContentTitle>EquityTool Surveys</ContentTitle>
+            <p>Create a new survey or a view a list of your current surveys.</p>
+            <p>For more information about how to use the tool, click <a href="http://www.equitytool.org/how-to-use-the-equity-tool/">here</a>.</p>
               <div>
                 <p>
                   <BorderedNavlink m='new-project' to='new-project'>
-                    new project
+                    New survey
                   </BorderedNavlink>
                   <span> or </span>
                   <BorderedNavlink m='projects' to='project-list'>
-                    project list
+                    Survey list
                   </BorderedNavlink>
                 </p>
               </div>
             :
+            <ContentTitle>Getting Started with the EquityTool</ContentTitle>
+            <p>Create a free account to begin measuring the wealth distribution of your program beneficiaries. After registration, you will immediately be able to log in to the EquityTool to set up a survey, and begin collecting data.</p>
+            <p>For more information about how to use the tool, click <a href="http://www.equitytool.org/how-to-use-the-equity-tool/">here</a>.</p>
               <div>
                 <BorderedNavlink href={authUrls.register} m='register'>
-                  Create Account
+                  Create account
                 </BorderedNavlink>
                 <span> or </span>
                 <BorderedNavlink href={authUrls.login} to='login'>
-                  log in here
+                  Log in
                 </BorderedNavlink>
               </div>
             }

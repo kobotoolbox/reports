@@ -48,11 +48,11 @@ var Login = React.createClass({
                 <br/>
               </FormFields>
               <BorderedButton onClick={this.login}>
-                Log In
+                Log in
               </BorderedButton>
               <span> or </span>
               <BorderedNavlink to='getting-started' m='back'>
-                go back
+                Back
               </BorderedNavlink>
             </form>
           </ContentBg>
