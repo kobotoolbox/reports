@@ -4,13 +4,17 @@ FROM ubuntu:trusty
 # apt-get #
 ###########
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
-    libgmp10 \
-    libpq-dev \
-    texlive-full \
-    wget
+RUN apt-get update && \
+    apt-get -y install software-properties-common python-software-properties && \
+    add-apt-repository -y ppa:chris-lea/node.js && \
+    apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        libgmp10 \
+        libpq-dev \
+        nodejs \
+        texlive-full \
+        wget
 
 ##########
 # pandoc #
@@ -25,16 +29,6 @@ RUN wget --no-check-certificate https://github.com/jgm/pandoc/releases/download/
 # conda install Python and R #
 ##############################
 
-################
-# install node #
-################
-
-RUN apt-get -y install software-properties-common
-RUN apt-get -y install python-software-properties
-RUN add-apt-repository -y ppa:chris-lea/node.js
-RUN apt-get update
-RUN apt-get install -y nodejs
-
 RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh && \
     chmod +x miniconda.sh && \
     ./miniconda.sh -b && \
@@ -42,10 +36,8 @@ RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O 
 ENV PATH /root/miniconda/bin:$PATH
 RUN conda update --yes conda
 
-# pyopenssl fails to run in docker when installed by pip
-RUN conda install pyopenssl==0.15.1
 RUN mkdir /app
-WORKDIR /app/
+WORKDIR /app
 
 # https://www.continuum.io/content/conda-data-science
 COPY environment.yml /app/
@@ -59,27 +51,28 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN source activate koboreports && \
     Rscript -e "install.packages('pander', repos='http://cran.rstudio.com/', type='source')" -e "library(pander)"
 
+#############################
+# install node dependencies #
+#############################
+
+RUN mkdir /app/demo
+WORKDIR /app/demo
+COPY demo/package.json ./
+RUN npm install -g grunt-cli && npm install
+WORKDIR /app
+
 ###############
 # koboreports #
 ###############
 
 COPY . /app/
 
-########################################
-# install and build build node project #
-########################################
-
-
 WORKDIR /app/demo
-RUN npm install -g grunt-cli
-RUN npm install
 RUN grunt build
-
 WORKDIR /app
-
 
 RUN source activate koboreports && \
     python manage.py test --noinput
 
 EXPOSE 5000
-CMD ./run.sh
+CMD ./run.sh # calls `manage.py migrate` and `collectstatic`
