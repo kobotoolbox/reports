@@ -23,8 +23,7 @@ var MainWrap = bem('main-wrap'),
     AccountDetails = bem('account-details'),
     AccountDetail = bem('account-detail', '<span>'),
     AccountLink = bemRouterLink('account-link'),
-    LogoutLink = bemRouterLink('account-link'),
-    Logo = bem('logo', '<span>');
+    LogoutLink = bemRouterLink('account-link');
 
 var MetricsUiApp = React.createClass({
   mixins: [
@@ -42,7 +41,37 @@ var MetricsUiApp = React.createClass({
     return (
       <MainWrap>
         <Header>
-          <Logo />
+          <div id="logo-container">
+              <a href="http://www.equitytool.org/"><img src="http://www.equitytool.org/wp-content/uploads/2015/08/EquityToolLogoWhiteOnly.png" alt="Equity Tool" /></a>
+          </div>
+          <nav className="navigation-container nav-menu">
+            <ul id="menu-main" className="menu-ul">
+              <li><a href="http://www.equitytool.org/the-equity-tool-2/">The Equity Tool<span class="drop-arrow"></span></a>
+                <ul>
+                  <li><a href="http://www.equitytool.org/the-equity-tool-2/">Overview</a></li>
+                  <li><a href="http://www.equitytool.org/equity-tool-demonstrations/">Equity Tool Demonstrations</a></li>
+                  <li><a href="http://www.equitytool.org/countries-covered-by-the-equity-tool/">Countries covered by the Equity Tool</a></li>
+                  <li><a href="http://www.equitytool.org/how-to-use-the-equity-tool/">How to use the Equity Tool</a></li>
+                  <li><a href="http://www.equitytool.org/background/">Background</a></li>
+                </ul>
+              </li>
+              <li><a href="http://www.equitytool.org/equity/">About Equity<span class="drop-arrow"></span></a>
+                <ul>
+                  <li><a href="http://www.equitytool.org/equity/">Equity</a></li>
+                  <li><a href="http://www.equitytool.org/wealth-quintiles/">Wealth Quintiles</a></li>
+                </ul>
+              </li>
+              <li><a href="http://www.equitytool.org/sampling/">Survey Tips<span class="drop-arrow"></span></a>
+                <ul>
+                  <li><a href="http://www.equitytool.org/sampling/">Sampling</a></li>
+                  <li><a href="http://www.equitytool.org/principles-of-sampling/">Principles of Sampling</a></li>
+                  <li><a href="http://www.equitytool.org/preparing-the-data-collection-team/">Preparing the data collection team</a></li>
+                  <li><a href="http://www.equitytool.org/practical-preparations-for-your-survey/">Practical preparations for your survey</a></li>
+                </ul>
+              </li>
+              <li><a href="http://www.equitytool.org/contact-us/">Contact Us</a></li>
+            </ul>
+          </nav>
           { this.state.session.loggedIn ?
             <AccountDetails>
               <AccountDetail>
