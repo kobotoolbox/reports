@@ -69,6 +69,8 @@ class Rendering(models.Model):
 
     @property
     def api_token(self):
+        if self.user is None:
+            return None
         try:
             return self.user.external_api_token.key
         except UserExternalApiToken.DoesNotExist:
