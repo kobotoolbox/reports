@@ -4,17 +4,11 @@ FROM ubuntu:trusty
 # apt-get #
 ###########
 
-RUN echo "deb http://cran.rstudio.com/bin/linux/ubuntu trusty/" > /etc/apt/sources.list.d/r.list && \
-    gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E084DAB9 && \
-    gpg -a --export E084DAB9 | apt-key add -
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     libgmp10 \
     libpq-dev \
-    littler \
-    r-base \
     texlive-full \
     wget
 
@@ -22,31 +16,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # pandoc #
 ##########
 
-RUN wget https://github.com/jgm/pandoc/releases/download/1.15.0.6/pandoc-1.15.0.6-1-amd64.deb -O pandoc.deb && \
+# TODO: Remove --no-check-certificate
+RUN wget --no-check-certificate https://github.com/jgm/pandoc/releases/download/1.15.0.6/pandoc-1.15.0.6-1-amd64.deb -O pandoc.deb && \
     dpkg -i pandoc.deb && \
     rm pandoc.deb
 
-#####
-# R #
-#####
-
-RUN echo 'options(repos = list(CRAN = "https://cran.rstudio.com/"), download.file.method = "libcurl")' >> /etc/R/Rprofile.site \
-    && echo 'source("/etc/R/Rprofile.site")' >> /etc/littler.r \
-    && ln -s /usr/share/doc/littler/examples/install.r /usr/local/bin/install.r \
-    && ln -s /usr/share/doc/littler/examples/install2.r /usr/local/bin/install2.r \
-    && ln -s /usr/share/doc/littler/examples/installGithub.r /usr/local/bin/installGithub.r \
-    && ln -s /usr/share/doc/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r \
-    && install.r docopt
-
-RUN install2.r --error \
-    RPostgreSQL \
-    dplyr \
-    ggplot2 \
-    knitr \
-    pander \
-    rmarkdown \
-    tidyr \
-    whisker
+##############################
+# conda install Python and R #
+##############################
 
 ################
 # install node #
@@ -58,44 +35,35 @@ RUN add-apt-repository -y ppa:chris-lea/node.js
 RUN apt-get update
 RUN apt-get install -y nodejs
 
-##########
-# Python #
-##########
-
 RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh && \
     chmod +x miniconda.sh && \
     ./miniconda.sh -b && \
     rm miniconda.sh
-
 ENV PATH /root/miniconda/bin:$PATH
-
-RUN conda update --yes conda && \
-    conda install \
-        pandas=0.16.2=np19py27_0 \
-        pip 
+RUN conda update --yes conda
 
 # pyopenssl fails to run in docker when installed by pip
 RUN conda install pyopenssl==0.15.1
 RUN mkdir /app
-WORKDIR /app
-COPY requirements.txt /app/
-RUN pip install -r requirements.txt
+WORKDIR /app/
 
+# https://www.continuum.io/content/conda-data-science
+COPY environment.yml /app/
+RUN conda env create
+
+# http://stackoverflow.com/a/25423366/3756632
+# need this for "source activate" commands
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# R libraries not available through conda
+RUN source activate koboreports && \
+    Rscript -e "install.packages('pander', repos='http://cran.rstudio.com/', type='source')" -e "library(pander)"
 
 ###############
 # koboreports #
 ###############
 
-COPY . /app
-
-RUN python manage.py test --noinput
-
-#############################
-# database and static files #
-#############################
-
-RUN python manage.py migrate --noinput && \
-    python manage.py collectstatic --noinput
+COPY . /app/
 
 ########################################
 # install and build build node project #
@@ -110,9 +78,8 @@ RUN grunt build
 WORKDIR /app
 
 
-################################################
-# TODO: This is repeated in docker-compose.yml #
-################################################
+RUN source activate koboreports && \
+    python manage.py test --noinput
 
 EXPOSE 5000
-CMD ["gunicorn", "--bind=0.0.0.0:5000", "--workers=3", "--timeout=300", "koboreports.wsgi"]
+CMD ./run.sh

@@ -1,0 +1,31 @@
+name: koboreports
+channels:
+  - r
+dependencies:
+  - pandas=0.16.2=np19py27_0
+  - pyopenssl==0.15.1
+
+  - r-base
+  - r-dplyr
+  - r-ggplot2
+  - r-rmarkdown
+  - r-tidyr
+  - r-whisker
+
+  - pip 
+  - pip:  
+    - Django==1.8.3
+    - dj-database-url==0.3.0
+    - python-social-auth==0.2.12
+    - gunicorn==19.3.0
+    - psycopg2==2.6
+    - requests==2.7.0
+    - whitenoise==2.0.2
+
+    - djangorestframework==3.2.2
+    - Markdown==2.6.2
+    - django-filter==0.10.0
+
+    - xlrd==0.9.4
+    - ndg-httpsclient==0.4.0
+    - urllib3==1.7.1
