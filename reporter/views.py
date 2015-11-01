@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.template import RequestContext
 from django.conf import settings
 from models import Template, Rendering
-from rest_framework import generics, serializers, permissions
+from rest_framework import generics, serializers, permissions, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from equitytool.models import Form
@@ -84,23 +84,10 @@ class RenderingSerializer(serializers.ModelSerializer):
 
 
 # API endpoints for templates
-class TemplateListCreate(generics.ListCreateAPIView):
+class TemplateView(viewsets.ModelViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-
-    def get_queryset(self):
-        user = self.request.user
-        return Template.objects.filter(user=user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class TemplateRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Template.objects.all()
-    serializer_class = TemplateSerializer
-    permission_classes = (IsOwner, )
+    permission_classes = (permissions.DjangoModelPermissions, )
 
 
 # API endpoints for renderings

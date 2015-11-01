@@ -1,58 +1,77 @@
-FROM kobojohn/kobo-reports-base
+FROM ubuntu:trusty
 
-################
-# install node #
-################
+###########
+# apt-get #
+###########
 
-RUN apt-get -y install software-properties-common
-RUN apt-get -y install python-software-properties
-RUN add-apt-repository -y ppa:chris-lea/node.js
-RUN apt-get update
-RUN apt-get install -y nodejs
+RUN apt-get update && \
+    apt-get -y install software-properties-common python-software-properties && \
+    add-apt-repository -y ppa:chris-lea/node.js && \
+    apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        libgmp10 \
+        libpq-dev \
+        nodejs \
+        texlive-full \
+        wget
 
 ##########
-# Python #
+# pandoc #
 ##########
 
-# pyopenssl fails to run in docker when installed by pip
-RUN conda install pyopenssl==0.15.1
+# TODO: Remove --no-check-certificate
+RUN wget --no-check-certificate https://github.com/jgm/pandoc/releases/download/1.15.0.6/pandoc-1.15.0.6-1-amd64.deb -O pandoc.deb && \
+    dpkg -i pandoc.deb && \
+    rm pandoc.deb
+
+##############################
+# conda install Python and R #
+##############################
+
+RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh && \
+    chmod +x miniconda.sh && \
+    ./miniconda.sh -b && \
+    rm miniconda.sh
+ENV PATH /root/miniconda/bin:$PATH
+RUN conda update --yes conda
+
 RUN mkdir /app
 WORKDIR /app
-COPY requirements.txt /app/
-RUN pip install -r requirements.txt
 
+# https://www.continuum.io/content/conda-data-science
+COPY environment.yml /app/
+RUN conda env create
+
+# http://stackoverflow.com/a/25423366/3756632
+# need this for "source activate" commands
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# R libraries not available through conda
+RUN source activate koboreports && \
+    Rscript -e "install.packages('pander', repos='http://cran.rstudio.com/', type='source')" -e "library(pander)"
+
+#############################
+# install node dependencies #
+#############################
+
+RUN npm install -g grunt-cli
+COPY demo/package.json /tmp/package.json
+RUN cd /tmp && npm install && mkdir /app/demo && \
+    cp -a /tmp/node_modules /app/demo/
 
 ###############
 # koboreports #
 ###############
 
-COPY . /app
-
-RUN python manage.py test --noinput
-
-#############################
-# database and static files #
-#############################
-
-RUN python manage.py migrate --noinput && \
-    python manage.py collectstatic --noinput
-
-########################################
-# install and build build node project #
-########################################
-
+COPY . /app/
 
 WORKDIR /app/demo
-RUN npm install -g grunt-cli
-RUN npm install
 RUN grunt build
-
 WORKDIR /app
 
-
-################################################
-# TODO: This is repeated in docker-compose.yml #
-################################################
+RUN source activate koboreports && \
+    python manage.py test --noinput
 
 EXPOSE 5000
-CMD ["gunicorn", "--bind=0.0.0.0:5000", "--workers=3", "--timeout=300", "koboreports.wsgi"]
+CMD ./run.sh # calls `manage.py migrate` and `collectstatic`

@@ -23,11 +23,11 @@ class UserExternalApiToken(models.Model):
 
 
 class Template(models.Model):
-    user = models.ForeignKey(User, null=True, editable=False)
+    ''' Global R Markdown templates. Available read-only to all users, but
+    require model-level permissions or superuser access to modify '''
     rmd = models.TextField()
-    slug = models.SlugField(default='')
-
-    unique_together = ('user', 'slug')
+    slug = models.SlugField(default='', unique=True)
+    name = models.TextField(default='')
 
     @classmethod
     def create(cls, path):
@@ -42,6 +42,9 @@ class Template(models.Model):
 
 
 class Rendering(models.Model):
+    ''' Retrieves data from KoBoCAT and processes it through a Template. The
+    data comes from KoBoCAT XForms, which KC calls "forms" in the API and
+    "projects" in the UI '''
     user = models.ForeignKey(User, null=True, editable=False, related_name='renderings')
     template = models.ForeignKey(Template)
     url = models.URLField(blank=True)
@@ -66,6 +69,8 @@ class Rendering(models.Model):
 
     @property
     def api_token(self):
+        if self.user is None:
+            return None
         try:
             return self.user.external_api_token.key
         except UserExternalApiToken.DoesNotExist:
@@ -123,6 +128,8 @@ class Rendering(models.Model):
             self.download_data()
             self._log_message('download end  ')
             data_csv = os.path.join(folder, 'data.csv')
+            if not self.data.endswith('\n'):
+                self.data += '\n'
             with open(data_csv, 'w') as f:
                 f.write(self.data.encode('utf-8'))
 

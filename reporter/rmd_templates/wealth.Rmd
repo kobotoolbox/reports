@@ -1,11 +1,10 @@
-# Wealth Quintile Results
+# Project Results
 
 ```{r, echo=FALSE}
-# uncomment for local development
-# data <- read.csv('../static/india_equity_nonurban_2015_07_22_11_12_30.csv')
+respondents <- data
 
 cutoff <- 100
-n <- nrow(data)
+n <- nrow(respondents)
 warning_message <- n < cutoff
 ```
 
@@ -15,15 +14,11 @@ warning_message <- n < cutoff
 Warning: Your sample is too small. Collect at least `r cutoff` responses to be representative.
 {{/warning_message}}
 
+<div style="float: left;">
+```{r, echo=FALSE, fig.width=4, fig.height=3}
+library(ggplot2)
 
-## National quintile results
-
-These are the national quintile results for these respondents:
-
-```{r, echo=FALSE, results='asis'}
-library(pander)
-
-density <- as.data.frame(table(data$NationalQuintile) / nrow(data) * 100)
+density <- as.data.frame(table(respondents$NationalQuintile) / nrow(respondents) * 100)
 names(density) <- c('Quintile', 'Percentage')
 
 my_table <- data.frame(
@@ -31,11 +26,6 @@ my_table <- data.frame(
   v=c(density$Percentage, sum(density$Percentage))
   )
 names(my_table) <- c('Wealth quintile', 'Percentage of respondents')
-pandoc.table(my_table, style='rmarkdown', caption='Respondents by wealth quintile', round=1, keep.trailing.zeros=TRUE, justify='left')
-```
-
-```{r, echo=FALSE}
-library(ggplot2)
 
 pie_chart <- function(data, varname) {
   var <- factor(data[[varname]])
@@ -57,11 +47,24 @@ pie_chart <- function(data, varname) {
   return(pie)  
 }
 
-pie_chart(data, 'NationalQuintile') + ggtitle('Respondents by wealth quintile')
+pie_chart(respondents, 'NationalQuintile')
 
 bottom_two <- sum(density$Percentage[density$Quintile %in% c(1, 2)])
 ```
+```{r, echo=FALSE, results='asis'}
+library(pander)
 
-The graph above shows you the percentage of your respondents that were in each national wealth quintile.
+pandoc.table(my_table, style='rmarkdown', round=1, keep.trailing.zeros=TRUE, justify='left')
+```
+</div>
+
+## National quintile results
+
+These are the national quintile results for these respondents.
+
+The table above shows you the percentage of your respondents that were in each national wealth quintile.
 
 `r round(bottom_two)`% of your respondents were in the bottom two quintiles. This means that a relatively `r ifelse(bottom_two >= 40, 'large', 'small')` number of respondents were poor. For more information on interpreting wealth quintile results, [please click here](http://www.equitytool.org/wealth-quintiles/).
+
+
+<div style="clear: both;margin-bottom:120px;"></div>

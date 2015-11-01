@@ -70,6 +70,8 @@ def create_friendly(request):
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 class Wrapper(object):
+    ''' Allows the user to create useful "projects" by tying together
+    `equitytool.Form`, `reporter.Template`, and `reporter.Rendering` '''
 
     KC_URL = 'https://kc.kobotoolbox.org'
 
@@ -93,9 +95,10 @@ class Wrapper(object):
 
     def set_template(self):
         slug = 'urban' if self.urban else 'national'
-        template, created = Template.objects.get_or_create(user=self.user, slug=slug)
-        template.rmd = self.get_rmd()
-        template.save()
+        template, created = Template.objects.get_or_create(slug=slug)
+        if created:
+            template.rmd = self.get_rmd()
+            template.save()
         self.template = template
 
     def get_forms(self):

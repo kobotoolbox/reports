@@ -11,6 +11,11 @@ _rmd_path = lambda x: os.path.join(os.path.dirname(__file__), 'rmd_templates', x
 
 class TestRendering(TestCase):
 
+    # These are associated with the m4m_testing account on
+    # kc.kobotoolbox.org
+    API_TOKEN = '9b751c0ae200d2f2a82a05f6af510baffe1b4c83'
+    FORMID = 25320
+
     def test_render(self):
         path = _rmd_path('simple.Rmd')
         t = Template.create(path)
@@ -70,20 +75,18 @@ class TestRendering(TestCase):
         self.assertEqual(output.strip(), 'WARNING: Need more data.')
 '''
     def test_kobo_api(self):
-        url = 'https://kc.kobotoolbox.org/api/v1/data/17516.csv'
-        api_token = '9b751c0ae200d2f2a82a05f6af510baffe1b4c83'
+        url = 'https://kc.kobotoolbox.org/api/v1/data/%d.csv' % self.FORMID
         t = Template.objects.create(rmd='`r class(data)`\n', slug='n')
-        r = Rendering.objects.create(template=t, url=url, api_token=api_token)
+        r = Rendering.objects.create(template=t, url=url, api_token=self.API_TOKEN)
         output = r.render('md')
         self.assertEquals(output.strip(), 'data.frame')
 
     def test_get_new_data(self):
         my_split = lambda s: re.split('[\n\r]+', s)
 
-        url = 'https://kc.kobotoolbox.org/api/v1/data/17516?format=csv'
-        api_token = '9b751c0ae200d2f2a82a05f6af510baffe1b4c83'
+        url = 'https://kc.kobotoolbox.org/api/v1/data/%d?format=csv' % self.FORMID
         t = Template.objects.create(rmd='`r class(data)`\n', slug='n')
-        r = Rendering.objects.create(template=t, url=url, api_token=api_token)
+        r = Rendering.objects.create(template=t, url=url, api_token=self.API_TOKEN)
         r.download_data()
 
         # keep only the first submission
