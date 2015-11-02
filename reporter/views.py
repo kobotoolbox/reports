@@ -65,9 +65,6 @@ class TemplateSerializer(serializers.ModelSerializer):
 
 
 class RenderingSerializer(serializers.ModelSerializer):
-    enter_data_link = serializers.SerializerMethodField()
-    def get_enter_data_link(self, obj):
-        return obj.get_enter_data_link()
     class Meta:
         model = Rendering
         fields = (
