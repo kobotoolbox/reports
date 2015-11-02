@@ -114,10 +114,10 @@ var ProjectList = React.createClass({
                               <Navlink m='view-report' to='report' params={{ id: id }}>
                                 view report
                               </Navlink>
-                              <ProjectAttributeLink m='enter-data' href={'/renderings/' + id + '.pdf'}>
+                              <ProjectAttributeLink m='enter-data' href={'/rendering/' + id + '.pdf'}>
                                 PDF
                               </ProjectAttributeLink>
-                              <ProjectAttributeLink m='enter-data' href={'/renderings/' + id + '.docx'}>
+                              <ProjectAttributeLink m='enter-data' href={'/rendering/' + id + '.docx'}>
                                 DOC
                               </ProjectAttributeLink>
                           </ProjectAttribute>
