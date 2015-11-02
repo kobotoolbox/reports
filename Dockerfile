@@ -4,13 +4,17 @@ FROM ubuntu:trusty
 # apt-get #
 ###########
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
-    libgmp10 \
-    libpq-dev \
-    texlive-full \
-    wget
+RUN apt-get update && \
+    apt-get -y install software-properties-common python-software-properties && \
+    add-apt-repository -y ppa:chris-lea/node.js && \
+    apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        libgmp10 \
+        libpq-dev \
+        nodejs \
+        texlive-full \
+        wget
 
 ##########
 # pandoc #
@@ -33,7 +37,7 @@ ENV PATH /root/miniconda/bin:$PATH
 RUN conda update --yes conda
 
 RUN mkdir /app
-WORKDIR /app/
+WORKDIR /app
 
 # https://www.continuum.io/content/conda-data-science
 COPY environment.yml /app/
@@ -47,14 +51,27 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN source activate koboreports && \
     Rscript -e "install.packages('pander', repos='http://cran.rstudio.com/', type='source')" -e "library(pander)"
 
+#############################
+# install node dependencies #
+#############################
+
+RUN npm install -g grunt-cli
+COPY demo/package.json /tmp/package.json
+RUN cd /tmp && npm install && mkdir /app/demo && \
+    cp -a /tmp/node_modules /app/demo/
+
 ###############
 # koboreports #
 ###############
 
 COPY . /app/
 
+WORKDIR /app/demo
+RUN grunt build
+WORKDIR /app
+
 RUN source activate koboreports && \
     python manage.py test --noinput
 
 EXPOSE 5000
-CMD ./run.sh
+CMD ./run.sh # calls `manage.py migrate` and `collectstatic`

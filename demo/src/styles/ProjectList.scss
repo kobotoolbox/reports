@@ -1,0 +1,104 @@
+@media only screen and (min-width : 650px) {
+	.content--project-list {
+		background:#FFF url(../images/icon-list.png) 60px 70px no-repeat;
+	}
+}
+
+// ul.project-list
+.project-list {
+	margin:40px 0px;
+	list-style-type: none;
+	padding:0px;
+}
+
+// li.project-list__item
+.project-list__item {
+	border:2px solid #CCC;
+	padding:10px;
+	margin-bottom: 10px;
+	display: flex;
+	flex-wrap:wrap;
+	background-color: rgba(255, 255, 255, 0.8);
+}
+
+// span.project__attribute--image
+// .project__attribute--image {
+// 	border:1px solid #CCC;
+// 	width: 80px;
+// 	height: 80px;
+// 	text-align: center;
+// 	color: #FFF;
+// 	line-height: 2em;
+// 	background-color: #bbb;
+// }
+// img.identicon
+// .identicon {
+//   opacity: 0.5;
+// }
+
+.project__attribute--name {
+	// display: block;
+	font-size: 16px;
+	font-weight: 600;
+	padding-bottom: 10px;
+	flex-grow:1;
+}
+
+.project__attribute--date-created {
+	font-size: 11px;
+	opacity: 0.3;
+}
+
+// span.project__attribute--content
+.project__attribute--content {
+	display: block;
+	flex-grow:1;
+	display: block;
+	position: relative;
+	width: 100%;
+	label {
+		font-weight: bold;
+		display: block;
+		font-size: 12px;
+		padding: 4px 8px;
+	}
+}
+
+.project__attribute--data-collections, 
+.project__attribute--submissions, 
+.project__attribute--view-report {
+	width: 32.3%;
+	margin-right: 1%;
+	display: inline-block;
+	background-color: #FBF4ED;
+	padding-bottom: 8px;
+	font-size: 12px;
+	a, .project__attribute--sync {
+		color: #333;
+		font-weight: bold;
+		margin-left: 8px;
+		background-color: #FFF;
+		padding:3px;
+		border:1px solid #333;
+		display: inline-block;
+		cursor: pointer;
+		&:hover {
+			color: #2990C2;
+			border-color:#2990C2;
+		}
+	}
+}
+
+.project__attribute--submissions {
+	background-color: #F1EBF4;
+}
+
+.project__attribute--view-report {
+	width: 33.4%;
+	margin-right: 0;
+	background-color: #EBF7FC;
+}
+
+.project__attribute--syncpending {
+	font-style: italic;
+}

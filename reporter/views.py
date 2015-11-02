@@ -1,8 +1,15 @@
+import datetime
+import requests
 from urlparse import urlparse
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.template import RequestContext
+from django.conf import settings
 from models import Template, Rendering
 from rest_framework import generics, serializers, permissions, viewsets
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from equitytool.models import Form
 
 
 def index(request):
@@ -11,6 +18,27 @@ def index(request):
     extensions = ['html', 'pdf', 'docx']
     return render(request, 'index.html', dictionary=locals())
 
+@api_view(['GET'])
+def current_user(request):
+    user = request.user
+    countries = Form.objects.all().values('id', 'name')
+    if user.is_anonymous():
+        return Response({'message': 'user is not logged in'})
+    else:
+        return Response({'username': user.username,
+                         'first_name': user.first_name,
+                         'last_name': user.last_name,
+                         'email': user.email,
+                         'countries': countries,
+                         'server_time': str(datetime.datetime.utcnow()),
+                         'is_superuser': user.is_superuser,
+                         'is_staff': user.is_staff,
+                         'last_login': user.last_login,
+                         })
+
+def demo(request):
+    context = RequestContext(request)
+    return render(request, 'demo.html', context_instance=context)
 
 def rendering(request, id, extension):
     r = Rendering.objects.get(id=id)
@@ -80,3 +108,16 @@ class RenderingRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Rendering.objects.all()
     serializer_class = RenderingSerializer
     permission_classes = (IsOwner, )
+
+
+def proxy_create_user(request):
+    url = '{}authorized-application/users/'.format(
+        settings.KPI_URL)
+    headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}
+    response = requests.post(url, data=request.POST, headers=headers)
+    content_type = response.headers.get('content-type')
+    return HttpResponse(
+        response.content,
+        content_type=content_type,
+        status=response.status_code
+    )

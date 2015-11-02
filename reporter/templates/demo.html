@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>{% block title %}Equity Tool{% endblock %}</title>
+    {% load staticfiles %}
+    {% if csrf_token %}<meta name="csrf-token" content="{{csrf_token}}">{% endif %}
+    <link rel="stylesheet" type="text/css" href="{% static 'base.css' %}">
+  </head>
+  <body class="loading">
+    <div id="content">
+      EquityTool page loading...
+    </div>
+    <script src="{% static 'assets/main.js' %}"></script>
+    <script type="text/javascript">
+      document.body.classList.remove('loading');
+    </script>
+  </body>
+</html>

@@ -3,10 +3,13 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.core.urlresolvers import reverse
+from rest_framework.response import Response
+from rest_framework import exceptions
+from rest_framework import status
+from rest_framework.decorators import api_view
 import requests
 import os
 import json
-from bs4 import BeautifulSoup
 # TODO: These objects should be made through API calls. Handling the
 # authentication required to make those calls seems a little
 # tricky. And it seems like unnecessary work at the moment.
@@ -36,20 +39,35 @@ class ProjectForm(forms.Form):
     name = forms.CharField(label='Project name', max_length=1000)
     urban = forms.BooleanField(label='This is an urban-focused project', required=False)
 
+def _create_project(posted_data, user):
+    form = ProjectForm(posted_data, user)
+    if form.is_valid():
+        d = form.cleaned_data.copy()
+        d['user'] = user
+        return Wrapper.create_project(**d)
 
 @xframe_options_exempt
 def create(request):
     if request.method == 'POST':
-        form = ProjectForm(request.POST)
-        if form.is_valid():
-            d = form.cleaned_data.copy()
-            d['user'] = request.user
-            Wrapper.create_project(**d)
+        proj = _create_project(request.POST, request.user)
+        if proj:
             return HttpResponseRedirect(reverse('equity-tool'))
     else:
         form = ProjectForm()
     return render(request, 'create.html', {'form': form})
 
+
+@api_view(['POST'])
+def create_friendly(request):
+    '''
+    A version of the 'create' method that returns a 201 "CREATED" code
+    on successful creation
+    '''
+    proj = _create_project(request.POST, request.user)
+    if proj:
+        return Response({}, status=status.HTTP_201_CREATED)
+    else:
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 class Wrapper(object):
     ''' Allows the user to create useful "projects" by tying together
@@ -60,7 +78,13 @@ class Wrapper(object):
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             setattr(self, k, v)
-        self.set_api_token()
+
+    @property
+    def api_token(self):
+        try:
+            return self.user.external_api_token.key
+        except UserExternalApiToken.DoesNotExist:
+            return None
 
     def get_rmd(self):
         filename = 'wealth2.Rmd' if self.urban else 'wealth.Rmd'
@@ -76,15 +100,6 @@ class Wrapper(object):
             template.rmd = self.get_rmd()
             template.save()
         self.template = template
-
-    def set_api_token(self):
-        path = '/%s/api-token' % self.user.username
-        url = self.KC_URL + path
-        response = requests.get(url)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        l = soup.find_all('input')
-        assert len(l) == 1, 'Should have found exactly one input element.'
-        self.api_token = l[0].attrs['value']
 
     def get_forms(self):
         path = '/api/v1/forms?owner=%s' % self.user.username
@@ -126,7 +141,6 @@ class Wrapper(object):
             user=self.user,
             template=self.template,
             url=url,
-            api_token=self.api_token,
             name=self.name
         )
         self.rendering.download_data()
@@ -137,3 +151,4 @@ class Wrapper(object):
         w.set_form()
         w.set_template()
         w.set_rendering()
+        return w

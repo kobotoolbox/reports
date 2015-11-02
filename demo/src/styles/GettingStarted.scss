@@ -1,0 +1,20 @@
+@media only screen and (min-width : 650px) {
+
+	.content--getting-started {
+		background:#FFF url(../images/icon-bullseye.png) 60px 70px no-repeat;
+	}
+
+}
+
+.info-message {
+  margin-top: 30px;
+  padding: 12px 20px;
+  &.info-message--account-created {
+    color: rgb(11, 110, 11);
+    background-color: rgba(224, 255, 230, 0.71);
+    border: 1px solid rgb(121, 213, 68);
+    a {
+      color: rgb(21, 161, 44);
+    }
+  }
+}

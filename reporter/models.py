@@ -16,6 +16,12 @@ import logging
 logger = logging.getLogger('TIMING')
 
 
+class UserExternalApiToken(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, related_name='external_api_token')
+    key = models.CharField(max_length=120)
+
+
 class Template(models.Model):
     ''' Global R Markdown templates. Available read-only to all users, but
     require model-level permissions or superuser access to modify '''
@@ -42,7 +48,6 @@ class Rendering(models.Model):
     user = models.ForeignKey(User, null=True, editable=False, related_name='renderings')
     template = models.ForeignKey(Template)
     url = models.URLField(blank=True)
-    api_token = models.TextField(blank=True)
     name = models.TextField(default='')
 
     data = models.TextField(default='')
@@ -61,6 +66,15 @@ class Rendering(models.Model):
         response = requests.get(*args, **kwargs)
         text = response.content
         return text.strip()
+
+    @property
+    def api_token(self):
+        if self.user is None:
+            return None
+        try:
+            return self.user.external_api_token.key
+        except UserExternalApiToken.DoesNotExist:
+            return None
 
     def download_data(self):
         if not self.api_token:
