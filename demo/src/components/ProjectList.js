@@ -54,6 +54,13 @@ var ProjectList = React.createClass({
     this.setState(state);
   },
   render: function () {
+    // var projects = [
+    //   {name: 'a1', created: new Date(), submission_count: 2, enter_data_link: '1234', id: 1},
+    //   {name: 'a2', created: new Date(), submission_count: 3, enter_data_link: '1234', id: 2},
+    //   {name: 'a3', created: new Date(), submission_count: 4, enter_data_link: '1234', id: 3},
+    //   {name: 'a4', created: new Date(), submission_count: 0, enter_data_link: '1234', id: 4},
+    // ];
+
     return (
         <Content m='project-list'>
           <ContentBg>
@@ -101,15 +108,20 @@ var ProjectList = React.createClass({
                             sync
                           </ProjectAttribute>
                         </ProjectAttribute>
-                        <ProjectAttribute m='view-report'>
-                          <label>View report:</label>
-                          {hasSubmissions ?
-                            <Navlink m='view-report' to='report' params={{ id: id }}>
-                              <i />
-                              view report
-                            </Navlink>
-                          : null}
-                        </ProjectAttribute>
+                        {hasSubmissions ?
+                          <ProjectAttribute m='view-report'>
+                            <label>View report:</label>
+                              <Navlink m='view-report' to='report' params={{ id: id }}>
+                                view report
+                              </Navlink>
+                              <ProjectAttributeLink m='enter-data' href={'/renderings/' + id + '.pdf'}>
+                                PDF
+                              </ProjectAttributeLink>
+                              <ProjectAttributeLink m='enter-data' href={'/renderings/' + id + '.docx'}>
+                                DOC
+                              </ProjectAttributeLink>
+                          </ProjectAttribute>
+                        : null}
                       </ProjectAttribute>
                     </ProjectLi>
                   );
