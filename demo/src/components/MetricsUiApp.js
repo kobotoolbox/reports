@@ -32,7 +32,11 @@ var MetricsUiApp = React.createClass({
   getInitialState () {
     return {
       session: sessionStore.state,
+      mobileMenuVisible: false,
     };
+  },
+  handleClick: function(){
+    this.setState({mobileMenuVisible: !this.state.mobileMenuVisible});
   },
   logout () {
     sessionStore.logout();
@@ -44,7 +48,10 @@ var MetricsUiApp = React.createClass({
           <div id="logo-container">
               <a href="http://www.equitytool.org/"><img src="http://www.equitytool.org/wp-content/uploads/2015/08/EquityToolLogoWhiteOnly.png" alt="Equity Tool" /></a>
           </div>
-          <nav className="navigation-container nav-menu">
+          <div className="mobile-nav">
+            <span className="mob-nav-btn" onClick={this.handleClick}>Menu</span>
+          </div>
+          <nav className={this.state.mobileMenuVisible ? "navigation-container nav-menu visible" : "navigation-container nav-menu not-visible"}>
             <ul id="menu-main" className="menu-ul">
               <li><a href="http://www.equitytool.org/the-equity-tool-2/">The Equity Tool<span class="drop-arrow"></span></a>
                 <ul>
