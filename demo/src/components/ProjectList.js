@@ -9,6 +9,7 @@ import moment from 'moment';
 import {requireLoggedInMixin} from '../mixins/requireLogins';
 import actions from '../actions/actions';
 import {renderingsStore} from '../stores/renderings';
+import ReactZeroClipboard from 'react-zeroclipboard';
 
 require('styles/ProjectList.scss');
 
@@ -97,6 +98,10 @@ var ProjectList = React.createClass({
                           <ProjectAttributeLink m='enter-data' href={enter_data_link} target='_blank'>
                             enter data
                           </ProjectAttributeLink>
+                          <ReactZeroClipboard text={enter_data_link}>
+                             <button className="button-copy">copy link</button>
+                          </ReactZeroClipboard>
+
                         </ProjectAttribute>
                         <ProjectAttribute m='submissions'>
                           <label>{submission_count} submissions</label>
