@@ -73,7 +73,7 @@
 	background-color: #FBF4ED;
 	padding-bottom: 8px;
 	font-size: 12px;
-	a, .project__attribute--sync {
+	a, .project__attribute--sync, button.button-copy {
 		color: #333;
 		font-weight: bold;
 		margin-left: 8px;
@@ -82,7 +82,7 @@
 		border:1px solid #333;
 		display: inline-block;
 		cursor: pointer;
-		&:hover {
+		&:hover, &.zeroclipboard-is-hover {
 			color: #2990C2;
 			border-color:#2990C2;
 		}
