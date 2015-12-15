@@ -9,15 +9,15 @@ var sessionStore = Reflux.createStore({
     };
     this.listenTo(actions.confirmLogin.completed, this.confirmLoginCompleted);
     this.listenTo(actions.confirmLogin.failed, this.confirmLoginFailed);
-    actions.confirmLogin();
+    // actions.confirmLogin();
 
-    /*
     function extendFakeCredentials(st){
       st.fullName = 'your name';
       st.email = 'your@email.com';
       st.loggedIn = true;
     }
     extendFakeCredentials(this.state);
+    /*
     window.setTimeout((() => {
       var willBeLoggedIn = true; //Math.random() < 0.5;
       this.state.loggedIn = willBeLoggedIn;

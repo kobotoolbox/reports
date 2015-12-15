@@ -28,6 +28,11 @@ var validators = (function(){
     password: _fieldRequiredPasswordMatch,
     password_confirmation: _fieldRequiredPasswordMatch,
     organization: _fieldRequired,
+    terms: function (fieldName, value) {
+      if (!value) {
+        return 'agreeing to the terms and conditions is required';
+      }
+    },
     email: function (fieldName, value, isBlurEvent) {
       if (isBlurEvent && !value.match(/@/)) {
         return 'invalid email address';
@@ -46,6 +51,7 @@ class RegistrationForm {
       username: '',
       organization: '',
       email: '',
+      terms: '',
       errors: {},
     };
     this.enabled = true;

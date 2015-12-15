@@ -1,9 +1,7 @@
 @media only screen and (min-width : 650px) {
-
 	.content--getting-started {
 		background:#FFF url(../images/icon-bullseye.png) 60px 70px no-repeat;
 	}
-
 }
 
 .info-message {
@@ -17,4 +15,10 @@
       color: rgb(21, 161, 44);
     }
   }
+}
+
+.getting-started__buttons {
+  margin-top: 30px;
+  display: block;
+  min-height: 40px;
 }

@@ -38,6 +38,7 @@ var ProjectList = React.createClass({
       projects: [],
       projectsLoading: true,
       syncingProject: false,
+      copiedLink: false
     };
   },
   componentDidMount () {
@@ -53,6 +54,14 @@ var ProjectList = React.createClass({
   },
   renderingsStoreChanged (state) {
     this.setState(state);
+  },
+  afterCopy () {
+    this.state.copiedLink = true;
+    this.setState(this.state);
+    setTimeout(function() {
+      this.state.copiedLink = false;
+      this.setState(this.state);
+    }.bind(this), 3000);
   },
   render: function () {
     // var projects = [
@@ -80,6 +89,11 @@ var ProjectList = React.createClass({
                   }
                 </ProjectLi>
               : null}
+
+              {this.state.copiedLink ?
+                <div className="link-copied">Link copied to clipboard</div>
+                : null}
+
               {this.state.projects.map(({name, submission_count, enter_data_link, created, id}) => {
                 var dateStr = moment(new Date(created)).fromNow();
                 var hasSubmissions = submission_count > 0;
@@ -98,10 +112,9 @@ var ProjectList = React.createClass({
                           <ProjectAttributeLink m='enter-data' href={enter_data_link} target='_blank'>
                             enter data
                           </ProjectAttributeLink>
-                          <ReactZeroClipboard text={enter_data_link}>
-                             <button className="button-copy">copy link</button>
+                          <ReactZeroClipboard text={enter_data_link} onAfterCopy={this.afterCopy}>
+                            <button className="button-copy">copy link</button>
                           </ReactZeroClipboard>
-
                         </ProjectAttribute>
                         <ProjectAttribute m='submissions'>
                           <label>{submission_count} submissions</label>

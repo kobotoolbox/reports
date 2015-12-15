@@ -69,7 +69,7 @@ var GettingStarted = React.createClass({
               <ContentTitle>Getting Started with the EquityTool</ContentTitle>
               <p>Create a free account to begin measuring the wealth distribution of your program beneficiaries. After registration, you will immediately be able to log in to the EquityTool to set up a survey, and begin collecting data.</p>
               <p>For more information about how to use the tool, click <a href="http://www.equitytool.org/how-to-use-the-equity-tool/">here</a>.</p>
-              <div>
+              <div className='getting-started__buttons'>
                 <BorderedNavlink href={authUrls.register} m='register'>
                   Create account
                 </BorderedNavlink>

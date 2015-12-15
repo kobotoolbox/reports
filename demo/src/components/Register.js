@@ -7,6 +7,7 @@ import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import actions from '../actions/actions';
 import accountStore from '../stores/account';
+import authUrls from '../stores/authUrls';
 import {requireNotLoggedInMixin} from '../mixins/requireLogins';
 
 require('styles/Forms.scss');
@@ -23,12 +24,12 @@ var Content = bem('content'),
     InputWrap = bem('field-wrap'),
     InputfieldMessage = bem('field-message'),
     BorderedButton = bem('bordered-button', '<button>'),
-    BorderedNavlink = bemRouterLink('bordered-navlink');
+    SimpleLink = bemRouterLink('simple-link');
 
 var registration = accountStore.state.registrationForm;
 
 const FIELDS = ['username', 'password', 'password_confirmation',
-                'first_name', 'last_name', 'organization', 'email'];
+                'first_name', 'last_name', 'organization', 'email', 'terms'];
 
 const fieldLabels = {
   first_name: 'first name',
@@ -56,11 +57,17 @@ var Register = React.createClass({
     }
   },
   getInitialState () {
+    registration.state.terms = false;
     return registration.state;
   },
   formFieldChange (evt) {
     var _et = evt.target;
     registration.updateField(_et.name, _et.value, false);
+    this.setState(registration.state);
+  },
+  checkboxChange (evt) {
+    var _et = evt.target;
+    registration.updateField(_et.name, evt.target.checked, false);
     this.setState(registration.state);
   },
   formFieldBlur (evt) {
@@ -92,29 +99,55 @@ var Register = React.createClass({
                   FIELDS.map((att) => {
                     var error = this.state.errors[att],
                         isBlurred = registration._isBlurred[att];
-
-                    return (
-                      <InputWrap key={`field-${att}`} m={{
-                            error: error && isBlurred,
-                            warning: error && !isBlurred,
-                          }}>
-                        <Inputfield ref={att}
-                              name={att}
-                              type={att.match(/^password/) ? 'password' : 'text'}
-                              value={this.state[att]}
-                              m='required'
-                              placeholder={fieldLabels[att] || att}
-                              onBlur={this.formFieldBlur}
-                              onChange={this.formFieldChange} />
-                        <InputfieldMessage>
-                          { error ?
-                            error
-                          : null }
-                        </InputfieldMessage>
-                      </InputWrap>
-                    );
+                    if (att.match(/^terms/)) {
+                      return (
+                        <InputWrap key={`field-${att}`} m={{
+                              error: error && isBlurred,
+                              warning: error && !isBlurred,
+                            }}>
+                          <Inputfield ref={att}
+                                name={att}
+                                type='checkbox'
+                                defaultChecked={this.state.terms}
+                                m='required'
+                                onChange={this.checkboxChange} />
+                            <span> By signing up, I agree to the&nbsp;
+                              <SimpleLink m='terms' to='terms' target='_blank'>
+                                Terms and Conditions
+                              </SimpleLink>
+                              .</span>
+                          <InputfieldMessage>
+                            { error ?
+                              error
+                            : null }
+                          </InputfieldMessage>
+                        </InputWrap>
+                      );
+                    } else {
+                      return (
+                        <InputWrap key={`field-${att}`} m={{
+                              error: error && isBlurred,
+                              warning: error && !isBlurred,
+                            }}>
+                          <Inputfield ref={att}
+                                name={att}
+                                type={att.match(/^password/) ? 'password' : 'text'}
+                                value={this.state[att]}
+                                m='required'
+                                placeholder={fieldLabels[att] || att}
+                                onBlur={this.formFieldBlur}
+                                onChange={this.formFieldChange} />
+                          <InputfieldMessage>
+                            { error ?
+                              error
+                            : null }
+                          </InputfieldMessage>
+                        </InputWrap>
+                      );
+                    }
                   })
                 }
+
               </FormFields>
               <BorderedButton m={{
                 'create-account': true,
@@ -123,10 +156,10 @@ var Register = React.createClass({
               >
                 Create Account
               </BorderedButton>
-              <span> or </span>
-              <BorderedNavlink m='back' to='getting-started'>
-                go back
-              </BorderedNavlink>
+              <span> Already have an account? </span>
+              <SimpleLink href={authUrls.login} to='login'>
+                Login here
+              </SimpleLink>
             </form>
           </ContentBg>
         </Content>
