@@ -104,9 +104,17 @@
 }
 
 .link-copied {
-	background-color: #288dbe;
-	color: white;
-	text-align: center;
-	padding:10px;
-	margin-bottom:10px;
+  position: fixed;
+  font-size: 12px;
+  background: #288DBD;
+  bottom: 0px;
+  z-index: 10;
+  padding: 10px;
+  border: 1px solid black;
+  color: white;
+  opacity: 0;
+  transition:0.5s all;
+  &.visible {
+  	opacity: 1;
+  }
 }

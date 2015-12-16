@@ -38,7 +38,7 @@ var ProjectList = React.createClass({
       projects: [],
       projectsLoading: true,
       syncingProject: false,
-      copiedLink: false
+      copiedLink: ''
     };
   },
   componentDidMount () {
@@ -56,12 +56,12 @@ var ProjectList = React.createClass({
     this.setState(state);
   },
   afterCopy () {
-    this.state.copiedLink = true;
+    this.state.copiedLink = 'visible';
     this.setState(this.state);
     setTimeout(function() {
-      this.state.copiedLink = false;
+      this.state.copiedLink = '';
       this.setState(this.state);
-    }.bind(this), 3000);
+    }.bind(this), 2000);
   },
   render: function () {
     // var projects = [
@@ -90,9 +90,9 @@ var ProjectList = React.createClass({
                 </ProjectLi>
               : null}
 
-              {this.state.copiedLink ?
-                <div className="link-copied">Link copied to clipboard</div>
-                : null}
+              <div className={this.state.copiedLink + ' link-copied'}>
+                Link copied to clipboard
+              </div>
 
               {this.state.projects.map(({name, submission_count, enter_data_link, created, id}) => {
                 var dateStr = moment(new Date(created)).fromNow();
