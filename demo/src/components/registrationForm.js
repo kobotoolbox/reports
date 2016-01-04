@@ -77,7 +77,13 @@ class RegistrationForm {
     });
     return data;
   }
-  updateField(whichField, value, isBlurEvent) {
+  updateField(targetField, isBlurEvent) {
+    var value, whichField = targetField.name;
+    if (targetField.type === 'checkbox') {
+        value = targetField.checked;
+    } else {
+        value = targetField.value;
+    }
     var errMsg, validator = validators[whichField];
     if (validator) {
       errMsg = validator.call(this, whichField, value, isBlurEvent);

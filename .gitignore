@@ -5,7 +5,7 @@
 /db.sqlite
 /static/
 /.env
-/koboreports/static/assets
+koboreports/static/assets
 /media/
 /koboreports/static/login.css
 node_modules
