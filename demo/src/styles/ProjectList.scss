@@ -102,3 +102,19 @@
 .project__attribute--syncpending {
 	font-style: italic;
 }
+
+.link-copied {
+  position: fixed;
+  font-size: 12px;
+  background: #288DBD;
+  bottom: 0px;
+  z-index: 10;
+  padding: 10px;
+  border: 1px solid black;
+  color: white;
+  opacity: 0;
+  transition:0.5s all;
+  &.visible {
+  	opacity: 1;
+  }
+}

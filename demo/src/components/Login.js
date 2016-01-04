@@ -50,10 +50,10 @@ var Login = React.createClass({
               <BorderedButton onClick={this.login}>
                 Log in
               </BorderedButton>
-              <span> or </span>
-              <BorderedNavlink to='getting-started' m='back'>
-                Back
-              </BorderedNavlink>
+              <span> No account yet? </span>
+              <SimpleLink href={authUrls.register} m='register'>
+                Create one here
+              </SimpleLink>
             </form>
           </ContentBg>
         </Content>

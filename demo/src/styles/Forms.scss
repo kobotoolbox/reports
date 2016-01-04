@@ -40,6 +40,11 @@ input[type=email] {
 
 input[type=checkbox] {
   margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+input[type=checkbox] + span {
+  font-size: 12px;
 }
 
 .form-fields {
