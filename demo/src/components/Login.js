@@ -20,8 +20,7 @@ var Content = bem('content'),
     FormFields = bem('form-fields'),
     BorderedButton = bem('bordered-button', '<button>'),
     Inputfield = bem('field', '<input>'),
-    Navlink = bemRouterLink('navlink'),
-    BorderedNavlink = bemRouterLink('bordered-navlink');
+    Navlink = bemRouterLink('navlink');
 
 var Login = React.createClass({
   mixins: [
