@@ -1,12 +1,14 @@
 import datetime
 import requests
+import logging
 from urlparse import urlparse
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import RequestContext
 from django.conf import settings
+from django.contrib.auth import authenticate
 from models import Template, Rendering
-from rest_framework import generics, serializers, permissions, viewsets
+from rest_framework import generics, serializers, permissions, viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from equitytool.models import Form
@@ -113,6 +115,34 @@ def proxy_create_user(request):
     headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}
     response = requests.post(url, data=request.POST, headers=headers)
     content_type = response.headers.get('content-type')
+    # Store the user's organization in KC if the creation was successful
+    organization = request.POST.get('organization', False)
+    if organization and response.status_code == status.HTTP_201_CREATED:
+        username = request.POST.get('username', False)
+        password = request.POST.get('password', False)
+        # Could maybe call login() after authenticate() to automatically login
+        # new users upon registration; see
+        # https://docs.djangoproject.com/en/1.9/topics/auth/default/#how-to-log-a-user-in
+        user = authenticate(username=username, password=password)
+        # Should now have user.external_api_token from KoboApiAuthBackend
+        profile_url = '{}/api/v1/profiles/{}'.format(settings.KC_URL, username)
+        profile_headers = {
+            'Authorization': 'Token {}'.format(user.external_api_token.key)
+        }
+        # Patch the user's KC profile to set the organization
+        profile_response = requests.patch(
+            profile_url,
+            data={'organization': organization},
+            headers=profile_headers
+        )
+        if profile_response.status_code != status.HTTP_200_OK:
+            # The user has already been created, so it doesn't make sense to
+            # fail completely at this point. We should log the error, though
+            logging.error((
+                'Unable to set organization to "{}" for user "{}". KC '
+                'returned HTTP {}.'
+            ).format(organization, username, profile_response.status_code))
+
     return HttpResponse(
         response.content,
         content_type=content_type,
