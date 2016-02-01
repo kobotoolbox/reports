@@ -9,7 +9,7 @@ var sessionStore = Reflux.createStore({
     };
     this.listenTo(actions.confirmLogin.completed, this.confirmLoginCompleted);
     this.listenTo(actions.confirmLogin.failed, this.confirmLoginFailed);
-    // actions.confirmLogin();
+    actions.confirmLogin();
 
     // function extendFakeCredentials(st){
     //   st.fullName = 'your name';

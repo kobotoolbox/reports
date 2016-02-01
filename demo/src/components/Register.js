@@ -61,24 +61,17 @@ var Register = React.createClass({
     return registration.state;
   },
   formFieldChange (evt) {
-    var _et = evt.target;
-    registration.updateField(_et.name, _et.value, false);
-    this.setState(registration.state);
-  },
-  checkboxChange (evt) {
-    var _et = evt.target;
-    registration.updateField(_et.name, evt.target.checked, false);
+    registration.updateField(evt.target, false);
     this.setState(registration.state);
   },
   formFieldBlur (evt) {
-    var _et = evt.target;
-    registration.updateField(_et.name, _et.value, true);
+    registration.updateField(evt.target, true);
     this.setState(registration.state);
   },
   submitForm (evt) {
     evt.preventDefault();
     FIELDS.forEach((key) => {
-      registration.updateField(key, this.refs[key].getDOMNode().value, true);
+      registration.updateField(this.refs[key].getDOMNode(), true);
     });
     if (registration.isValid()) {
       actions.registerAccount(
@@ -102,15 +95,14 @@ var Register = React.createClass({
                     if (att.match(/^terms/)) {
                       return (
                         <InputWrap key={`field-${att}`} m={{
-                              error: error && isBlurred,
-                              warning: error && !isBlurred,
+                              error: error,
                             }}>
                           <Inputfield ref={att}
                                 name={att}
                                 type='checkbox'
                                 defaultChecked={this.state.terms}
                                 m='required'
-                                onChange={this.checkboxChange} />
+                                onChange={this.formFieldChange} />
                             <span> By signing up, I agree to the&nbsp;
                               <SimpleLink m='terms' to='terms' target='_blank'>
                                 Terms and Conditions
