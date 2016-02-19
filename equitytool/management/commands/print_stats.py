@@ -10,6 +10,8 @@ from django.core.management.base import BaseCommand
 
 from reporter.models import Rendering
 
+DATE_FORMAT = '%m/%d/%Y'
+
 ###############################################################################
 ########################## User Report Configuration ##########################
 ###############################################################################
@@ -61,7 +63,7 @@ def render_field(obj, field_name):
         field = field()
     if type(field) is datetime.datetime:
         # Excel compatibility
-        return field.strftime('%Y-%m-%d')
+        return field.strftime(DATE_FORMAT)
     else:
         return str(field)
 
