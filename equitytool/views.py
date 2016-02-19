@@ -13,7 +13,7 @@ import json
 # TODO: These objects should be made through API calls. Handling the
 # authentication required to make those calls seems a little
 # tricky. And it seems like unnecessary work at the moment.
-from reporter.models import Template, Rendering
+from reporter.models import Template, Rendering, UserExternalApiToken
 from django.utils.text import slugify
 from models import Form
 from django.template import Template as DjangoTemplate, Context
@@ -113,7 +113,9 @@ class Wrapper(object):
         return {'Authorization': 'Token %s' % self.api_token}
 
     def _create_form(self):
-        form = Form.objects.get(name=self.country)
+        # TODO: Do not use "form" to refer to both `equitytool.models.Form` and
+        # KoBoCat `XForm`
+        form = self.country
         template = DjangoTemplate(form.csv_form)
         context = Context({
             'form_title': self.name,
@@ -141,7 +143,9 @@ class Wrapper(object):
             user=self.user,
             template=self.template,
             url=url,
-            name=self.name
+            name=self.name,
+            form_name=self.country.name,
+            form_pk=self.country.pk
         )
         self.rendering.download_data()
 
