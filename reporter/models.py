@@ -56,6 +56,12 @@ class Rendering(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
+    # Store the name and primary key of the associated `Form` to ease
+    # reporting. Avoid using a `ForeignKey` since this data should not be
+    # subject to referential integrity checks
+    form_name = models.CharField(max_length=255, blank=True)
+    form_pk = models.IntegerField(blank=True, null=True)
+
     def submission_count(self):
         lines = self.data.split('\n')
         return len(lines) - 1
