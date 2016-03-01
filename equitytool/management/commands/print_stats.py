@@ -87,7 +87,7 @@ def user_report(stdout, stderr):
         try:
             profile = kc_profiles[user.username]
         except KeyError:
-            stdout.write(u'No profile for {}!\n'.format(user.username))
+            stderr.write(u'No profile for {}!\n'.format(user.username))
             profile = None
         for f in LOCAL_USER_FIELDS:
             row[f] = render_field(user, f)
