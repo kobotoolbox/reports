@@ -118,16 +118,10 @@ actions.registerAccount.failed.listen(function() {
   alertify.warning('Registration failed!');
 });
 
-actions.createTemplate.listen(function (templateData, {onComplete}) {
-  function successOrFail (d) {
-      if (onComplete) {
-        onComplete(d);
-      }
-      actions.createTemplate.completed(d);
-  }
+actions.createTemplate.listen(function (templateData) {
   dataInterface.createTemplate(templateData)
-    .done(successOrFail)
-    .fail(successOrFail);
+    .done(actions.createTemplate.completed)
+    .fail(actions.createTemplate.failed);
 });
 
 actions.listRenderings.listen(function () {
