@@ -3,6 +3,7 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 from rest_framework.response import Response
 from rest_framework import exceptions
 from rest_framework import status
@@ -39,11 +40,16 @@ class ProjectForm(forms.Form):
     name = forms.CharField(label='Project name', max_length=1000)
     urban = forms.BooleanField(label='This is an urban-focused project', required=False)
 
+
 def _create_project(posted_data, user):
     form = ProjectForm(posted_data, user)
     if form.is_valid():
         d = form.cleaned_data.copy()
         d['user'] = user
+        if Rendering.objects.filter(
+                user=user, name__iexact=d['name']).exists():
+            raise exceptions.ValidationError(detail={'name': _(
+                'You already have a project with this name')})
         return Wrapper.create_project(**d)
 
 @xframe_options_exempt
@@ -126,15 +132,22 @@ class Wrapper(object):
         data = {'text_xls_form': csv}
         response = requests.post(url, data=data, headers=self._headers())
         assert response.status_code == 201, response.content
+        return json.loads(response.content)
 
     def set_form(self):
-        self.id_string = slugify(self.name)
+        slug = slugify(self.name)
+        suffix = 0
         forms_by_id = self.get_forms()
-        created = self.id_string not in forms_by_id
-        if created:
-            self._create_form()
-            forms_by_id = self.get_forms()
-        self.form = forms_by_id[self.id_string]
+        # Work fast! We've created a race condition.
+        # TODO: If our id_string is in use by the time we POST to KC, handle
+        # the failure gracefully
+        self.id_string = slug
+        while self.id_string in forms_by_id:
+            if suffix:
+                self.id_string = slug + str(suffix)
+            suffix += 1
+        # Always create a new XForm in KC
+        self.form = self._create_form()
 
     def set_rendering(self):
         path = '/api/v1/data/%d?format=csv' % self.form['formid']

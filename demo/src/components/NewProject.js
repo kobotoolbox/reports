@@ -9,6 +9,7 @@ import {requireLoggedInMixin} from '../mixins/requireLogins';
 import sessionStore from '../stores/session';
 import Select from 'react-select';
 import ReactTooltip from 'react-tooltip';
+import alertify from 'alertifyjs';
 
 require('../../node_modules/react-select/dist/default.css');
 require('styles/Forms.scss');
@@ -43,10 +44,15 @@ var NewProject = React.createClass({
       name: this.refs.name.getDOMNode().value,
       urban: this.refs.urban.getDOMNode().checked ? 'true' : 'false',
       country: this.state.country,
-    }, {
-      onComplete: () => {
-        this.transitionTo('project-list');
-        actions.listRenderings();
+    }).then(() => {
+      alertify.success('Survey creation successful!');
+      this.transitionTo('project-list');
+      actions.listRenderings();
+    }, (data) => {
+      if('name' in data.responseJSON) {
+        alertify.error(data.responseJSON.name);
+      } else {
+        alertify.error('Survey creation failed!');
       }
     });
   },
