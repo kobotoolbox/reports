@@ -34,6 +34,7 @@ KC_PROFILE_FIELDS = ('organization',)
 ######################### Project Report Configuration ########################
 ###############################################################################
 RENDERING_FIELDS = (
+    'id',
     'user__username',
     'name',
     'form_name',
