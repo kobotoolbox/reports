@@ -10,6 +10,7 @@ import {requireLoggedInMixin} from '../mixins/requireLogins';
 import actions from '../actions/actions';
 import {renderingsStore} from '../stores/renderings';
 import ReactZeroClipboard from 'react-zeroclipboard';
+import Modal from 'react-modal';
 
 require('styles/ProjectList.scss');
 
@@ -38,7 +39,9 @@ var ProjectList = React.createClass({
       projects: [],
       projectsLoading: true,
       syncingProject: false,
-      copiedLink: ''
+      copiedLink: '',
+      modalIsOpen: false,
+      projectId: 0
     };
   },
   componentDidMount () {
@@ -63,6 +66,16 @@ var ProjectList = React.createClass({
       this.setState(this.state);
     }.bind(this), 2000);
   },
+  openModal: function(evt) {
+    var $ect = evt.currentTarget;
+    this.setState({
+      projectId: parseInt($ect.dataset.projectId),
+    });
+    this.setState({modalIsOpen: true});
+  },
+  closeModal: function() {
+    this.setState({modalIsOpen: false});
+  },
   render: function () {
     // var projects = [
     //   {name: 'a1', created: new Date(), submission_count: 2, enter_data_link: '1234', id: 1},
@@ -70,6 +83,8 @@ var ProjectList = React.createClass({
     //   {name: 'a3', created: new Date(), submission_count: 4, enter_data_link: '1234', id: 3},
     //   {name: 'a4', created: new Date(), submission_count: 0, enter_data_link: '1234', id: 4},
     // ];
+
+    var projectId = this.state.projectId;
 
     return (
         <Content m='project-list'>
@@ -139,7 +154,14 @@ var ProjectList = React.createClass({
                                 DOC
                               </ProjectAttributeLink>
                           </ProjectAttribute>
-                        : null}
+                        : null }
+                        <ProjectAttribute m='update-form'>
+                          <label>Update form: </label>
+                          <ProjectAttribute onClick={this.openModal} data-project-id={id}>
+                            <i />
+                            add questions
+                          </ProjectAttribute>
+                        </ProjectAttribute>
                       </ProjectAttribute>
                     </ProjectLi>
                   );
@@ -153,6 +175,20 @@ var ProjectList = React.createClass({
               Back
             </BorderedNavlink>
           </ContentBg>
+          <Modal
+            isOpen={this.state.modalIsOpen}
+            onAfterOpen={this.afterOpenModal}
+            onRequestClose={this.closeModal}
+          >
+            <p>WARNING! Do not edit, delete, or modify the text, format, numbers, response options, or calculations generated automatically in this form. These fields are required for the EquityTool and should not be changed in any way. You may add additional questions by clicking the “+” but no changes should be made to the existing content. Visit <a href="http://equitytool.org/addingquestions">equitytool.org/addingquestions</a> for information on how to safely add questions to this form.</p>
+            <p>After you have added your questions, click preview to test your form. To make the changes live in your form, click Save, then the 'x' button, and then click Redeploy.</p>
+            <div>Project ID: {projectId}</div>
+            <div className="modal-buttons">
+              <button>OK, I understand</button>
+              <button onClick={this.closeModal}>Cancel</button>
+            </div>
+          </Modal>
+
         </Content>
       );
   }
