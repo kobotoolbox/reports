@@ -110,7 +110,7 @@ class RenderingRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
 
 
 def proxy_create_user(request):
-    url = '{}authorized-application/users/'.format(
+    url = '{}authorized_application/users/'.format(
         settings.KPI_URL)
     headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}
     response = requests.post(url, data=request.POST, headers=headers)

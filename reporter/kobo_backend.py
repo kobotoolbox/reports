@@ -48,7 +48,7 @@ class KoboOAuth2(BaseOAuth2):
 
 class KoboApiAuthBackend(ModelBackend):
     def authenticate(self, username=None, password=None):
-        url = '{}authorized-application/authenticate-user/'.format(
+        url = '{}authorized_application/authenticate_user/'.format(
             settings.KPI_URL)
         data = {'username': username, 'password': password}
         headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}
