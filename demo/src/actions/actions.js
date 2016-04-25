@@ -39,6 +39,11 @@ var dataInterface = (function(){
       url: `${rootUrl}/equitytool/sync/${projectId}`,
     });
   };
+  this.getFormBuilderAccess = (projectId) => {
+    return $.ajax({
+      url: `${rootUrl}/renderings/${projectId}/one_time_form_builder_access/`,
+    });
+  };
   this.getRendering = (projectId) => {
     return $.ajax({
       url: `${rootUrl}/rendering/${projectId}.html`
@@ -87,6 +92,9 @@ var actions = Reflux.createActions({
     asyncResult: true,
   },
   syncProject: {
+    asyncResult: true,
+  },
+  getFormBuilderAccess: {
     asyncResult: true,
   },
   placeholder: {
@@ -144,6 +152,12 @@ actions.syncProject.listen(function (projectId) {
 
 actions.syncProject.completed.listen(function() {
   actions.listRenderings();
+});
+
+actions.getFormBuilderAccess.listen(function (projectId) {
+  dataInterface.getFormBuilderAccess(projectId)
+    .done(actions.getFormBuilderAccess.completed)
+    .fail(actions.getFormBuilderAccess.failed);
 });
 
 actions.getRendering.listen(function (projId) {
