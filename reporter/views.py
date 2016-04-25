@@ -8,8 +8,8 @@ from django.template import RequestContext
 from django.conf import settings
 from django.contrib.auth import authenticate
 from models import Template, Rendering
-from rest_framework import generics, serializers, permissions, viewsets, status
-from rest_framework.decorators import api_view
+from rest_framework import serializers, permissions, viewsets, status
+from rest_framework.decorators import api_view, detail_route
 from rest_framework.response import Response
 from equitytool.models import Form
 
@@ -54,7 +54,7 @@ def rendering(request, id, extension):
     return response
 
 
-class IsOwner(permissions.BasePermission):
+class IsOwner(permissions.IsAuthenticated):
 
     def has_object_permission(self, request, view, obj):
         return obj.user == request.user
@@ -90,23 +90,39 @@ class TemplateView(viewsets.ModelViewSet):
 
 
 # API endpoints for renderings
-class RenderingListCreate(generics.ListCreateAPIView):
-    queryset = Rendering.objects.all()
+class RenderingViewSet(viewsets.ModelViewSet):
+    queryset = Rendering.objects.none()
     serializer_class = RenderingSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (IsOwner, )
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_anonymous():
+            return Rendering.objects.none()
         return Rendering.objects.filter(user=user)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class RenderingRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Rendering.objects.all()
-    serializer_class = RenderingSerializer
-    permission_classes = (IsOwner, )
+    @detail_route(methods=['get'])
+    def one_time_form_builder_access(self, request, pk=None):
+        rendering = self.get_object()
+        # The client will have to POST a one-time key to this URL in order to
+        # authenticate the user to KPI and load the form builder for this
+        # rendering
+        form_builder_access = {
+            'url': u'{kpi_url}{auth_shim}#/forms/{uid}/edit'.format(
+                kpi_url=settings.KPI_URL,
+                auth_shim='authorized_application/one_time_login/',
+                uid=rendering.find_in_form_builder()
+            )
+        }
+        # Using our trusted application status, command KPI to create a
+        # one-time key for the currently logged in user
+        url = '{}authorized_application/one_time_authentication_keys/'.format(
+            settings.KPI_URL)
+        headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}
+        data = {'username': request.user.username}
+        response = requests.post(url, headers=headers, data=data)
+        form_builder_access['one_time_key'] = response.json()['key']
+        return Response(form_builder_access)
 
 
 def proxy_create_user(request):
