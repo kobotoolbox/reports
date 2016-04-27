@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django import forms
 from django.http import HttpResponseRedirect
@@ -69,6 +70,8 @@ def create_friendly(request):
     A version of the 'create' method that returns a 201 "CREATED" code
     on successful creation
     '''
+    if not request.user.is_authenticated():
+        raise exceptions.NotAuthenticated()
     proj = _create_project(request.POST, request.user)
     if proj:
         return Response({}, status=status.HTTP_201_CREATED)
@@ -79,7 +82,7 @@ class Wrapper(object):
     ''' Allows the user to create useful "projects" by tying together
     `equitytool.Form`, `reporter.Template`, and `reporter.Rendering` '''
 
-    KC_URL = 'https://kc.kobotoolbox.org'
+    KC_URL = settings.KC_URL
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():

@@ -11,6 +11,8 @@ import requests
 import subprocess
 import tempfile
 import logging
+import datetime
+import dateutil
 
 
 logger = logging.getLogger('TIMING')
@@ -177,7 +179,7 @@ class Rendering(models.Model):
         if self.api_token:
             headers['Authorization'] = 'Token {}'.format(self.api_token)
         response = requests.get(form_url, headers=headers)
-        return json.loads(response.content)
+        return response.json()
 
     @property
     def enter_data_link(self):
@@ -188,3 +190,40 @@ class Rendering(models.Model):
             self._enter_data_link = form_data['enketo_url']
             self.save(update_fields=['_enter_data_link'])
         return self._enter_data_link
+
+    def find_in_form_builder(self, attempted_create=False):
+        ''' Look for a matching asset in KPI. If none is found and
+        `attempted_create` is False, attempt to create the asset by opting the
+        user into KPI. Returns the uid of the KPI asset if successful'''
+        # Get the form's id string from KC
+        kc_form_data = self._get_kc_form_data()
+        # Construct an identifier URL using the username and id string
+        parsed_url = urlparse(self.url)
+        identifier = u'{scheme}://{netloc}/{username}/forms/{id_string}'.format(
+            scheme=parsed_url.scheme,
+            netloc=parsed_url.netloc,
+            username=self.user.username,
+            id_string=kc_form_data['id_string']
+        )
+        # Search KPI for an asset whose deployment identifier matches our KC
+        # project
+        headers = {'Authorization': 'Token {}'.format(self.api_token)}
+        kpi_search_url = '{}assets/?format=json&' \
+            'q=deployment__identifier:"{}"'.format(
+                settings.KPI_URL, identifier)
+        response = requests.get(kpi_search_url, headers=headers)
+        kpi_search_results = response.json()
+        if kpi_search_results['count'] == 1:
+            return kpi_search_results['results'][0]['uid']
+        elif kpi_search_results['count'] > 1:
+            raise Exception('Multiple KPI assets for a single KC project')
+        elif kpi_search_results['count'] == 0:
+            # Opt the user into KPI, which syncs KC projects to KPI assets
+            kpi_opt_in_url = '{}hub/switch_builder?beta=1&migrate=1'.format(
+                settings.KPI_URL)
+            response = requests.get(
+                kpi_opt_in_url, headers=headers, allow_redirects=False)
+            # Search again, but don't recurse
+            if not attempted_create:
+                return self.find_in_form_builder(attempted_create=True)
+        raise Exception('Failed to find matching KPI asset')
