@@ -78,9 +78,9 @@ var ProjectList = React.createClass({
     this.setState({modalIsOpen: false});
   },
   delayedCloseModal () {
-    setTimeout(function() {
+    setTimeout(() => {
       this.setState({modalIsOpen: false});
-    }.bind(this), 2000);
+    }, 2000);
   },
   render: function () {
     // var projects = [
