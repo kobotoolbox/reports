@@ -74,13 +74,10 @@ var ProjectList = React.createClass({
     actions.getFormBuilderAccess($ect.dataset.projectId);
     this.setState({modalIsOpen: true});
   },
-  closeModal: function() {
-    this.setState({modalIsOpen: false});
-  },
-  delayedCloseModal () {
+  closeModal () {
     setTimeout(() => {
       this.setState({modalIsOpen: false});
-    }, 2000);
+    }, 0);
   },
   render: function () {
     // var projects = [
@@ -187,7 +184,7 @@ var ProjectList = React.createClass({
           >
             <p>WARNING! Do not edit, delete, or modify the text, format, numbers, response options, or calculations generated automatically in this form. These fields are required for the EquityTool and should not be changed in any way. You may add additional questions by clicking the “+” but no changes should be made to the existing content. Visit <a href="http://equitytool.org/addingquestions">equitytool.org/addingquestions</a> for information on how to safely add questions to this form.</p>
             <p>After you have added your questions, click preview to test your form. To make the changes live in your form, click Save, then the 'x' button, and then click Redeploy.</p>
-            <form action={this.state.formBuilder.url} method="post" target="_blank" onSubmit={this.delayedCloseModal}>
+            <form action={this.state.formBuilder.url} method="post" target="_blank" onSubmit={this.closeModal}>
               <input type="hidden" name="key" value={this.state.formBuilder.one_time_key} />
               <div className="modal-buttons">
                 { this.state.formBuilder.one_time_key ?
