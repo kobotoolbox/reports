@@ -101,6 +101,10 @@ class RenderingViewSet(viewsets.ModelViewSet):
             return Rendering.objects.none()
         return Rendering.objects.filter(user=user)
 
+    def perform_destroy(self, instance):
+        instance.delete_kc_form()
+        return super(RenderingViewSet, self).perform_destroy(instance)
+
     @detail_route(methods=['get'])
     def one_time_form_builder_access(self, request, pk=None):
         rendering = self.get_object()

@@ -66,18 +66,31 @@ var ProjectList = React.createClass({
       this.setState(this.state);
     }.bind(this), 2000);
   },
-  openModal: function(evt) {
+  openUpdateModal: function(evt) {
     var $ect = evt.currentTarget;
     this.setState({
       formBuilder: {url: null, one_time_key: null}
     });
     actions.getFormBuilderAccess($ect.dataset.projectId);
-    this.setState({modalIsOpen: true});
+    this.setState({modalType: 'update', modalIsOpen: true});
+  },
+  openDeleteModal: function(evt) {
+    var $ect = evt.currentTarget;
+    this.setState({
+      modalType: 'delete',
+      projectId: $ect.dataset.projectId,
+      deletePending: false,
+      modalIsOpen: true
+    });
   },
   closeModal () {
     setTimeout(() => {
       this.setState({modalIsOpen: false});
     }, 0);
+  },
+  deleteProject () {
+    this.setState({deletePending: true});
+    actions.deleteRendering(this.state.projectId);
   },
   render: function () {
     // var projects = [
@@ -158,12 +171,19 @@ var ProjectList = React.createClass({
                         :
                           <ProjectAttribute m='update-form'>
                             <label>Update form: </label>
-                            <ProjectAttribute onClick={this.openModal} data-project-id={id}>
+                            <ProjectAttribute onClick={this.openUpdateModal} data-project-id={id}>
                               <i />
                               add questions
                             </ProjectAttribute>
                           </ProjectAttribute>
                         }
+                        <ProjectAttribute m='danger-zone'>
+                          <label>Remove this project: </label>
+                          <ProjectAttribute onClick={this.openDeleteModal} data-project-id={id}>
+                            <i />
+                            delete
+                          </ProjectAttribute>
+                        </ProjectAttribute>
                       </ProjectAttribute>
                     </ProjectLi>
                   );
@@ -182,21 +202,54 @@ var ProjectList = React.createClass({
             onAfterOpen={this.afterOpenModal}
             onRequestClose={this.closeModal}
           >
-            <p>WARNING! Do not edit, delete, or modify the text, format, numbers, response options, or calculations generated automatically in this form. These fields are required for the EquityTool and should not be changed in any way. You may add additional questions by clicking the “+” but no changes should be made to the existing content. Visit <a href="http://equitytool.org/addingquestions">equitytool.org/addingquestions</a> for information on how to safely add questions to this form.</p>
-            <p>After you have added your questions, click preview to test your form. To make the changes live in your form, click Save, then the 'x' button, and then click Redeploy.</p>
-            <form action={this.state.formBuilder.url} method="post" target="_blank" onSubmit={this.closeModal}>
-              <input type="hidden" name="key" value={this.state.formBuilder.one_time_key} />
-              <div className="modal-buttons">
-                { this.state.formBuilder.one_time_key ?
-                    <button type="submit">
-                      OK, I understand
-                    </button>
-                  :
-                    <button disabled>Preparing your form...</button>
-                }
-                <button type="button" onClick={this.closeModal}>Cancel</button>
+            {this.state.modalType === 'update' ?
+              <div>
+                <p>WARNING! Do not edit, delete, or modify the text, format,
+                numbers, response options, or calculations generated
+                automatically in this form. These fields are required for the
+                EquityTool and should not be changed in any way. You may add
+                additional questions by clicking the “+” but no changes should
+                be made to the existing content. Visit <a
+                href="http://equitytool.org/addingquestions">equitytool.org/addingquestions</a>
+                for information on how to safely add questions to this
+                form.</p>
+                <p>After you have added your questions, click preview to test
+                your form. To make the changes live in your form, click Save,
+                then the 'x' button, and then click Redeploy.</p>
+                <form action={this.state.formBuilder.url} method="post" target="_blank" onSubmit={this.closeModal}>
+                  <input type="hidden" name="key" value={this.state.formBuilder.one_time_key} />
+                  <div className="modal-buttons">
+                    { this.state.formBuilder.one_time_key ?
+                        <button type="submit">
+                          OK, I understand
+                        </button>
+                      :
+                        <button disabled>Preparing your form...</button>
+                    }
+                    <button type="button" onClick={this.closeModal}>Cancel</button>
+                  </div>
+                </form>
               </div>
-            </form>
+            : this.state.modalType === 'delete' ?
+              <div>
+                <p>Are you sure you want to remove this survey from your survey
+                list? Your project data will be completely erased.</p>
+                { this.state.deletePending ?
+                  <div className="modal-buttons">
+                      <button disabled>Deleting your survey...</button>
+                  </div>
+                :
+                  <div className="modal-buttons">
+                      <button onClick={this.closeModal}>Cancel</button>
+                      <button onClick={this.deleteProject}>
+                        OK
+                      </button>
+                  </div>
+                }
+              </div>
+            :
+              <i /> // unknown modal type
+          }
           </Modal>
 
         </Content>
