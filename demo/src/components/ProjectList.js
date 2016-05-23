@@ -232,8 +232,10 @@ var ProjectList = React.createClass({
               </div>
             : this.state.modalType === 'delete' ?
               <div>
-                <p>Are you sure you want to remove this survey from your survey
-                list? Your project data will be completely erased.</p>
+                <p> Are you sure you want to remove this survey from your
+                survey list? Please understand that this will permanently
+                delete your project data as well as your EquityTools report.
+                </p>
                 { this.state.deletePending ?
                   <div className="modal-buttons">
                       <button disabled>Deleting your survey...</button>

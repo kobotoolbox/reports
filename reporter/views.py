@@ -102,7 +102,7 @@ class RenderingViewSet(viewsets.ModelViewSet):
         return Rendering.objects.filter(user=user)
 
     def perform_destroy(self, instance):
-        instance.delete_kc_form()
+        instance.delete_from_kc_and_kpi()
         return super(RenderingViewSet, self).perform_destroy(instance)
 
     @detail_route(methods=['get'])
