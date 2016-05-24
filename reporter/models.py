@@ -18,6 +18,10 @@ import dateutil
 logger = logging.getLogger('TIMING')
 
 
+class NotFoundInFormBuilder(Exception):
+    pass
+
+
 class UserExternalApiToken(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, related_name='external_api_token')
@@ -162,41 +166,104 @@ class Rendering(models.Model):
         self._log_message('render end    ')
         return result
 
-    def _get_kc_form_data(self, endpoint='/forms/{pk}'):
-        ''' Attempt to extract the ID from `self.url`, then query KC to
-        retrieve data about the form. The extracted ID is available within the
-        optional ``endpoint`` parameter as `{pk}`. '''
+    def _get_kc_endpoint_url(self, endpoint):
+        parsed_url = urlparse(self.url)
+        return '{}://{}/api/v1/{}'.format(
+            parsed_url.scheme,
+            parsed_url.netloc,
+            endpoint
+        )
+
+    @property
+    def _kc_pk(self):
         # Assume the numeric ID is the last component of the URL path before
         # the query string
         parsed_url = urlparse(self.url)
-        numeric_id = int(parsed_url.path.split('/')[-1])
-        form_url = '{}://{}/api/v1{}?format=json'.format(
-            parsed_url.scheme,
-            parsed_url.netloc,
-            endpoint.format(pk=numeric_id),
-        )
+        return int(parsed_url.path.split('/')[-1])
+
+    def _token_auth_request(self, method, url):
+        ''' Make a request to KC or KPI, using the associated user's token to
+        authenticate.  '''
         headers = {}
         if self.api_token:
             headers['Authorization'] = 'Token {}'.format(self.api_token)
-        response = requests.get(form_url, headers=headers)
-        return response.json()
+        response = requests.request(method, url, headers=headers)
+        return response
+
+    def delete_from_kc_and_kpi(self):
+        ''' Delete the corresponding KC form and KPI asset, if any exists '''
+        # KPI must be deleted first, because `find_in_form_builder()` depends
+        # upon the KC form still existing
+        try:
+            kpi_asset_uid = self.find_in_form_builder(attempt_create=False)
+        except NotFoundInFormBuilder:
+            # Don't fail if we can't locate a corresponding KPI asset
+            pass
+        else:
+            # Without `?format=json`, KPI will return 200 instead of 204 after
+            # successful deletion
+            kpi_asset_url = '{kpi_url}assets/{asset_uid}/?format=json'.format(
+                kpi_url=settings.KPI_URL,
+                asset_uid=kpi_asset_uid
+            )
+            kpi_response = self._token_auth_request('delete', kpi_asset_url)
+            # Yes, we found a corresponding asset, but let's not create a race
+            # condition by assuming it'll still be there when we go to delete
+            # it
+            if kpi_response.status_code not in (204, 404):
+                raise Exception(
+                    'Unexpected status code {} returned by KPI'.format(
+                        kpi_response.status_code)
+                )
+
+        # Delete any extant KC form
+        kc_response = self._token_auth_request(
+            'delete',
+            # If you include a trailing slash after the pk, KC will reject the
+            # request with a 403. Isn't that fun?
+            self._get_kc_endpoint_url(
+                'forms/{}?format=json'.format(self._kc_pk))
+        )
+        # Tolerating a 404 is the right thing to do if a user already deleted
+        # the project from KC, but it runs the risk of masking programming
+        # errors --jnm
+        if kc_response.status_code not in (204, 404):
+            raise Exception('Unexpected status code {} returned by KC'.format(
+                kc_response.status_code))
 
     @property
     def enter_data_link(self):
         ''' Return the Enketo data-entry link, retrieving it from KC if
         necessary '''
         if not len(self._enter_data_link):
-            form_data = self._get_kc_form_data(endpoint='/forms/{pk}/enketo')
+            kc_response = self._token_auth_request(
+                'get',
+                self._get_kc_endpoint_url(
+                    'forms/{}/enketo?format=json'.format(self._kc_pk))
+            )
+            form_data = kc_response.json()
             self._enter_data_link = form_data['enketo_url']
             self.save(update_fields=['_enter_data_link'])
         return self._enter_data_link
 
-    def find_in_form_builder(self, attempted_create=False):
+    def find_in_form_builder(self, attempt_create=True):
         ''' Look for a matching asset in KPI. If none is found and
-        `attempted_create` is False, attempt to create the asset by opting the
+        `attempt_create` is True, attempt to create the asset by opting the
         user into KPI. Returns the uid of the KPI asset if successful'''
         # Get the form's id string from KC
-        kc_form_data = self._get_kc_form_data()
+        kc_response = self._token_auth_request(
+            'get',
+            self._get_kc_endpoint_url('forms/{}?format=json'.format(
+                self._kc_pk))
+        )
+        # FIXME: Match only 404 here once KC #227 is fixed:
+        # https://github.com/kobotoolbox/kobocat/issues/227
+        if kc_response.status_code in (404, 500):
+            raise NotFoundInFormBuilder(
+                'The corresponding KC form is missing; without it, no KPI '
+                'asset can be located or created'
+            )
+        kc_form_data = kc_response.json()
         # Construct an identifier URL using the username and id string
         parsed_url = urlparse(self.url)
         identifier = u'{scheme}://{netloc}/{username}/forms/{id_string}'.format(
@@ -217,13 +284,12 @@ class Rendering(models.Model):
             return kpi_search_results['results'][0]['uid']
         elif kpi_search_results['count'] > 1:
             raise Exception('Multiple KPI assets for a single KC project')
-        elif kpi_search_results['count'] == 0:
+        elif kpi_search_results['count'] == 0 and attempt_create:
             # Opt the user into KPI, which syncs KC projects to KPI assets
             kpi_opt_in_url = '{}hub/switch_builder?beta=1&migrate=1'.format(
                 settings.KPI_URL)
             response = requests.get(
                 kpi_opt_in_url, headers=headers, allow_redirects=False)
             # Search again, but don't recurse
-            if not attempted_create:
-                return self.find_in_form_builder(attempted_create=True)
-        raise Exception('Failed to find matching KPI asset')
+            return self.find_in_form_builder(attempt_create=False)
+        raise NotFoundInFormBuilder('Failed to find matching KPI asset')

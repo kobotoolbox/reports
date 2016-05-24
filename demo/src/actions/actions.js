@@ -49,6 +49,15 @@ var dataInterface = (function(){
       url: `${rootUrl}/rendering/${projectId}.html`
     });
   };
+  this.deleteRendering = (projectId) => {
+    return $.ajax({
+      url: `${rootUrl}/renderings/${projectId}`,
+      method: 'DELETE',
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader('X-CSRFToken', token);
+      }
+    });
+  };
 
   this.registerAccount = (accountData) => {
     var postData = assign({csrfmiddlewaretoken: token}, accountData);
@@ -83,6 +92,9 @@ var actions = Reflux.createActions({
     asyncResult: true,
   },
   getRendering: {
+    asyncResult: true,
+  },
+  deleteRendering: {
     asyncResult: true,
   },
   listRenderings: {
@@ -166,6 +178,12 @@ actions.getRendering.listen(function (projId) {
       actions.getRendering.completed(projId, html);
     })
     .fail(actions.getRendering.failed);
+});
+
+actions.deleteRendering.listen(function (projectId) {
+  dataInterface.deleteRendering(projectId)
+    .done(actions.deleteRendering.completed)
+    .fail(actions.deleteRendering.failed);
 });
 
 

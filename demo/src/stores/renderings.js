@@ -1,6 +1,7 @@
 import Reflux from 'reflux';
 import actions from '../actions/actions';
 import $ from 'jquery';
+import alertify from 'alertifyjs';
 
 /*
 var projects = [
@@ -20,6 +21,8 @@ var renderingsStore = Reflux.createStore({
     this.listenTo(actions.listRenderings.completed, this.listRenderingsCompleted);
     this.listenTo(actions.listRenderings.failed, this.listRenderingsFailed);
     this.listenTo(actions.getFormBuilderAccess.completed, this.getFormBuilderAccessCompleted);
+    this.listenTo(actions.deleteRendering.completed, this.deleteRenderingCompleted);
+    this.listenTo(actions.deleteRendering.failed, this.deleteRenderingFailed);
   },
   listRenderingsCompleted (data) {
     this.state.projects = data;
@@ -35,6 +38,18 @@ var renderingsStore = Reflux.createStore({
     this.state.formBuilder = data;
     this.trigger(this.state);
   },
+  deleteRenderingCompleted () {
+    this.state.projects = [];
+    this.state.projectsLoading = true;
+    this.state.modalIsOpen = false;
+    this.trigger(this.state);
+    actions.listRenderings();
+  },
+  deleteRenderingFailed () {
+    this.state.modalIsOpen = false;
+    alertify.error('failed to delete survey');
+    this.trigger(this.state);
+  }
 });
 
 var individualRenderingStore = Reflux.createStore({

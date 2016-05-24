@@ -67,7 +67,8 @@
 .project__attribute--data-collections, 
 .project__attribute--submissions, 
 .project__attribute--view-report,
-.project__attribute--update-form {
+.project__attribute--update-form,
+.project__attribute--danger-zone {
 	width: 24.2%;
 	margin-right: 1%;
 	display: inline-block;
@@ -99,8 +100,12 @@
 }
 
 .project__attribute--update-form {
-	margin-right:0%;
 	background-color: #e0ffd3;
+}
+
+.project__attribute--danger-zone {
+	margin-right:0%;
+	background-color: #fa8072;
 }
 
 .project__attribute--syncpending {
