@@ -178,10 +178,8 @@ var ProjectList = React.createClass({
                           </ProjectAttribute>
                         }
                         <ProjectAttribute m='danger-zone'>
-                          <label>Remove this project: </label>
                           <ProjectAttribute onClick={this.openDeleteModal} data-project-id={id}>
                             <i />
-                            delete
                           </ProjectAttribute>
                         </ProjectAttribute>
                       </ProjectAttribute>
