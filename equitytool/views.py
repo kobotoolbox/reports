@@ -1,24 +1,32 @@
-from django.conf import settings
-from django.shortcuts import render
+import datetime
+import json
+import os
+import re
+import requests
+import zipfile
+from io import BytesIO
+
 from django import forms
-from django.http import HttpResponseRedirect
-from django.views.decorators.clickjacking import xframe_options_exempt
+from django.conf import settings
+from django.contrib.auth.decorators import user_passes_test
+from django.core import management
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render
+from django.template import Template as DjangoTemplate, Context
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
-from rest_framework.response import Response
+from django.views.decorators.clickjacking import xframe_options_exempt
 from rest_framework import exceptions
 from rest_framework import status
 from rest_framework.decorators import api_view
-import requests
-import os
-import json
+from rest_framework.response import Response
+
 # TODO: These objects should be made through API calls. Handling the
 # authentication required to make those calls seems a little
 # tricky. And it seems like unnecessary work at the moment.
 from reporter.models import Template, Rendering, UserExternalApiToken
-from django.utils.text import slugify
 from models import Form
-from django.template import Template as DjangoTemplate, Context
 
 
 @xframe_options_exempt
@@ -172,3 +180,28 @@ class Wrapper(object):
         w.set_template()
         w.set_rendering()
         return w
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def superuser_stats(request):
+    REPORTS = {
+        'users.csv': {
+            'args': {'user_report': True}
+        },
+        'projects.csv': {
+            'args': {'project_report': True}
+        }
+    }
+
+    response = HttpResponse(content_type='application/zip')
+    response['Content-Disposition'] = 'attachment;filename="{}_{}.zip"'.format(
+        re.sub('[^a-zA-Z0-9]', '-', request.META['HTTP_HOST']),
+        datetime.date.today()
+    )
+    with zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        for filename, report_settings in REPORTS.iteritems():
+            with BytesIO() as csv_io:
+                management.call_command(
+                    'print_stats', stdout=csv_io, **report_settings['args'])
+                zip_file.writestr(filename, csv_io.getvalue())
+    return response

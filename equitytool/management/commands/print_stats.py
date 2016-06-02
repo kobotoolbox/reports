@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 
-from reporter.models import Rendering
+from reporter.models import Rendering, UserExternalApiToken
 
 DATE_FORMAT = '%m/%d/%Y'
 
@@ -45,7 +45,7 @@ RENDERING_FIELDS = (
 
 # Configuration ends here
 
-KC_PROFILE_ENDPOINT = '{}/api/v1/profiles'.format(settings.KC_URL)
+KC_PROFILE_ENDPOINT = '{}/api/v1/user'.format(settings.KC_URL)
 
 def print_tabular(list_of_dicts, stdout):
     # TODO: Handle data that includes tab characters
@@ -68,7 +68,7 @@ def render_field(obj, field_name):
         # Excel compatibility
         return field.strftime(DATE_FORMAT)
     else:
-        return str(field)
+        return unicode(field)
 
 def get_related_field(obj, field_name):
     # Is there really not a Django utility function for this?
@@ -79,18 +79,23 @@ def get_related_field(obj, field_name):
     return field
 
 def user_report(stdout, stderr):
-    stderr.write('Please wait while profiles load slowly from KC...')
-    kc_response = requests.get(KC_PROFILE_ENDPOINT)
-    kc_profiles = {p['username']: p for p in kc_response.json()}
-    stderr.write(' Loading complete!\n')
-
     user_report = []
     for user in User.objects.all():
         row = OrderedDict()
         try:
-            profile = kc_profiles[user.username]
-        except KeyError:
-            stderr.write(u'No profile for {}!\n'.format(user.username))
+            user_kc_token = user.external_api_token.key
+        except UserExternalApiToken.DoesNotExist:
+            stderr.write(u'No token for {}!\n'.format(user.username))
+            profile = None
+        kc_response = requests.get(
+            KC_PROFILE_ENDPOINT,
+            headers={'Authorization': 'Token %s' % user_kc_token}
+        )
+        if kc_response.status_code == 200:
+            profile = kc_response.json()
+        else:
+            stderr.write(u'Failed to load profile for {}!\n'.format(
+                user.username))
             profile = None
         for f in LOCAL_USER_FIELDS:
             row[f] = render_field(user, f)
