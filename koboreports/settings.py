@@ -1,5 +1,6 @@
 import os
 import dj_database_url
+from distutils.util import strtobool
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 THIS_DIR = os.path.dirname(__file__)
@@ -11,7 +12,7 @@ THIS_DIR = os.path.dirname(__file__)
 SECRET_KEY = os.environ.get('SECRET_KEY', 'secret')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', True)
+DEBUG = bool(strtobool(os.environ.get('DEBUG', 'True')))
 TEMPLATE_DEBUG = os.environ.get('TEMPLATE_DEBUG', DEBUG)
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
