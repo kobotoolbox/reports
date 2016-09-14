@@ -73,5 +73,6 @@ WORKDIR /app
 RUN source activate koboreports && \
     python manage.py test --noinput
 
-EXPOSE 5000
+# As of Dokku 0.5.0, no ports should be `EXPOSE`d; see
+# http://dokku.viewdocs.io/dokku/deployment/methods/dockerfiles/#exposed-ports
 CMD ./run.sh # calls `manage.py migrate` and `collectstatic`
