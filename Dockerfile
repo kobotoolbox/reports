@@ -33,7 +33,7 @@ RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O 
     chmod +x miniconda.sh && \
     ./miniconda.sh -b && \
     rm miniconda.sh
-ENV PATH /root/miniconda/bin:$PATH
+ENV PATH /root/miniconda2/bin:$PATH
 RUN conda update --yes conda
 
 RUN mkdir /app
