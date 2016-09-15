@@ -33,7 +33,7 @@ RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O 
     chmod +x miniconda.sh && \
     ./miniconda.sh -b && \
     rm miniconda.sh
-ENV PATH /root/miniconda/bin:$PATH
+ENV PATH /root/miniconda2/bin:$PATH
 RUN conda update --yes conda
 
 RUN mkdir /app
@@ -73,5 +73,6 @@ WORKDIR /app
 RUN source activate koboreports && \
     python manage.py test --noinput
 
-EXPOSE 5000
+# As of Dokku 0.5.0, no ports should be `EXPOSE`d; see
+# http://dokku.viewdocs.io/dokku/deployment/methods/dockerfiles/#exposed-ports
 CMD ./run.sh # calls `manage.py migrate` and `collectstatic`
