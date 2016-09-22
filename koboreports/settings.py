@@ -172,3 +172,62 @@ KPI_API_KEY = os.environ.get(
 LOGIN_URL = '/api-auth/login/'
 
 MEDIA_ROOT = 'media'
+
+''' Sentry configuration '''
+if 'RAVEN_DSN' in os.environ:
+    import raven
+    INSTALLED_APPS = INSTALLED_APPS + (
+        'raven.contrib.django.raven_compat',
+    )
+    RAVEN_CONFIG = {
+        'dsn': os.environ['RAVEN_DSN'],
+    }
+    try:
+        RAVEN_CONFIG['release'] = raven.fetch_git_sha(BASE_DIR)
+    except raven.exceptions.InvalidGitRepository:
+        pass
+    # The below is NOT required for Sentry to log unhandled exceptions, but it
+    # is necessary for capturing messages sent via the `logging` module.
+    # https://docs.getsentry.com/hosted/clients/python/integrations/django/#integration-with-logging
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False, # Was `True` in Sentry documentation
+        'root': {
+            'level': 'WARNING',
+            'handlers': ['sentry'],
+        },
+        'formatters': {
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s '
+                          '%(process)d %(thread)d %(message)s'
+            },
+        },
+        'handlers': {
+            'sentry': {
+                'level': 'WARNING',
+                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            },
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose'
+            }
+        },
+        'loggers': {
+            'django.db.backends': {
+                'level': 'ERROR',
+                'handlers': ['console'],
+                'propagate': False,
+            },
+            'raven': {
+                'level': 'DEBUG',
+                'handlers': ['console'],
+                'propagate': False,
+            },
+            'sentry.errors': {
+                'level': 'DEBUG',
+                'handlers': ['console'],
+                'propagate': False,
+            },
+        },
+    }
