@@ -36,7 +36,7 @@ var dataInterface = (function(){
   };
   this.syncProject = (projectId) => {
     return $.ajax({
-      url: `${rootUrl}/equitytool/sync/${projectId}`,
+      url: `${rootUrl}/equitytool/sync/${projectId}/`,
     });
   };
   this.getFormBuilderAccess = (projectId) => {
@@ -51,7 +51,7 @@ var dataInterface = (function(){
   };
   this.deleteRendering = (projectId) => {
     return $.ajax({
-      url: `${rootUrl}/renderings/${projectId}`,
+      url: `${rootUrl}/renderings/${projectId}/`,
       method: 'DELETE',
       beforeSend: (xhr) => {
         xhr.setRequestHeader('X-CSRFToken', token);
