@@ -1,4 +1,5 @@
 import os
+import json
 import dj_database_url
 from distutils.util import strtobool
 
@@ -15,6 +16,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'secret')
 DEBUG = bool(strtobool(os.environ.get('DEBUG', 'True')))
 TEMPLATE_DEBUG = os.environ.get('TEMPLATE_DEBUG', DEBUG)
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+
+# Django doesn't always recognize HTTPS when terminated by Dokku's NGINX proxy
+# Allow recognition of HTTPS by reading a header injected by NGINX, e.g.
+# to recognize 'X-Forwarded-Proto: https', set
+# `SECURE_PROXY_SSL_HEADER=["HTTP_X_FORWARDED_PROTO", "https"]` in the
+# environment
+if 'SECURE_PROXY_SSL_HEADER' in os.environ:
+    SECURE_PROXY_SSL_HEADER = json.loads(os.environ['SECURE_PROXY_SSL_HEADER'])
 
 
 # Application definition
