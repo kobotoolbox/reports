@@ -74,11 +74,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-# https://devcenter.heroku.com/articles/django-assets
 STATIC_ROOT = 'static'
 STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-
 STATICFILES_DIRS = (
     os.path.join(THIS_DIR, 'static'),
 )
