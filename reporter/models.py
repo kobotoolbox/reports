@@ -75,9 +75,20 @@ class Rendering(models.Model):
     def __unicode__(self):
         return unicode(self.id)
 
+    @staticmethod
+    def _check_csv_response(response):
+        response.raise_for_status()
+        if 'content-type' not in response.headers:
+            raise Exception('Response missing `content-type` header')
+        if 'text/csv' not in response.headers['content-type']:
+            raise Exception(u'Expected CSV response but received {}'.format(
+                response.headers['content-type'])
+            )
+
     @classmethod
     def _get_csv(cls, *args, **kwargs):
         response = requests.get(*args, **kwargs)
+        cls._check_csv_response(response)
         text = response.content
         return text.strip()
 
@@ -122,6 +133,7 @@ class Rendering(models.Model):
             'query': json.dumps(query)
         }
         response = requests.get(url=url, headers=headers, params=params)
+        self._check_csv_response(response)
         return response.text.strip()
 
     def _log_message(self, msg):
