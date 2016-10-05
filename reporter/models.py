@@ -4,6 +4,7 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.conf import settings
 from urlparse import urlparse
+from requests.exceptions import HTTPError
 import json
 import os
 import pandas as pd
@@ -247,14 +248,25 @@ class Rendering(models.Model):
     def enter_data_link(self):
         ''' Return the Enketo data-entry link, retrieving it from KC if
         necessary '''
+        VALUE_TO_RETURN_ON_FAILURE = u''
         if not len(self._enter_data_link):
             kc_response = self._token_auth_request(
                 'get',
                 self._get_kc_endpoint_url(
                     'forms/{}/enketo?format=json'.format(self._kc_pk))
             )
-            form_data = kc_response.json()
-            self._enter_data_link = form_data['enketo_url']
+            try:
+                kc_response.raise_for_status()
+            except HTTPError:
+                return VALUE_TO_RETURN_ON_FAILURE
+            try:
+                form_data = kc_response.json()
+            except ValueError:
+                return VALUE_TO_RETURN_ON_FAILURE
+            try:
+                self._enter_data_link = form_data['enketo_url']
+            except KeyError:
+                return VALUE_TO_RETURN_ON_FAILURE
             self.save(update_fields=['_enter_data_link'])
         return self._enter_data_link
 
