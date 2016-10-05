@@ -77,13 +77,10 @@ class Rendering(models.Model):
 
     @staticmethod
     def _check_csv_response(response):
+        # Raise exception if status code does not indicate success
         response.raise_for_status()
-        if 'content-type' not in response.headers:
-            raise Exception('Response missing `content-type` header')
-        if 'text/csv' not in response.headers['content-type']:
-            raise Exception(u'Expected CSV response but received {}'.format(
-                response.headers['content-type'])
-            )
+        # Quasi-validate the CSV by trying to parse it with Pandas
+        pd.DataFrame.from_csv(StringIO(response.content), index_col=None)
 
     @classmethod
     def _get_csv(cls, *args, **kwargs):
