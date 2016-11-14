@@ -75,11 +75,22 @@ class Rendering(models.Model):
     def __unicode__(self):
         return unicode(self.id)
 
+    @staticmethod
+    def _csv_from_response(response):
+        # Raise exception if status code does not indicate success
+        response.raise_for_status()
+        stripped_content = response.content.strip()
+        # An empty response is expected when there's no data, but Pandas won't
+        # tolerate it
+        if len(stripped_content):
+            # Quasi-validate the CSV by trying to parse it with Pandas
+            pd.DataFrame.from_csv(StringIO(response.content), index_col=None)
+        return stripped_content
+
     @classmethod
     def _get_csv(cls, *args, **kwargs):
         response = requests.get(*args, **kwargs)
-        text = response.content
-        return text.strip()
+        return cls._csv_from_response(response)
 
     @property
     def api_token(self):
@@ -122,6 +133,7 @@ class Rendering(models.Model):
             'query': json.dumps(query)
         }
         response = requests.get(url=url, headers=headers, params=params)
+        return self._csv_from_response(response)
         return response.text.strip()
 
     def _log_message(self, msg):
