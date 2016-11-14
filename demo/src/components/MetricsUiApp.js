@@ -46,37 +46,37 @@ var MetricsUiApp = React.createClass({
       <MainWrap>
         <Header>
           <div id="logo-container">
-              <a href="http://www.equitytool.org/"><img src="http://www.equitytool.org/wp-content/uploads/2015/08/EquityToolLogoWhiteOnly.png" alt="Equity Tool" /></a>
+              <a href="https://www.equitytool.org/"><img src="https://www.equitytool.org/wp-content/uploads/2015/08/EquityToolLogoWhiteOnly.png" alt="Equity Tool" /></a>
           </div>
           <div className="mobile-nav">
             <span className="mob-nav-btn" onClick={this.handleClick}>Menu</span>
           </div>
           <nav className={this.state.mobileMenuVisible ? "navigation-container nav-menu visible" : "navigation-container nav-menu not-visible"}>
             <ul id="menu-main" className="menu-ul">
-              <li><a href="http://www.equitytool.org/the-equity-tool-2/">The Equity Tool<span class="drop-arrow"></span></a>
+              <li><a href="https://www.equitytool.org/the-equity-tool-2/">The Equity Tool<span class="drop-arrow"></span></a>
                 <ul>
-                  <li><a href="http://www.equitytool.org/the-equity-tool-2/">Overview</a></li>
-                  <li><a href="http://www.equitytool.org/equity-tool-demonstrations/">Equity Tool Demonstrations</a></li>
-                  <li><a href="http://www.equitytool.org/countries-covered-by-the-equity-tool/">Countries covered by the Equity Tool</a></li>
-                  <li><a href="http://www.equitytool.org/how-to-use-the-equity-tool/">How to use the Equity Tool</a></li>
-                  <li><a href="http://www.equitytool.org/background/">Background</a></li>
+                  <li><a href="https://www.equitytool.org/the-equity-tool-2/">Overview</a></li>
+                  <li><a href="https://www.equitytool.org/equity-tool-demonstrations/">Equity Tool Demonstrations</a></li>
+                  <li><a href="https://www.equitytool.org/countries-covered-by-the-equity-tool/">Countries covered by the Equity Tool</a></li>
+                  <li><a href="https://www.equitytool.org/how-to-use-the-equity-tool/">How to use the Equity Tool</a></li>
+                  <li><a href="https://www.equitytool.org/background/">Background</a></li>
                 </ul>
               </li>
-              <li><a href="http://www.equitytool.org/equity/">About Equity<span class="drop-arrow"></span></a>
+              <li><a href="https://www.equitytool.org/equity/">About Equity<span class="drop-arrow"></span></a>
                 <ul>
-                  <li><a href="http://www.equitytool.org/equity/">Equity</a></li>
-                  <li><a href="http://www.equitytool.org/wealth-quintiles/">Wealth Quintiles</a></li>
+                  <li><a href="https://www.equitytool.org/equity/">Equity</a></li>
+                  <li><a href="https://www.equitytool.org/wealth-quintiles/">Wealth Quintiles</a></li>
                 </ul>
               </li>
-              <li><a href="http://www.equitytool.org/sampling/">Survey Tips<span class="drop-arrow"></span></a>
+              <li><a href="https://www.equitytool.org/sampling/">Survey Tips<span class="drop-arrow"></span></a>
                 <ul>
-                  <li><a href="http://www.equitytool.org/sampling/">Sampling</a></li>
-                  <li><a href="http://www.equitytool.org/principles-of-sampling/">Principles of Sampling</a></li>
-                  <li><a href="http://www.equitytool.org/preparing-the-data-collection-team/">Preparing the data collection team</a></li>
-                  <li><a href="http://www.equitytool.org/practical-preparations-for-your-survey/">Practical preparations for your survey</a></li>
+                  <li><a href="https://www.equitytool.org/sampling/">Sampling</a></li>
+                  <li><a href="https://www.equitytool.org/principles-of-sampling/">Principles of Sampling</a></li>
+                  <li><a href="https://www.equitytool.org/preparing-the-data-collection-team/">Preparing the data collection team</a></li>
+                  <li><a href="https://www.equitytool.org/practical-preparations-for-your-survey/">Practical preparations for your survey</a></li>
                 </ul>
               </li>
-              <li><a href="http://www.equitytool.org/contact-us/">Contact Us</a></li>
+              <li><a href="https://www.equitytool.org/contact-us/">Contact Us</a></li>
             </ul>
           </nav>
           { this.state.session.loggedIn ?
