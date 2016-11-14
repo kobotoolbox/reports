@@ -106,7 +106,7 @@ var ProjectList = React.createClass({
             <ContentTitle>My Surveys</ContentTitle>
             <p>This page contains a list of your survey projects. Each survey is assigned a unique URL that can be used by multiple data collectors at the same time. Simply copy the link and send it to your data collectors. Remember, surveys can be conducted online or offline. Before viewing a report, be sure to click "sync" to update all data collected and to see the most up-to-date results. </p>
             <p>Each survey shows the number of submissions, or surveys with complete data uploaded to the project. Click on the "sync" button to update data collected across all survey enumerators. Under "View report" select how you would like to view your survey results: in your browser, as a PDF or as a Word document.</p>
-            <p>For more information about how to use the tool, click <a href="http://www.equitytool.org/how-to-use-the-equity-tool/">here</a>.</p>
+            <p>For more information about how to use the tool, click <a href="https://www.equitytool.org/how-to-use-the-equity-tool/">here</a>.</p>
             <ProjectUl>
               {this.state.projects.length === 0 ?
                 <ProjectLi m={this.state.projectsLoading ? 'loadingmessage' : 'notification'}>
@@ -208,7 +208,7 @@ var ProjectList = React.createClass({
                 EquityTool and should not be changed in any way. You may add
                 additional questions by clicking the “+” but no changes should
                 be made to the existing content. Visit <a
-                href="http://equitytool.org/addingquestions">equitytool.org/addingquestions</a>
+                href="https://equitytool.org/addingquestions">equitytool.org/addingquestions</a>
                 for information on how to safely add questions to this
                 form.</p>
                 <p>After you have added your questions, click preview to test
