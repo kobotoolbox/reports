@@ -2,6 +2,7 @@ import requests
 import datetime
 
 from collections import OrderedDict
+from multiprocessing import Pool
 from optparse import make_option
 
 from django.conf import settings
@@ -46,6 +47,7 @@ RENDERING_FIELDS = (
 # Configuration ends here
 
 KC_PROFILE_ENDPOINT = '{}/api/v1/user'.format(settings.KC_URL)
+KC_PROFILE_PARALLEL_REQUESTS = 5
 
 def print_tabular(list_of_dicts, stdout):
     # TODO: Handle data that includes tab characters
@@ -78,24 +80,39 @@ def get_related_field(obj, field_name):
        field = getattr(field, p)
     return field
 
+def _get_profile(username_token_tuple):
+    kc_response = requests.get(
+        KC_PROFILE_ENDPOINT,
+        headers={'Authorization': 'Token %s' % username_token_tuple[1]}
+    )
+    if kc_response.status_code == 200:
+        profile = kc_response.json()
+    else:
+        _management_stderr.write(u'Failed to load profile for {}!\n'.format(
+            username_token_tuple[0]))
+        profile = None
+    return (
+        username_token_tuple[0],
+        profile
+    )
+
 def user_report(stdout, stderr):
     user_report = []
+
+    global _management_stderr
+    _management_stderr = stderr
+    pool = Pool(processes=KC_PROFILE_PARALLEL_REQUESTS)
+    profiles = list(
+        User.objects.exclude(external_api_token__key=None).values_list(
+            'username', 'external_api_token__key')
+    )
+    profiles = dict(pool.map(_get_profile, profiles))
     for user in User.objects.all():
         row = OrderedDict()
         try:
-            user_kc_token = user.external_api_token.key
-        except UserExternalApiToken.DoesNotExist:
+            profile = profiles[user.username]
+        except KeyError:
             stderr.write(u'No token for {}!\n'.format(user.username))
-            profile = None
-        kc_response = requests.get(
-            KC_PROFILE_ENDPOINT,
-            headers={'Authorization': 'Token %s' % user_kc_token}
-        )
-        if kc_response.status_code == 200:
-            profile = kc_response.json()
-        else:
-            stderr.write(u'Failed to load profile for {}!\n'.format(
-                user.username))
             profile = None
         for f in LOCAL_USER_FIELDS:
             row[f] = render_field(user, f)
@@ -134,6 +151,6 @@ class Command(BaseCommand):
     )
     def handle(self, *args, **options):
         if options.get('user_report'):
-            user_report(self.stdout, self.stderr) 
+            user_report(self.stdout, self.stderr)
         if options.get('project_report'):
             project_report(self.stdout, self.stderr)
