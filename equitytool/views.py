@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.core import management
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.template import Template as DjangoTemplate, Context
@@ -55,11 +56,12 @@ def _create_project(posted_data, user):
     if form.is_valid():
         d = form.cleaned_data.copy()
         d['user'] = user
-        if Rendering.objects.filter(
-                user=user, name__iexact=d['name']).exists():
-            raise exceptions.ValidationError(detail={'name': _(
-                'You already have a project with this name')})
-        return Wrapper.create_project(**d)
+        with transaction.atomic():
+            if Rendering.objects.filter(
+                    user=user, name__iexact=d['name']).exists():
+                raise exceptions.ValidationError(detail={'name': _(
+                    'You already have a project with this name')})
+            return Wrapper.create_project(**d)
 
 @xframe_options_exempt
 def create(request):
