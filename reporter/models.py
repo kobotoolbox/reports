@@ -69,6 +69,9 @@ class Rendering(models.Model):
     form_name = models.CharField(max_length=255, blank=True)
     form_pk = models.IntegerField(blank=True, null=True)
 
+    class Meta:
+        unique_together = ('user', 'name')
+
     def submission_count(self):
         lines = self.data.split('\n')
         return len(lines) - 1

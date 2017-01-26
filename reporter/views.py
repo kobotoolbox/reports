@@ -99,7 +99,7 @@ class RenderingViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_anonymous():
             return Rendering.objects.none()
-        return Rendering.objects.filter(user=user)
+        return Rendering.objects.filter(user=user).order_by('-pk')
 
     def perform_destroy(self, instance):
         instance.delete_from_kc_and_kpi()
