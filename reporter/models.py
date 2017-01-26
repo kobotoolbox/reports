@@ -14,6 +14,7 @@ import tempfile
 import logging
 import datetime
 import dateutil
+import shutil
 
 
 logger = logging.getLogger('TIMING')
@@ -146,7 +147,7 @@ class Rendering(models.Model):
 
     def render(self, extension):
         self._log_message('render begin  ')
-        folder = tempfile.gettempdir()
+        folder = tempfile.mkdtemp()
         filename = '%s.Rmd' % self.template.slug
         path = os.path.join(folder, filename)
 
@@ -172,6 +173,8 @@ class Rendering(models.Model):
         cmd = 'Rscript temp.R > temp.log'
         retcode = subprocess.call(cmd, shell=True, cwd=folder)
         if retcode != 0:
+            # Apparently it was intended to keep the log file around in case of
+            # failure, so don't remove the temporary directory
             path = os.path.join(folder, 'temp.log')
             raise Exception(path)
 
@@ -179,6 +182,8 @@ class Rendering(models.Model):
         with open(path) as f:
             result = f.read()
 
+        # Clean up the temporary folder only if the rendering was successful
+        shutil.rmtree(folder)
         self._log_message('render end    ')
         return result
 
