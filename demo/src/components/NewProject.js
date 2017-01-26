@@ -40,6 +40,10 @@ var NewProject = React.createClass({
   },
   createNewProject (evt) {
     evt.preventDefault();
+    let createButton = evt.target;
+    let createButtonInitialText = createButton.innerText;
+    createButton.disabled = true;
+    createButton.innerText = 'Creating...';
     actions.createTemplate({
       name: this.refs.name.getDOMNode().value,
       urban: this.refs.urban.getDOMNode().checked ? 'true' : 'false',
@@ -49,6 +53,8 @@ var NewProject = React.createClass({
       this.transitionTo('project-list');
       actions.listRenderings();
     }, (data) => {
+      createButton.innerText = createButtonInitialText;
+      createButton.disabled = false;
       if('name' in data.responseJSON) {
         alertify.error(data.responseJSON.name);
       } else {
