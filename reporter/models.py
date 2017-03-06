@@ -14,6 +14,7 @@ import tempfile
 import logging
 import datetime
 import dateutil
+import shutil
 
 
 logger = logging.getLogger('TIMING')
@@ -146,41 +147,49 @@ class Rendering(models.Model):
 
     def render(self, extension):
         self._log_message('render begin  ')
-        folder = tempfile.gettempdir()
-        filename = '%s.Rmd' % self.template.slug
-        path = os.path.join(folder, filename)
+        folder = tempfile.mkdtemp()
+        try:
+            filename = '%s.Rmd' % self.template.slug
+            path = os.path.join(folder, filename)
 
-        with open(path, 'w') as f:
-            f.write(self.template.rmd)
+            with open(path, 'w') as f:
+                f.write(self.template.rmd)
 
-        if self.url:
-            self._log_message('download begin')
-            self.download_data()
-            self._log_message('download end  ')
-            data_csv = os.path.join(folder, 'data.csv')
-            if not self.data.endswith('\n'):
-                self.data += '\n'
-            with open(data_csv, 'w') as f:
-                f.write(self.data.encode('utf-8'))
+            if self.url:
+                self._log_message('download begin')
+                self.download_data()
+                self._log_message('download end  ')
+                data_csv = os.path.join(folder, 'data.csv')
+                if not self.data.endswith('\n'):
+                    self.data += '\n'
+                with open(data_csv, 'w') as f:
+                    f.write(self.data.encode('utf-8'))
 
-        context = {'filename': filename, 'url': self.url, 'extension': extension}
-        script = render_to_string('compile.R', context)
-        path = os.path.join(folder, 'temp.R')
-        with open(path, 'w') as f:
-            f.write(script)
+            context = {'filename': filename, 'url': self.url, 'extension': extension}
+            script = render_to_string('compile.R', context)
+            path = os.path.join(folder, 'temp.R')
+            with open(path, 'w') as f:
+                f.write(script)
 
-        cmd = 'Rscript temp.R > temp.log'
-        retcode = subprocess.call(cmd, shell=True, cwd=folder)
-        if retcode != 0:
-            path = os.path.join(folder, 'temp.log')
-            raise Exception(path)
+            r_interpreter = subprocess.Popen(
+                ('Rscript', 'temp.R'),
+                cwd=folder,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            r_out, r_err = r_interpreter.communicate()
+            if r_interpreter.returncode != 0:
+                raise Exception('R failed to render {}: {}'.format(
+                    self.pk, r_err))
 
-        path = os.path.join(folder, self.template.slug + '.' + extension)
-        with open(path) as f:
-            result = f.read()
+            path = os.path.join(folder, self.template.slug + '.' + extension)
+            with open(path) as f:
+                result = f.read()
 
-        self._log_message('render end    ')
-        return result
+            self._log_message('render end    ')
+            return result
+        finally:
+            shutil.rmtree(folder)
 
     def _get_kc_endpoint_url(self, endpoint):
         parsed_url = urlparse(self.url)
