@@ -15,6 +15,52 @@ Mustache tags are supported so we can return a warning message if a
 deployment has fewer than 150 responses. See
 `reporter.tests.TestRendering.test_warning`.
 
+# Development _without_ Dokku
+
+This application requires a working instance of KoBoToolbox to run. See
+[kobo-docker](https://github.com/kobotoolbox/kobo-docker) for instructions
+on how to install such an instance.
+
+1. Go to `https://[YOUR KPI DOMAIN]/admin/kpi/authorizedapplication/` (you will
+   need to log in as a superuser);
+1. Click `Add authorized application`;
+1. Name your application and note the randomly-generated key (or enter your
+   own);
+   1. **NB:** To escape a `$` in the key,
+      [double it to `$$`](https://github.com/docker/compose/issues/3427).
+1. Click `Save`;
+1. Edit `docker-compose.yml` for this `reports` application:
+    1. Set the `KPI_API_KEY` environment variable equal to the application key
+       generated above;
+    1. Set `KPI_URL` to `https://[YOUR KPI DOMAIN]/` (must end with a `/`);
+    1. Set `KOBOCAT_URL` to `https://[YOUR KOBOCAT DOMAIN]` (must **not** end
+       with a slash!);
+1. Execute `docker-compose pull`;
+1. Supplicate before the gods of JavaScript and execute `docker-compose build`;
+1. Execute `docker-compose up -d postgres`;
+1. Execute `docker-compose logs -f`;
+1. Wait for the Postgres container to settle as indicated by the logs;
+1. Interrupt (CTRL+C) `docker-compose logs`;
+1. Start the application with `docker-compose up -d`;
+1. Get a shell inside the application container by running
+   `docker-compose exec koboreports bash`;
+1. Set the domain for the Django sites framework to match the hostname
+   (or--untested--IP address?) of your development machine:
+    1. (Inside the application container) `source activate koboreports`;
+    1. `./manage.py shell`;
+        1. `from django.contrib.sites.models import *`;
+        1. `s = Site.objects.first()`;
+        1. `s.domain = s.name = 'your.reports.domain'` (include `:port` if
+           necessary);
+        1. `s.save()`;
+        1. `exit()`;
+1. Load some sample `Template`s and `Form`s, if desired:
+    1. (Inside the application container) `source activate koboreports`;
+    1. `./manage.py loaddata dev/sample-forms-templates.json`;
+1. You may want to create a superuser:
+    1. (Inside the application container) `source activate koboreports`;
+    1. `./manage.py createsuperuser`.
+
 # Backburner
 
 On each compilation of a report, it would be nice to save the
