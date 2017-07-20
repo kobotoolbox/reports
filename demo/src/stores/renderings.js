@@ -25,6 +25,7 @@ var renderingsStore = Reflux.createStore({
     this.listenTo(actions.deleteRendering.failed, this.deleteRenderingFailed);
   },
   listRenderingsCompleted (data) {
+    data = data.sort((a, b) => a.name.localeCompare(b.name));
     this.state.projects = data;
     this.state.projectsLoading = false;
     this.trigger(this.state);

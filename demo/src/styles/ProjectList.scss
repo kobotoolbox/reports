@@ -4,6 +4,10 @@
   }
 }
 
+.new-project-wrapper {
+  padding-top: 20px;
+}
+
 // ul.project-list
 .project-list {
   margin: 40px 0px;
@@ -53,6 +57,7 @@
   display: block;
   position: relative;
   width: calc(100% - 30px);
+
   label {
     font-weight: bold;
     display: block;
@@ -71,6 +76,7 @@
   background-color: #FBF4ED;
   padding-bottom: 8px;
   font-size: 12px;
+
   a, .project__attribute, button.button-copy {
     color: #333;
     font-weight: bold;
@@ -80,6 +86,7 @@
     border: 1px solid #333;
     display: inline-block;
     cursor: pointer;
+
     &:hover, &.zeroclipboard-is-hover {
       color: #2990C2;
       border-color: #2990C2;
@@ -104,6 +111,7 @@
   right: -24px;
   overflow: hidden;
   bottom: 14px;
+
   i {
     cursor: pointer;
     display: block;
@@ -112,6 +120,7 @@
     opacity: 0.6;
     background-size: contain;
     background-image: url('data:image/svg+xml;utf8,<svg width="1792" height="1792" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M704 1376v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm-544-992h448l-48-117q-7-9-17-11h-317q-10 2-17 11zm928 32v64q0 14-9 23t-23 9h-96v948q0 83-47 143.5t-113 60.5h-832q-66 0-113-58.5t-47-141.5v-952h-96q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h309l70-167q15-37 54-63t79-26h320q40 0 79 26t54 63l70 167h309q14 0 23 9t9 23z"/></svg>');
+
     &:hover {
       opacity: 0.9;
     }
@@ -133,6 +142,7 @@
   color: white;
   opacity: 0;
   transition: 0.5s all;
+
   &.visible {
     opacity: 1;
   }
@@ -167,6 +177,7 @@ body div.ReactModal__Content.ReactModal__Content--after-open {
 .modal-buttons {
   text-align: center;
   padding: 15px;
+
   button {
     margin: 0px 15px;
     padding: 8px;

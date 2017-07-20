@@ -13,7 +13,9 @@ require('styles/Report.scss');
 
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
-    BorderedNavlink = bemRouterLink('bordered-navlink');
+    BorderedNavlink = bemRouterLink('bordered-navlink'),
+    ProjectLink = bem('project-link', '<a>'),
+    UrbanToggle = bem('urban-toggle', '<div>');
 
 var Report = React.createClass({
   mixins: [
@@ -28,6 +30,7 @@ var Report = React.createClass({
   getInitialState () {
     return {
       renderingHtml: 'loading',
+      urbanVisible: false
     };
   },
   individualRenderingStoreChanged (projId, html) {
@@ -37,16 +40,38 @@ var Report = React.createClass({
       });
     }
   },
+  toggleUrbanState () {
+      this.setState({
+        urbanVisible: !this.state.urbanVisible,
+      });
+
+  },
   render: function () {
     return (
         <Content m='report'>
-          <ContentBg>
-            <div dangerouslySetInnerHTML={{ __html: this.state.renderingHtml }} />
-            <p>
+          <ContentBg className={this.state.urbanVisible ? 'urban-visible' : 'urban-hidden'}>
+            <div className="rendering" dangerouslySetInnerHTML={{ __html: this.state.renderingHtml }} />
+            {this.state.renderingHtml !== 'loading' &&
+              <UrbanToggle onClick={this.toggleUrbanState}>
+                {this.state.urbanVisible ?
+                  <div className="bordered-navlink">Hide Urban Results <i className="fa fa-chevron-up" /></div>
+                :
+                  <div className="bordered-navlink">Show Urban Results <i className="fa fa-chevron-down" /></div>
+                }
+              </UrbanToggle>
+            }
+            {this.state.renderingHtml !== 'loading' &&
+              <div className="project-links">
+                <ProjectLink className="bordered-navlink" href={'/rendering/' + this.props.params.id + '.pdf'}>download PDF</ProjectLink>
+                <ProjectLink className="bordered-navlink" href={'/rendering/' + this.props.params.id + '.docx'}>download DOC</ProjectLink>
+              </div>
+            }
+            <div className="project-footer">
               <BorderedNavlink to='project-list'>
+                <i className="fa fa-chevron-left" />
                 go back
               </BorderedNavlink>
-            </p>
+            </div>
           </ContentBg>
         </Content>
       );
