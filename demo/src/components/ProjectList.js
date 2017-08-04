@@ -128,7 +128,7 @@ var ProjectList = React.createClass({
                 Link copied to clipboard
               </div>
 
-              {this.state.projects.map(({name, submission_count, enter_data_link, created, id}) => {
+              {this.state.projects.map(({name, submission_count, enter_data_link, created, form__name, template__name, id}) => {
                 var dateStr = moment(new Date(created)).format('D MMMM YYYY');
                 var hasSubmissions = submission_count > 0;
                 var isSyncing = this.state.syncingProject !== false && this.state.syncingProject === id;
@@ -139,6 +139,10 @@ var ProjectList = React.createClass({
                       </ProjectAttribute>
                       <ProjectAttribute m='date-created'>
                         {dateStr}
+                      </ProjectAttribute>
+                      <ProjectAttribute m='form-and-template-name'>
+                        <br />{/* gross hack; @penar, please make me pretty */}
+                        {form__name} {/*({template__name})*/}
                       </ProjectAttribute>
                       <ProjectAttribute m='content'>
                         <ProjectAttribute m='data-collections'>
