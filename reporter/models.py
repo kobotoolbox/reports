@@ -152,6 +152,14 @@ class Rendering(models.Model):
             filename = '%s.Rmd' % self.template.slug
             path = os.path.join(folder, filename)
 
+            # This relies on the Django template engine, which really has no
+            # idea how to escape a string for R. Work around this by writing
+            # the unsafe string to a temporary file, which is then read into a
+            # variable by the `compile.R` script
+            rendering__name_filename = os.path.join(folder, 'rendering__name')
+            with open(rendering__name_filename, 'w') as f:
+                f.write(self.name)
+
             with open(path, 'w') as f:
                 f.write(self.template.rmd)
 
@@ -165,7 +173,12 @@ class Rendering(models.Model):
                 with open(data_csv, 'w') as f:
                     f.write(self.data.encode('utf-8'))
 
-            context = {'filename': filename, 'url': self.url, 'extension': extension}
+            context = {
+                'filename': filename,
+                'url': self.url,
+                'extension': extension,
+                'rendering__name_filename': rendering__name_filename,
+            }
             script = render_to_string('compile.R', context)
             path = os.path.join(folder, 'temp.R')
             with open(path, 'w') as f:
