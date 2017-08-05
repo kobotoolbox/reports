@@ -1,6 +1,6 @@
 const authUrls = {
   login: '/api-auth/login/',
-  logout: '/api-auth/logout/?next=/',
+  logout: '/api-auth/logout/',
   register: '#/register',
 };
 
