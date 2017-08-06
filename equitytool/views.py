@@ -48,7 +48,8 @@ def sync(request, pk):
 class ProjectForm(forms.Form):
     country = forms.ModelChoiceField(queryset=Form.objects.all())
     name = forms.CharField(label='Project name', max_length=1000)
-    urban = forms.BooleanField(label='This is an urban-focused project', required=False)
+    regional = forms.BooleanField(
+        label='This is an region-focused project', required=False)
 
 
 def _create_project(posted_data, user):
@@ -106,14 +107,15 @@ class Wrapper(object):
             return None
 
     def get_rmd(self):
-        filename = 'wealth2.Rmd' if self.urban else 'wealth.Rmd'
+        # FIXME: M4M to supply new Rmd for regional projects
+        filename = 'wealth2.Rmd' if self.regional else 'wealth2.Rmd'
         path = os.path.join('reporter', 'rmd_templates', filename)
         with open(path) as f:
             rmd = f.read()
         return rmd
 
     def set_template(self):
-        slug = 'urban' if self.urban else 'national'
+        slug = 'regional' if self.regional else 'urban'
         template, created = Template.objects.get_or_create(slug=slug)
         if created:
             template.rmd = self.get_rmd()

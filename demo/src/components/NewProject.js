@@ -35,6 +35,8 @@ var NewProject = React.createClass({
   getInitialState () {
     return {
       country: null,
+      regions: [],
+      region: null,
     };
   },
   createNewProject (evt) {
@@ -45,8 +47,8 @@ var NewProject = React.createClass({
     createButton.innerText = 'Creating...';
     actions.createTemplate({
       name: this.refs.name.getDOMNode().value,
-      urban: 'true',
-      country: this.state.country,
+      country: this.state.region || this.state.country,
+      regional: !!this.state.region,
     }).then(() => {
       alertify.success('Survey creation successful!');
       this.transitionTo('project-list');
@@ -64,6 +66,15 @@ var NewProject = React.createClass({
   changeCountry (country) {
     this.setState({
       country: country,
+      regions: sessionStore.regions.filter(
+        function(r) { return r.country === country; }
+      ),
+      region: null,
+    });
+  },
+  changeRegion (region) {
+    this.setState({
+      region: region,
     });
   },
   render: function () {
@@ -88,6 +99,19 @@ var NewProject = React.createClass({
                     onChange={this.changeCountry}
                 />
                 </FormItem>
+
+                { !!this.state.regions.length &&
+                  <FormItem m='region'>
+                    <Select
+                        name="region"
+                        options={this.state.regions}
+                        placeholder='Region (optional)'
+                        value={this.state.region || null}
+                        ref='country'
+                        onChange={this.changeRegion}
+                    />
+                  </FormItem>
+                }
               </FormFields>
               <BorderedButton onClick={this.createNewProject}>
                 Create
