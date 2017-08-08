@@ -1,25 +1,58 @@
-# Project Results
+# `r rendering__name`
 
 ```{r, echo=FALSE}
+library(ggplot2)
+library(pander)
+
+pie_chart <- function(data, x, y, title) {
+  data[['label']] <- paste0(data[[x]], ' = ', round(data[[y]]), '%')
+  data[['empty']] <- factor(0)
+  
+  pie <- (
+    ggplot(data, aes_string(x='empty', y=y, fill='label')) +
+    geom_bar(stat='identity', width = 1) +
+    labs(title=title, x='', y='') + 
+    theme_bw() +
+    theme(
+      axis.ticks.y=element_blank(),
+      axis.text.y=element_blank(),
+      axis.text.x=element_blank(),
+      panel.grid.major.y=element_blank(),
+      panel.border=element_blank()
+    ) +
+    coord_polar(theta='y') +
+    guides(fill=guide_legend(title=''))
+  )
+  
+  return(pie)  
+}
+
 respondents <- data
+
+if ("UrbanM4M" %in% names(respondents)) {
+  urbanrespondents <- respondents[respondents$UrbanM4M == 1,]
+  urbanmessage <- paste(nrow(urbanrespondents), " respondents were urban residents.")
+  if(nrow(urbanrespondents)) {
+    show_urban <- TRUE
+  } else {
+    show_urban <- FALSE
+  }
+    
+} else {
+  urbanrespondents <- respondents
+  urbanmessage <- "Note that all respondents were assumed to be urban residents."
+  show_urban <- TRUE
+}
+
 
 cutoff <- 100
 n <- nrow(respondents)
 warning_message <- n < cutoff
-```
 
-`r n` respondents have been interviewed.
-
-{{#warning_message}}
-Warning: Your sample is too small. Collect at least `r cutoff` responses to be representative.
-{{/warning_message}}
-
-<div style="float: left;">
-```{r, echo=FALSE, fig.width=4, fig.height=3}
-library(ggplot2)
-
-density <- as.data.frame(table(respondents$NationalQuintile) / nrow(respondents) * 100)
-names(density) <- c('Quintile', 'Percentage')
+density <- data.frame(Quintile=1:5)
+density$Percentage <- sapply(density$Quintile, function(i) {
+    100 * sum(respondents$NationalQuintile == i) / nrow(respondents)
+})
 
 my_table <- data.frame(
   k=c(as.character(density$Quintile), 'Total'),
@@ -27,44 +60,91 @@ my_table <- data.frame(
   )
 names(my_table) <- c('Wealth quintile', 'Percentage of respondents')
 
-pie_chart <- function(data, varname) {
-  var <- factor(data[[varname]])
-  percent <- round(100 * table(var) / length(var), 1)
-  label <- paste0(var, ' = ', percent[var], '%')
-  data[[varname]] <- label
-  data[['empty']] <- factor(0)
-  
-  pie <- (
-    ggplot(data, aes_string(x='empty', fill=varname)) +
-    geom_bar(width = 1) +
-    ylab('') + 
-    xlab('') + 
-    theme_bw() +
-    theme(axis.ticks.y=element_blank(), axis.text.y=element_blank(), panel.grid.major.y=element_blank(), panel.border=element_blank()) +
-    coord_polar(theta = "y")
-  )
-  
-  return(pie)  
-}
-
-pie_chart(respondents, 'NationalQuintile')
-
 bottom_two <- sum(density$Percentage[density$Quintile %in% c(1, 2)])
 ```
-```{r, echo=FALSE, results='asis'}
-library(pander)
 
+`r n` respondents have been interviewed.
+
+```{r, echo=FALSE, results='asis'}
+if (warning_message) {
+    cat(paste(
+        'We encourage you to consider your sample size when interpreting results. This sample of',
+        n,
+        'may be small.'
+        ))
+}
+```
+
+## National quintile results
+
+<div style="float: left;">
+```{r, echo=FALSE, fig.width=4, fig.height=3}
+pie_chart(density, x='Quintile', y='Percentage', title='')
+```
+
+```{r, echo=FALSE, results='asis'}
 pandoc.table(my_table, style='rmarkdown', round=1, keep.trailing.zeros=TRUE, justify='left')
 ```
 </div>
 
-## National quintile results
+These are the national quintile results for these respondents. These results indicate how your respondents compare to the national population.
 
-These are the national quintile results for these respondents.
+The table shows you the percentage of your respondents that were
+in each national wealth quintile.  Quintile 1 is the lowest wealth quintile and quintile 5 is the highest wealth quintile.
 
-The table above shows you the percentage of your respondents that were in each national wealth quintile.
+`r round(bottom_two)`% of your respondents were in the bottom two
+quintiles. This means that a relatively `r ifelse(bottom_two >= 40,
+'large', 'small')` number of respondents were poor. For more
+information on interpreting wealth quintile results,
+[please click here](http://www.equitytool.org/wealth-quintiles/).
 
-`r round(bottom_two)`% of your respondents were in the bottom two quintiles. This means that a relatively `r ifelse(bottom_two >= 40, 'large', 'small')` number of respondents were poor. For more information on interpreting wealth quintile results, [please click here](http://www.equitytool.org/wealth-quintiles/).
+
+<div style="clear: both;"></div>
+
+
+`r if (show_urban) '## Urban quintile results'`
+
+<div style="float: left;">
+```{r, echo=FALSE, fig.width=4, fig.height=3}
+density <- data.frame(Quintile=1:5)
+density$Percentage <- sapply(density$Quintile, function(i) {
+    100 * sum(urbanrespondents$UrbanQuintile == i) / nrow(urbanrespondents)
+})
+
+my_table <- data.frame(
+  k=c(as.character(density$Quintile), 'Total'),
+  v=c(density$Percentage, sum(density$Percentage))
+  )
+names(my_table) <- c('Wealth quintile', 'Percentage of respondents')
+
+bottom_two <- sum(density$Percentage[density$Quintile %in% c(1, 2)])
+
+if (show_urban){
+  pie_chart(density, x='Quintile', y='Percentage', title='')
+}
+```
+
+```{r, echo=FALSE, results='asis'}
+if (show_urban){
+  pandoc.table(my_table, style='rmarkdown', round=1, keep.trailing.zeros=TRUE, justify='left')
+}
+```
+</div>
+
+`r paste(urbanmessage)`
+`r if (show_urban) 'These are the urban quintile results for these respondents. These are the results comparing your respondents to urban residents only. 
+
+The table shows you the percentage of your respondents that were
+in each urban wealth quintile. Quintile 1 is the lowest wealth quintile and quintile 5 is the highest wealth quintile.'`
+
+`r if (show_urban) round(bottom_two)`
+`r if (show_urban) '% of your respondents were in the bottom two
+quintiles. This means that a relatively '`
+`r if (show_urban) ifelse(bottom_two >= 40,
+'large', 'small')` 
+`r if (show_urban) 'number of respondents were poor. For more
+information on interpreting wealth quintile results,
+[please click here](http://www.equitytool.org/wealth-quintiles/).'`
 
 
 <div style="clear: both;margin-bottom:120px;"></div>

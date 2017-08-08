@@ -35,8 +35,21 @@ var sessionStore = Reflux.createStore({
   },
   confirmLoginCompleted (data) {
     if (data.countries) {
-      this.countries = data.countries.map(function(c){
+      // a country has no parent
+      this.countries = data.countries.filter(
+        function(c) { return c.parent === null; }
+      ).map(function(c){
         return {
+          value: c.id,
+          label: c.name,
+        };
+      });
+      // a region has a parent
+      this.regions = data.countries.filter(
+        function(c) { return c.parent !== null; }
+      ).map(function(c) {
+        return {
+          country: c.parent,
           value: c.id,
           label: c.name,
         };

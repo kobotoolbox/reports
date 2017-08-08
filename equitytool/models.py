@@ -11,6 +11,7 @@ class Form(models.Model):
     name = models.CharField(max_length=255, unique=True)
     xls_form = models.FileField(default=None)
     csv_form = models.TextField(default='', blank=True)
+    parent = models.ForeignKey('equitytool.Form', null=True)
 
     def save(self, *args, **kwargs):
         settings = {

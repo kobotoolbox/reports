@@ -58,6 +58,11 @@ input[type=checkbox] + span {
 
 .form-item--country {
   max-width: 50%;
+  margin-bottom: 10px;
+}
+
+.form-item--region {
+  max-width: 50%;
 }
 
 .field-tooltip {
