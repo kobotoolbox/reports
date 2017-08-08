@@ -6,6 +6,7 @@ opts_chunk$set(error=FALSE, warning=FALSE)
 
 compile <- function() {
     rendering__name <- readLines('{{ rendering__name_filename }}')
+    form__name <- readLines('{{ form__name_filename }}')
 
     {% if url %}
     ## 0. download the data
