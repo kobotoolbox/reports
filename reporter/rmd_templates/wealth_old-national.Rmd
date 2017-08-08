@@ -1,0 +1,70 @@
+# Project Results
+
+```{r, echo=FALSE}
+respondents <- data
+
+cutoff <- 100
+n <- nrow(respondents)
+warning_message <- n < cutoff
+```
+
+`r n` respondents have been interviewed.
+
+{{#warning_message}}
+Warning: Your sample is too small. Collect at least `r cutoff` responses to be representative.
+{{/warning_message}}
+
+<div style="float: left;">
+```{r, echo=FALSE, fig.width=4, fig.height=3}
+library(ggplot2)
+
+density <- as.data.frame(table(respondents$NationalQuintile) / nrow(respondents) * 100)
+names(density) <- c('Quintile', 'Percentage')
+
+my_table <- data.frame(
+  k=c(as.character(density$Quintile), 'Total'),
+  v=c(density$Percentage, sum(density$Percentage))
+  )
+names(my_table) <- c('Wealth quintile', 'Percentage of respondents')
+
+pie_chart <- function(data, varname) {
+  var <- factor(data[[varname]])
+  percent <- round(100 * table(var) / length(var), 1)
+  label <- paste0(var, ' = ', percent[var], '%')
+  data[[varname]] <- label
+  data[['empty']] <- factor(0)
+  
+  pie <- (
+    ggplot(data, aes_string(x='empty', fill=varname)) +
+    geom_bar(width = 1) +
+    ylab('') + 
+    xlab('') + 
+    theme_bw() +
+    theme(axis.ticks.y=element_blank(), axis.text.y=element_blank(), panel.grid.major.y=element_blank(), panel.border=element_blank()) +
+    coord_polar(theta = "y")
+  )
+  
+  return(pie)  
+}
+
+pie_chart(respondents, 'NationalQuintile')
+
+bottom_two <- sum(density$Percentage[density$Quintile %in% c(1, 2)])
+```
+```{r, echo=FALSE, results='asis'}
+library(pander)
+
+pandoc.table(my_table, style='rmarkdown', round=1, keep.trailing.zeros=TRUE, justify='left')
+```
+</div>
+
+## National quintile results
+
+These are the national quintile results for these respondents.
+
+The table above shows you the percentage of your respondents that were in each national wealth quintile.
+
+`r round(bottom_two)`% of your respondents were in the bottom two quintiles. This means that a relatively `r ifelse(bottom_two >= 40, 'large', 'small')` number of respondents were poor. For more information on interpreting wealth quintile results, [please click here](http://www.equitytool.org/wealth-quintiles/).
+
+
+<div style="clear: both;margin-bottom:120px;"></div>

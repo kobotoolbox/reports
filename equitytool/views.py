@@ -108,7 +108,7 @@ class Wrapper(object):
 
     def get_rmd(self):
         # FIXME: M4M to supply new Rmd for regional projects
-        filename = 'wealth2.Rmd' if self.regional else 'wealth2.Rmd'
+        filename = 'wealth.Rmd' if self.regional else 'wealth.Rmd'
         path = os.path.join('reporter', 'rmd_templates', filename)
         with open(path) as f:
             rmd = f.read()
