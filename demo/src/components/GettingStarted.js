@@ -29,16 +29,18 @@ var GettingStarted = React.createClass({
   ],
   componentDidMount () {
     this.listenTo(accountStore, this.accountStoreUpdated);
-
-    if (this.state.session && this.state.session.loggedIn) {
-        this.transitionTo('/projects');
-    }
+    this.listenTo(sessionStore, this.sessionStoreUpdated);
   },
   accountStoreUpdated ({created}) {
     if (created) {
       this.setState({
         accountCreated: created,
       });
+    }
+  },
+  sessionStoreUpdated () {
+    if (this.state.session && this.state.session.loggedIn) {
+        this.transitionTo('project-list');
     }
   },
   getInitialState() {
