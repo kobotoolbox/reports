@@ -48,7 +48,18 @@
   flex-grow: 1;
 }
 
+.project__attribute-group {
+  text-align: right;
+}
+
 .project__attribute--date-created {
+  display: block;
+  font-size: 11px;
+  opacity: 0.3;
+}
+
+.project__attribute--form-and-template-name {
+  display: block;
   font-size: 11px;
   opacity: 0.3;
 }

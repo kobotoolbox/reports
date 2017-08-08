@@ -26,6 +26,7 @@ var Content = bem('content'),
     ProjectUl = bem('project-list', '<ul>'),
     ProjectLi = bem('project-list__item', '<li>'),
     ProjectAttribute = bem('project__attribute', '<span>'),
+    ProjectAttributeGroup = bem('project__attribute-group', '<div>'),
     ProjectAttributeLink = bem('project__attribute-link', '<a>');
 
 var ProjectList = React.createClass({
@@ -128,7 +129,7 @@ var ProjectList = React.createClass({
                 Link copied to clipboard
               </div>
 
-              {this.state.projects.map(({name, submission_count, enter_data_link, created, id}) => {
+              {this.state.projects.map(({name, submission_count, enter_data_link, created, form__name, /*template__name,*/ id}) => {
                 var dateStr = moment(new Date(created)).format('D MMMM YYYY');
                 var hasSubmissions = submission_count > 0;
                 var isSyncing = this.state.syncingProject !== false && this.state.syncingProject === id;
@@ -137,9 +138,14 @@ var ProjectList = React.createClass({
                       <ProjectAttribute m='name'>
                         {name}
                       </ProjectAttribute>
-                      <ProjectAttribute m='date-created'>
-                        {dateStr}
-                      </ProjectAttribute>
+                      <ProjectAttributeGroup>
+                        <ProjectAttribute m='date-created'>
+                          {dateStr}
+                        </ProjectAttribute>
+                        <ProjectAttribute m='form-and-template-name'>
+                          {form__name} {/*({template__name})*/}
+                        </ProjectAttribute>
+                      </ProjectAttributeGroup>
                       <ProjectAttribute m='content'>
                         <ProjectAttribute m='data-collections'>
                           <label>Data collection link: </label>
