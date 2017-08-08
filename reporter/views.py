@@ -23,7 +23,9 @@ def index(request):
 @api_view(['GET'])
 def current_user(request):
     user = request.user
-    countries = Form.objects.all().values('id', 'name').order_by('name')
+    countries = Form.objects.all().values(
+        'id', 'name', 'parent'
+    ).order_by('name')
     if user.is_anonymous():
         return Response({'message': 'user is not logged in'})
     else:
@@ -67,13 +69,18 @@ class TemplateSerializer(serializers.ModelSerializer):
 
 
 class RenderingSerializer(serializers.ModelSerializer):
+    template__name = serializers.ReadOnlyField(source='template.name')
+    form = serializers.ReadOnlyField(source='form_pk')
+    form__name = serializers.ReadOnlyField(source='form_name')
     class Meta:
         model = Rendering
         fields = (
             'id',
             'template',
+            'template__name',
+            'form',
+            'form__name',
             'url',
-            'api_token',
             'name',
             'created',
             'modified',

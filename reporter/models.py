@@ -145,12 +145,34 @@ class Rendering(models.Model):
         full_msg = '<Rendering: %s> | %s' % (str(self), msg)
         logger.info(full_msg)
 
+    @staticmethod
+    def _write_variable_to_file(folder, name, value):
+        filename = os.path.join(folder, name)
+        with open(filename, 'w') as f:
+            f.write(value)
+        return filename
+
     def render(self, extension):
         self._log_message('render begin  ')
         folder = tempfile.mkdtemp()
         try:
             filename = '%s.Rmd' % self.template.slug
             path = os.path.join(folder, filename)
+
+            # This relies on the Django template engine, which really has no
+            # idea how to escape a string for R. Work around this by writing
+            # the unsafe string to a temporary file, which is then read into a
+            # variable by the `compile.R` script
+            rendering__name_filename = self._write_variable_to_file(
+                folder=folder,
+                name='rendering__name',
+                value=self.name
+            )
+            form__name_filename = self._write_variable_to_file(
+                folder=folder,
+                name='form__name',
+                value=self.form_name
+            )
 
             with open(path, 'w') as f:
                 f.write(self.template.rmd)
@@ -165,7 +187,13 @@ class Rendering(models.Model):
                 with open(data_csv, 'w') as f:
                     f.write(self.data.encode('utf-8'))
 
-            context = {'filename': filename, 'url': self.url, 'extension': extension}
+            context = {
+                'filename': filename,
+                'url': self.url,
+                'extension': extension,
+                'rendering__name_filename': rendering__name_filename,
+                'form__name_filename': form__name_filename,
+            }
             script = render_to_string('compile.R', context)
             path = os.path.join(folder, 'temp.R')
             with open(path, 'w') as f:

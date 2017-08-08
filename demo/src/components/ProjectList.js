@@ -26,6 +26,7 @@ var Content = bem('content'),
     ProjectUl = bem('project-list', '<ul>'),
     ProjectLi = bem('project-list__item', '<li>'),
     ProjectAttribute = bem('project__attribute', '<span>'),
+    ProjectAttributeGroup = bem('project__attribute-group', '<div>'),
     ProjectAttributeLink = bem('project__attribute-link', '<a>');
 
 var ProjectList = React.createClass({
@@ -107,6 +108,11 @@ var ProjectList = React.createClass({
             <p>This page contains a list of your survey projects. Each survey is assigned a unique URL that can be used by multiple data collectors at the same time. Simply copy the link and send it to your data collectors. Remember, surveys can be conducted online or offline. Before viewing a report, be sure to click "sync" to update all data collected and to see the most up-to-date results. </p>
             <p>Each survey shows the number of submissions, or surveys with complete data uploaded to the project. Click on the "sync" button to update data collected across all survey enumerators. Under "View report" select how you would like to view your survey results: in your browser, as a PDF or as a Word document.</p>
             <p>For more information about how to use the tool, click <a href="https://www.equitytool.org/how-to-use-the-equity-tool/">here</a>.</p>
+            <div className="new-project-wrapper" >
+              <BorderedNavlink m='new-project' to='new-project'>
+                New survey
+              </BorderedNavlink>
+            </div>
             <ProjectUl>
               {this.state.projects.length === 0 ?
                 <ProjectLi m={this.state.projectsLoading ? 'loadingmessage' : 'notification'}>
@@ -123,8 +129,8 @@ var ProjectList = React.createClass({
                 Link copied to clipboard
               </div>
 
-              {this.state.projects.map(({name, submission_count, enter_data_link, created, id}) => {
-                var dateStr = moment(new Date(created)).fromNow();
+              {this.state.projects.map(({name, submission_count, enter_data_link, created, form__name, /*template__name,*/ id}) => {
+                var dateStr = moment(new Date(created)).format('D MMMM YYYY');
                 var hasSubmissions = submission_count > 0;
                 var isSyncing = this.state.syncingProject !== false && this.state.syncingProject === id;
                 return (
@@ -132,9 +138,14 @@ var ProjectList = React.createClass({
                       <ProjectAttribute m='name'>
                         {name}
                       </ProjectAttribute>
-                      <ProjectAttribute m='date-created'>
-                        {dateStr}
-                      </ProjectAttribute>
+                      <ProjectAttributeGroup>
+                        <ProjectAttribute m='date-created'>
+                          {dateStr}
+                        </ProjectAttribute>
+                        <ProjectAttribute m='form-and-template-name'>
+                          {form__name} {/*({template__name})*/}
+                        </ProjectAttribute>
+                      </ProjectAttributeGroup>
                       <ProjectAttribute m='content'>
                         <ProjectAttribute m='data-collections'>
                           <label>Data collection link: </label>
@@ -161,12 +172,6 @@ var ProjectList = React.createClass({
                               <Navlink m='view-report' to='report' params={{ id: id }}>
                                 view report
                               </Navlink>
-                              <ProjectAttributeLink m='enter-data' href={'/rendering/' + id + '.pdf'}>
-                                PDF
-                              </ProjectAttributeLink>
-                              <ProjectAttributeLink m='enter-data' href={'/rendering/' + id + '.docx'}>
-                                DOC
-                              </ProjectAttributeLink>
                           </ProjectAttribute>
                         :
                           <ProjectAttribute m='update-form'>
@@ -187,13 +192,6 @@ var ProjectList = React.createClass({
                   );
               })}
             </ProjectUl>
-            <BorderedNavlink m='new-project' to='new-project'>
-              New survey
-            </BorderedNavlink>
-            <span> or </span>
-            <BorderedNavlink m='back' to='getting-started'>
-              Back
-            </BorderedNavlink>
           </ContentBg>
           <Modal
             isOpen={this.state.modalIsOpen}

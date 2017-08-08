@@ -85,7 +85,7 @@ var Register = React.createClass({
     return (
         <Content m='register'>
           <ContentBg>
-            <ContentTitle>Register</ContentTitle>
+            <ContentTitle>Sign Up</ContentTitle>
             <form>
               <FormFields m='register'>
                 {

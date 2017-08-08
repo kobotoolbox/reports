@@ -95,7 +95,7 @@ var MetricsUiApp = React.createClass({
                 login
               </AccountLink>
               <AccountLink m='register' href={authUrls.register}>
-                register
+                sign up
               </AccountLink>
             </AccountDetails>
           }

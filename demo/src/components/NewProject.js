@@ -8,7 +8,6 @@ import actions from '../actions/actions';
 import {requireLoggedInMixin} from '../mixins/requireLogins';
 import sessionStore from '../stores/session';
 import Select from 'react-select';
-import ReactTooltip from 'react-tooltip';
 import alertify from 'alertifyjs';
 
 require('../../node_modules/react-select/dist/default.css');
@@ -36,6 +35,8 @@ var NewProject = React.createClass({
   getInitialState () {
     return {
       country: null,
+      regions: [],
+      region: null,
     };
   },
   createNewProject (evt) {
@@ -46,8 +47,8 @@ var NewProject = React.createClass({
     createButton.innerText = 'Creating...';
     actions.createTemplate({
       name: this.refs.name.getDOMNode().value,
-      urban: this.refs.urban.getDOMNode().checked ? 'true' : 'false',
-      country: this.state.country,
+      country: this.state.region || this.state.country,
+      regional: !!this.state.region,
     }).then(() => {
       alertify.success('Survey creation successful!');
       this.transitionTo('project-list');
@@ -65,11 +66,18 @@ var NewProject = React.createClass({
   changeCountry (country) {
     this.setState({
       country: country,
+      regions: sessionStore.regions.filter(
+        function(r) { return r.country === country; }
+      ),
+      region: null,
+    });
+  },
+  changeRegion (region) {
+    this.setState({
+      region: region,
     });
   },
   render: function () {
-    var effect = 'solid';
-    var tooltip = 'If your respondents will all be from urban areas, and you are interested to see how wealthy they are compared to the rest of the urban population, you should check this box.<br/>The Equity Tool will always tell you how wealthy your clients are relative to the rest of the whole country. Some programs that serve urban clients only are also interested to see how wealthy their clients are relative to the urban population in their country. If you check this box, you will get two sets of results at the end of the survey – you will see which national wealth quintiles your clients are in and also which urban quintiles your clients are in.<br/>Note you should only check this box if all your clients will be from urban areas – the urban results are only relevant to urban clients.';
     var countries = sessionStore.countries || allCountries;
     return (
         <Content m='new-project'>
@@ -80,12 +88,7 @@ var NewProject = React.createClass({
                 <FormItem>
                   <InputField name={'projectname'} type='text' m='required' placeholder='Project Name' ref='name' />
                 </FormItem>
-                <FormItem m='urban'>
-                <InputField name={'urbanfocused'} type='checkbox' value='urbanfocused' id='urbancheckbox' ref='urban' />
-                <label htmlFor='urbancheckbox'>This is an urban-focused survey</label>
-                <span className='field-tooltip' data-tip={tooltip}>?</span>
-                <ReactTooltip effect={effect} multiline={true}/>
-                </FormItem>
+
                 <FormItem m='country'>
                 <Select
                     name="country"
@@ -96,6 +99,19 @@ var NewProject = React.createClass({
                     onChange={this.changeCountry}
                 />
                 </FormItem>
+
+                { !!this.state.regions.length &&
+                  <FormItem m='region'>
+                    <Select
+                        name="region"
+                        options={this.state.regions}
+                        placeholder='Region (optional)'
+                        value={this.state.region || null}
+                        ref='country'
+                        onChange={this.changeRegion}
+                    />
+                  </FormItem>
+                }
               </FormFields>
               <BorderedButton onClick={this.createNewProject}>
                 Create

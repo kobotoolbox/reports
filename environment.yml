@@ -4,6 +4,7 @@ channels:
 dependencies:
   - pandas=0.16.2=np19py27_0
   - pyopenssl==0.15.1
+  - pyasn1=0.2.3=py27_0
 
   - r-base=3.2.2
   - r-dplyr
