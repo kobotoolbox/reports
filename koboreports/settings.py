@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'django.contrib.sites',
     'social.apps.django_app.default',
+    'private_storage',
     'reporter',
     'equitytool',
 )
@@ -74,11 +75,16 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_ROOT = 'static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(THIS_DIR, 'static'),
 )
+
+PRIVATE_STORAGE_ROOT = os.path.join(BASE_DIR, 'media')
+PRIVATE_STORAGE_AUTH_FUNCTION = \
+    'private_storage.permissions.allow_staff'
+
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -167,8 +173,6 @@ KPI_API_KEY = os.environ.get(
     '8qg3bx7#a2j$o4tuplq==bhdo(4g^d_59ztq&je%pj%tv^!kwgo7&61duo-!'
 )
 LOGIN_URL = '/api-auth/login/'
-
-MEDIA_ROOT = 'media'
 
 ''' Sentry configuration '''
 if 'RAVEN_DSN' in os.environ:

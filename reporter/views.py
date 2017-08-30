@@ -132,6 +132,9 @@ class RenderingViewSet(viewsets.ModelViewSet):
         headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}
         data = {'username': request.user.username}
         response = requests.post(url, headers=headers, data=data)
+        # Raising an exception here doesn't help the user, but it at least
+        # makes debugging easier
+        response.raise_for_status()
         form_builder_access['one_time_key'] = response.json()['key']
         return Response(form_builder_access)
 

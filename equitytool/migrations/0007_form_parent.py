@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='form',
             name='parent',
-            field=models.ForeignKey(to='equitytool.Form', null=True),
+            field=models.ForeignKey(blank=True, to='equitytool.Form', null=True),
         ),
     ]

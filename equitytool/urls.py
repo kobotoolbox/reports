@@ -1,5 +1,6 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 import views
+import private_storage.urls
 
 
 urlpatterns = patterns(
@@ -9,4 +10,5 @@ urlpatterns = patterns(
     url(r'^create_friendly$', views.create_friendly, name='create-project-friendly'),
     url(r'^sync/(?P<pk>[0-9]+)/$', views.sync, name='sync'),
     url(r'^superuser_stats$', views.superuser_stats),
+    url('^private-media/', include(private_storage.urls)),
 )

@@ -126,6 +126,9 @@ class Wrapper(object):
         path = '/api/v1/forms?owner=%s' % self.user.username
         url = self.KC_URL + path
         response = requests.get(url, headers=self._headers())
+        # Raising an exception here doesn't help the user, but it at least
+        # makes debugging easier
+        response.raise_for_status()
         l = json.loads(response.content)
         forms_by_id = dict([(d['id_string'], d) for d in l])
         return forms_by_id

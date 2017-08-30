@@ -31,3 +31,4 @@ dependencies:
     - ndg-httpsclient==0.4.0
     - urllib3==1.7.1
     - raven==5.26.0
+    - django-private-storage==1.2.1

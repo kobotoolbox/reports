@@ -95,6 +95,9 @@ class Rendering(models.Model):
     @classmethod
     def _get_csv(cls, *args, **kwargs):
         response = requests.get(*args, **kwargs)
+        # Raising an exception here doesn't help the user, but it at least
+        # makes debugging easier
+        response.raise_for_status()
         return cls._csv_from_response(response)
 
     @property
@@ -138,6 +141,9 @@ class Rendering(models.Model):
             'query': json.dumps(query)
         }
         response = requests.get(url=url, headers=headers, params=params)
+        # Raising an exception here doesn't help the user, but it at least
+        # makes debugging easier
+        response.raise_for_status()
         return self._csv_from_response(response)
         return response.text.strip()
 
@@ -343,6 +349,9 @@ class Rendering(models.Model):
             'q=deployment__identifier:"{}"'.format(
                 settings.KPI_URL, identifier)
         response = requests.get(kpi_search_url, headers=headers)
+        # Raising an exception here doesn't help the user, but it at least
+        # makes debugging easier
+        response.raise_for_status()
         kpi_search_results = response.json()
         if kpi_search_results['count'] == 1:
             return kpi_search_results['results'][0]['uid']
@@ -354,6 +363,9 @@ class Rendering(models.Model):
                 settings.KPI_URL)
             response = requests.get(
                 kpi_opt_in_url, headers=headers, allow_redirects=False)
+            # Raising an exception here doesn't help the user, but it at least
+            # makes debugging easier
+            response.raise_for_status()
             # Search again, but don't recurse
             return self.find_in_form_builder(attempt_create=False)
         raise NotFoundInFormBuilder('Failed to find matching KPI asset')
