@@ -23,3 +23,4 @@ class ChildFormInline(admin.StackedInline):
 @admin.register(Form)
 class FormAdmin(admin.ModelAdmin):
     inlines = [ChildFormInline]
+    readonly_fields = ('csv_form',)
