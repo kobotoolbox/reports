@@ -1,4 +1,5 @@
 from django.db import models
+from private_storage.fields import PrivateFileField
 from xls2csv import xls2csv
 
 
@@ -9,7 +10,7 @@ class Form(models.Model):
     referenced by a `reporter.Rendering` '''
     # `name` means country name in the current implementation
     name = models.CharField(max_length=255, unique=True)
-    xls_form = models.FileField(default=None)
+    xls_form = PrivateFileField(default=None)
     csv_form = models.TextField(
         default='', blank=True, help_text='Always overwritten by `xls_form`')
     parent = models.ForeignKey('equitytool.Form', null=True, blank=True)
