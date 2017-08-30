@@ -23,4 +23,11 @@ class ChildFormInline(admin.StackedInline):
 @admin.register(Form)
 class FormAdmin(admin.ModelAdmin):
     inlines = [ChildFormInline]
-    readonly_fields = ('csv_form',)
+
+    def get_form(self, *args, **kwargs):
+        form = super(FormAdmin, self).get_form(*args, **kwargs)
+        # Encourage the user not to edit the `csv_form` field. This `form` is a
+        # `django.forms.models.ModelFormMetaclass`, not an instance, so it does
+        # not have a `fields` attribute
+        form.base_fields['csv_form'].widget.attrs['disabled'] = True
+        return form
