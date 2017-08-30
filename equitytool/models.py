@@ -10,8 +10,9 @@ class Form(models.Model):
     # `name` means country name in the current implementation
     name = models.CharField(max_length=255, unique=True)
     xls_form = models.FileField(default=None)
-    csv_form = models.TextField(default='', blank=True)
-    parent = models.ForeignKey('equitytool.Form', null=True)
+    csv_form = models.TextField(
+        default='', blank=True, help_text='Always overwritten by `xls_form`')
+    parent = models.ForeignKey('equitytool.Form', null=True, blank=True)
 
     def save(self, *args, **kwargs):
         settings = {
