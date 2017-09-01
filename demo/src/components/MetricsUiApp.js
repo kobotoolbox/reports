@@ -2,7 +2,7 @@
 
 import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
-import bemRouterLink from '../libs/bemRouterLink';
+// import bemRouterLink from '../libs/bemRouterLink';
 import sessionStore from '../stores/session';
 import authUrls from '../stores/authUrls';
 import Reflux from 'reflux';
@@ -19,11 +19,7 @@ require('../styles/MetricsUI.scss');
 
 var MainWrap = bem('main-wrap'),
     Header = bem('header', '<header>'),
-    Footer = bem('footer', '<footer>'),
-    AccountDetails = bem('account-details'),
-    AccountDetail = bem('account-detail', '<span>'),
-    AccountLink = bemRouterLink('account-link'),
-    LogoutLink = bemRouterLink('account-link');
+    Footer = bem('footer', '<footer>');
 
 var MetricsUiApp = React.createClass({
   mixins: [
@@ -51,54 +47,48 @@ var MetricsUiApp = React.createClass({
           <div className="mobile-nav">
             <span className="mob-nav-btn" onClick={this.handleClick}>Menu</span>
           </div>
-          <nav className={this.state.mobileMenuVisible ? "navigation-container nav-menu visible" : "navigation-container nav-menu not-visible"}>
+          <nav className={this.state.mobileMenuVisible ? 'navigation-container nav-menu visible' : 'navigation-container nav-menu not-visible'}>
             <ul id="menu-main" className="menu-ul">
-              <li><a href="https://www.equitytool.org/the-equity-tool-2/">The Equity Tool<span class="drop-arrow"></span></a>
+              <li><a href="https://www.equitytool.org/the-equity-tool-2/">About<span class="drop-arrow"></span></a>
                 <ul>
-                  <li><a href="https://www.equitytool.org/the-equity-tool-2/">Overview</a></li>
-                  <li><a href="https://www.equitytool.org/equity-tool-demonstrations/">Equity Tool Demonstrations</a></li>
-                  <li><a href="https://www.equitytool.org/countries-covered-by-the-equity-tool/">Countries covered by the Equity Tool</a></li>
-                  <li><a href="https://www.equitytool.org/how-to-use-the-equity-tool/">How to use the Equity Tool</a></li>
-                  <li><a href="https://www.equitytool.org/background/">Background</a></li>
+                  <li><a href="https://www.equitytool.org/the-equity-tool-2/">The EquityTool</a></li>
+                  <li><a href="https://www.equitytool.org/equity/">Equity & Wealth</a></li>
+                  <li><a href="https://www.equitytool.org/development/">Development</a></li>
                 </ul>
               </li>
-              <li><a href="https://www.equitytool.org/equity/">About Equity<span class="drop-arrow"></span></a>
+              <li><a href="https://www.equitytool.org/demo/">Demo</a></li>
+              <li><a href="https://www.equitytool.org/countries/">Countries</a></li>
+              <li><a href="https://www.equitytool.org/data-collection-options/">How to Use</a>
                 <ul>
-                  <li><a href="https://www.equitytool.org/equity/">Equity</a></li>
-                  <li><a href="https://www.equitytool.org/wealth-quintiles/">Wealth Quintiles</a></li>
+                  <li><a href="https://www.equitytool.org/data-collection-options/">Data Collection Options</a></li>
+                  <li><a href="https://www.equitytool.org/web-app/">EquityTool Web App</a></li>
+                  <li><a href="https://www.equitytool.org/dhis2/">DHIS2</a></li>
+                  <li><a href="https://www.equitytool.org/other-platforms/">Other Platforms</a></li>
+                  <li><a href="https://www.equitytool.org/interpreting-results/">Interpreting Results</a></li>
+                  <li><a href="https://www.equitytool.org/urban-quintiles/">Urban-focused Surveys</a></li>
                 </ul>
               </li>
-              <li><a href="https://www.equitytool.org/sampling/">Survey Tips<span class="drop-arrow"></span></a>
+              <li><a href="https://www.equitytool.org/contact-us/">Help</a>
                 <ul>
-                  <li><a href="https://www.equitytool.org/sampling/">Sampling</a></li>
-                  <li><a href="https://www.equitytool.org/principles-of-sampling/">Principles of Sampling</a></li>
-                  <li><a href="https://www.equitytool.org/preparing-the-data-collection-team/">Preparing the data collection team</a></li>
-                  <li><a href="https://www.equitytool.org/practical-preparations-for-your-survey/">Practical preparations for your survey</a></li>
+                  <li><a href="https://www.equitytool.org/contact-us/">Contact Us</a></li>
+                  <li><a href="https://www.equitytool.org/our-services/">Our Services</a></li>
+                  <li><a href="https://www.equitytool.org/faq/">FAQ</a></li>
                 </ul>
               </li>
-              <li><a href="https://www.equitytool.org/contact-us/">Contact Us</a></li>
+              { !this.state.session.loggedIn &&
+                <li><a href={authUrls.register}>Sign Up</a></li>
+              }
+              { this.state.session.loggedIn ?
+                <li><a href={authUrls.logout}>Logout</a></li>
+              :
+                <li><a href={authUrls.login}>Login</a></li>
+              }
             </ul>
-          </nav>
-          { this.state.session.loggedIn ?
-            <AccountDetails>
-              <AccountDetail>
-                Welcome
-                <code>{this.state.session.username}</code>
-              </AccountDetail>
-              <LogoutLink m='logout' href={authUrls.logout}>
-                log out
-              </LogoutLink>
-            </AccountDetails>
-          :
-            <AccountDetails>
-              <AccountLink m='login' href={authUrls.login}>
-                login
-              </AccountLink>
-              <AccountLink m='register' href={authUrls.register}>
-                sign up
-              </AccountLink>
-            </AccountDetails>
+          { this.state.session.loggedIn &&
+            <div className="account-details">Welcome {this.state.session.username}</div>
           }
+
+          </nav>
         </Header>
         <RouteHandler />
         <Footer>
