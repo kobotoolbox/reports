@@ -14,6 +14,7 @@ var sessionStore = Reflux.createStore({
     // function extendFakeCredentials(st){
     //   st.fullName = 'your name';
     //   st.email = 'your@email.com';
+    //   st.username = 'yourusername';
     //   st.loggedIn = true;
     // }
     // extendFakeCredentials(this.state);
