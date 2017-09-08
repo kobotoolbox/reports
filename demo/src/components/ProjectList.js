@@ -140,10 +140,10 @@ var ProjectList = React.createClass({
                       </ProjectAttribute>
                       <ProjectAttributeGroup>
                         <ProjectAttribute m='date-created'>
-                          {dateStr}
+                          Created on {dateStr}
                         </ProjectAttribute>
                         <ProjectAttribute m='form-and-template-name'>
-                          {form__name} {/*({template__name})*/}
+                          Collected using {form__name} {/*({template__name})*/}
                         </ProjectAttribute>
                       </ProjectAttributeGroup>
                       <ProjectAttribute m='content'>
