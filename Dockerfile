@@ -1,17 +1,18 @@
-FROM ubuntu:trusty
+FROM ubuntu:xenial
 
 ###########
 # apt-get #
 ###########
 
-RUN apt-get update && \
-    apt-get -y install software-properties-common python-software-properties && \
-    add-apt-repository -y ppa:chris-lea/node.js && \
-    apt-get update && apt-get install -y --no-install-recommends \
+ADD https://deb.nodesource.com/setup_6.x /tmp/setup_6.x.bash
+
+RUN bash /tmp/setup_6.x.bash && \
+    apt-get install -y --no-install-recommends \
         build-essential \
         curl \
         libgmp10 \
         libpq-dev \
+        libxrender1 \
         nodejs \
         texlive-full \
         wget
