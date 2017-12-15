@@ -45,6 +45,10 @@ if ("UrbanM4M" %in% names(respondents)) {
   show_urban <- TRUE
 }
 
+if (!as.logical(request__show_urban)) {
+  show_urban <- FALSE
+}
+
 
 cutoff <- 100
 n <- nrow(respondents)

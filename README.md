@@ -15,6 +15,14 @@ Mustache tags are supported so we can return a warning message if a
 deployment has fewer than 150 responses. See
 `reporter.tests.TestRendering.test_warning`.
 
+# Variables passed to Rmd templates
+
+* `rendering__name`: `Rendering.name`, i.e. the user's name for the project
+* `form__name`: `Form.name`, e.g. `Tajikistan (DHS 2012)`
+* `request__show_urban`: the value of `?show_urban=` in the URL used to request
+  the report
+
+
 # Development _without_ Dokku
 
 This application requires a working instance of KoBoToolbox to run. See

@@ -158,7 +158,7 @@ class Rendering(models.Model):
             f.write(value)
         return filename
 
-    def render(self, extension):
+    def render(self, extension, request=None):
         self._log_message('render begin  ')
         folder = tempfile.mkdtemp()
         try:
@@ -178,6 +178,14 @@ class Rendering(models.Model):
                 folder=folder,
                 name='form__name',
                 value=self.form_name
+            )
+            request__show_urban_filename = self._write_variable_to_file(
+                folder=folder,
+                name='request__show_urban',
+                value=(
+                    request.GET.get('show_urban', 'true') if request
+                        else 'true'
+                )
             )
 
             with open(path, 'w') as f:
@@ -199,6 +207,7 @@ class Rendering(models.Model):
                 'extension': extension,
                 'rendering__name_filename': rendering__name_filename,
                 'form__name_filename': form__name_filename,
+                'request__show_urban_filename': request__show_urban_filename,
             }
             script = render_to_string('compile.R', context)
             path = os.path.join(folder, 'temp.R')
