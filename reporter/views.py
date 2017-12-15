@@ -48,7 +48,7 @@ def rendering(request, id, extension):
     r = Rendering.objects.get(id=id)
     if request.user != r.user:
         return render(request, 'not_owner.html')
-    result = r.render(extension)
+    result = r.render(extension, request)
     response = HttpResponse(result)
     if extension != 'html':
         filename = '%(id)s.%(extension)s' % locals()

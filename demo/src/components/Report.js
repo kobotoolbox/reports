@@ -62,8 +62,18 @@ var Report = React.createClass({
             }
             {this.state.renderingHtml !== 'loading' &&
               <div className="project-links">
-                <ProjectLink className="bordered-navlink" href={'/rendering/' + this.props.params.id + '.pdf'}>download PDF</ProjectLink>
-                <ProjectLink className="bordered-navlink" href={'/rendering/' + this.props.params.id + '.docx'}>download DOC</ProjectLink>
+                <ProjectLink
+                  className="bordered-navlink"
+                  href={'/rendering/' + this.props.params.id + '.pdf?show_urban=' + this.state.urbanVisible}
+                >
+                  download PDF
+                </ProjectLink>
+                <ProjectLink
+                  className="bordered-navlink"
+                  href={'/rendering/' + this.props.params.id + '.docx?show_urban=' + this.state.urbanVisible}
+                >
+                  download DOC
+                </ProjectLink>
               </div>
             }
             <div className="project-footer">
