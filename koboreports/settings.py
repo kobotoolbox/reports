@@ -150,11 +150,11 @@ SOCIAL_AUTH_KOBO_OAUTH2_SECRET = os.environ.get(
 SOCIAL_AUTH_KOBO_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'approval_prompt': 'auto'}
 OAUTH2_AUTHORIZATION_URL = os.environ.get(
     'OAUTH2_AUTHORIZATION_URL',
-    'https://kf.kobotoolbox.org/forms/o/authorize/'
+    'https://kf.kobotoolbox.org/o/authorize/'
 )
 OAUTH2_ACCESS_TOKEN_URL = os.environ.get(
     'OAUTH2_ACCESS_TOKEN_URL',
-    'https://kf.kobotoolbox.org/forms/o/token/'
+    'https://kf.kobotoolbox.org/o/token/'
 )
 
 KC_URL = os.environ.get('KOBOCAT_URL', 'https://kc.kobotoolbox.org')
@@ -167,7 +167,7 @@ urllib3.contrib.pyopenssl.inject_into_urllib3()
 # END: Settings for python-social-auth
 
 # KPI now used for user registration and authentication
-KPI_URL = os.environ.get('KPI_URL', 'https://kf.kobotoolbox.org/forms/')
+KPI_URL = os.environ.get('KPI_URL', 'https://kf.kobotoolbox.org/')
 KPI_API_KEY = os.environ.get(
     'KPI_API_KEY',
     '8qg3bx7#a2j$o4tuplq==bhdo(4g^d_59ztq&je%pj%tv^!kwgo7&61duo-!'
