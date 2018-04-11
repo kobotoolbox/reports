@@ -1,0 +1,62 @@
+FROM ubuntu:xenial
+
+###########
+# apt-get #
+###########
+
+ADD https://deb.nodesource.com/setup_6.x /tmp/setup_6.x.bash
+
+RUN bash /tmp/setup_6.x.bash && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        libgmp10 \
+        libpq-dev \
+        libxrender1 \
+        nodejs \
+        texlive-full \
+        wget
+
+##########
+# pandoc #
+##########
+
+# TODO: Remove --no-check-certificate
+RUN wget --no-check-certificate https://github.com/jgm/pandoc/releases/download/1.15.0.6/pandoc-1.15.0.6-1-amd64.deb -O pandoc.deb && \
+    dpkg -i pandoc.deb && \
+    rm pandoc.deb
+
+##############################
+# conda install Python and R #
+##############################
+
+RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh && \
+    chmod +x miniconda.sh && \
+    ./miniconda.sh -b && \
+    rm miniconda.sh
+ENV PATH /root/miniconda2/bin:$PATH
+RUN conda update --yes conda
+
+RUN mkdir /app
+WORKDIR /app
+
+# https://www.continuum.io/content/conda-data-science
+COPY environment.yml /app/
+RUN conda env create
+
+# http://stackoverflow.com/a/25423366/3756632
+# need this for "source activate" commands
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# R libraries not available through conda
+RUN source activate koboreports && \
+    Rscript -e "install.packages('pander', repos='http://cran.rstudio.com/', type='source')" -e "library(pander)"
+
+#############################
+# install node dependencies #
+#############################
+
+RUN npm install -g grunt-cli
+COPY demo/package.json /tmp/package.json
+RUN cd /tmp && npm install && mkdir /app/demo && \
+    cp -a /tmp/node_modules /app/demo/
