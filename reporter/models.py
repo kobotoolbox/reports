@@ -113,7 +113,16 @@ class Rendering(models.Model):
         if not self.api_token:
             self.data = self._get_csv(self.url)
         elif self.data:
-            self._download_new_data()
+            try:
+                self._download_new_data()
+            except pd.parser.CParserError:
+                # If the existing data has different (typically fewer) columns
+                # than the new data, pandas will raise something like:
+                #   Error tokenizing data. C error: Expected 44 fields in line
+                #   3, saw 46
+                # Work around that by re-fetching the entire data set
+                self.data = ''
+                self.download_data()
         else:
             headers = {
                 'Authorization': 'Token %s' % self.api_token
@@ -145,7 +154,6 @@ class Rendering(models.Model):
         # makes debugging easier
         response.raise_for_status()
         return self._csv_from_response(response)
-        return response.text.strip()
 
     def _log_message(self, msg):
         full_msg = '<Rendering: %s> | %s' % (str(self), msg)
