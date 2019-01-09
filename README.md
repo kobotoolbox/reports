@@ -1,3 +1,9 @@
+# What is this?
+
+This is a custom application that runs at https://data.equitytool.org. It relies on https://kf.kobotoolbox.org for authentication, form deployment, and submission collection/storage.
+
+## What else is it?
+
 `reports` is a Django project for compiling dynamic reports. It is
 built on the R package [knitr][knitr].
 
