@@ -17,5 +17,7 @@ koboreports:
     - KPI_API_KEY=forDevelopmentOnlyOKforDevelopmentOnlyOKforDevelopmentOnlyOK
     - KOBOCAT_URL=https://kc.master.kbtdev.org
     - SECRET_KEY=notVerySecure
+  volumes:
+    - ./:/app
   links:
     - postgres

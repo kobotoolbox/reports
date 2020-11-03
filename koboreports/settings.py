@@ -168,6 +168,10 @@ urllib3.contrib.pyopenssl.inject_into_urllib3()
 
 # KPI now used for user registration and authentication
 KPI_URL = os.environ.get('KPI_URL', 'https://kf.kobotoolbox.org/')
+if KPI_URL and KPI_URL[-1] != '/':
+    # Make sure a trailing URL is included
+    KPI_URL += '/'
+
 KPI_API_KEY = os.environ.get(
     'KPI_API_KEY',
     '8qg3bx7#a2j$o4tuplq==bhdo(4g^d_59ztq&je%pj%tv^!kwgo7&61duo-!'

@@ -46,7 +46,7 @@ on how to install such an instance.
 1. Edit `docker-compose.yml` for this `reports` application:
     1. Set the `KPI_API_KEY` environment variable equal to the application key
        generated above;
-    1. Set `KPI_URL` to `https://[YOUR KPI DOMAIN]/` (must end with a `/`);
+    1. Set `KPI_URL` to `https://[YOUR KPI DOMAIN]/`;
     1. Set `KOBOCAT_URL` to `https://[YOUR KOBOCAT DOMAIN]` (must **not** end
        with a slash!);
 1. Execute `docker-compose pull`;

@@ -28,8 +28,9 @@ LOCAL_USER_FIELDS = (
     'last_login',
     'email',
 )
-# Fields to retrieve from the KoBoCAT profile API and include in the report
-KC_PROFILE_FIELDS = ('organization',)
+# Fields to retrieve from `extra_details` in the KPI profile (via API) and
+# include in the report
+KPI_PROFILE_FIELDS = ('organization',)
 
 ###############################################################################
 ######################### Project Report Configuration ########################
@@ -46,8 +47,8 @@ RENDERING_FIELDS = (
 
 # Configuration ends here
 
-KC_PROFILE_ENDPOINT = '{}/api/v1/user'.format(settings.KC_URL)
-KC_PROFILE_PARALLEL_REQUESTS = 5
+KPI_PROFILE_ENDPOINT = '{}/me'.format(settings.KPI_URL)
+KPI_PROFILE_PARALLEL_REQUESTS = 5
 
 def print_tabular(list_of_dicts, stdout):
     # TODO: Handle data that includes tab characters
@@ -81,12 +82,13 @@ def get_related_field(obj, field_name):
     return field
 
 def _get_profile(username_token_tuple):
-    kc_response = requests.get(
-        KC_PROFILE_ENDPOINT,
+    kpi_response = requests.get(
+        KPI_PROFILE_ENDPOINT,
         headers={'Authorization': 'Token %s' % username_token_tuple[1]}
     )
-    if kc_response.status_code == 200:
-        profile = kc_response.json()
+    if kpi_response.status_code == 200:
+        print kpi_response.json()
+        profile = kpi_response.json().get('extra_details')
     else:
         _management_stderr.write(u'Failed to load profile for {}!\n'.format(
             username_token_tuple[0]))
@@ -101,7 +103,7 @@ def user_report(stdout, stderr):
 
     global _management_stderr
     _management_stderr = stderr
-    pool = Pool(processes=KC_PROFILE_PARALLEL_REQUESTS)
+    pool = Pool(processes=KPI_PROFILE_PARALLEL_REQUESTS)
     profiles = list(
         User.objects.exclude(external_api_token__key=None).values_list(
             'username', 'external_api_token__key')
@@ -116,9 +118,9 @@ def user_report(stdout, stderr):
             profile = None
         for f in LOCAL_USER_FIELDS:
             row[f] = render_field(user, f)
-        for f in KC_PROFILE_FIELDS:
+        for f in KPI_PROFILE_FIELDS:
             if profile is not None:
-                row[f] = profile[f]
+                row[f] = profile.get(f)
             else:
                 row[f] = str(None)
         user_report.append(row)
@@ -152,5 +154,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options.get('user_report'):
             user_report(self.stdout, self.stderr)
-        if options.get('project_report'):
+        elif options.get('project_report'):
             project_report(self.stdout, self.stderr)
+        else:
+            self.stderr.write(
+                'Please specify a report, or re-run with the `--help` '
+                'argument if you are confused.'
+            )
