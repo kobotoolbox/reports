@@ -3,10 +3,10 @@ channels:
   - r
 dependencies:
   - pandas=0.16.2=np19py27_0
-  - pyopenssl==0.15.1
+  - pyopenssl
   - pyasn1=0.2.3=py27_0
 
-  - r-base=3.2.2
+  - r-base=3.6.1
   - r-dplyr
   - r-ggplot2
   - r-rmarkdown
@@ -29,6 +29,6 @@ dependencies:
 
     - xlrd==0.9.4
     - ndg-httpsclient==0.4.0
-    - urllib3==1.7.1
+    - urllib3[secure]
     - raven==5.26.0
     - django-private-storage==1.2.1

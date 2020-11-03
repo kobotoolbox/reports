@@ -50,6 +50,7 @@ on how to install such an instance.
     1. Set `KOBOCAT_URL` to `https://[YOUR KOBOCAT DOMAIN]` (must **not** end
        with a slash!);
 1. Execute `docker-compose pull`;
+1. Execute `docker build -t kobotoolbox/reports_base -f Dockerfile.base .` (this is a slow process);
 1. Supplicate before the gods of JavaScript and execute `docker-compose build`;
 1. Execute `docker-compose up -d postgres`;
 1. Execute `docker-compose logs -f`;

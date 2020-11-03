@@ -37,7 +37,8 @@ class TestRendering(TestCase):
         '''
         rmarkdown = '`r nrow(data)`\n'
         t = Template.objects.create(rmd=rmarkdown, slug='n_observations')
-        url = 'http://www.calvin.edu/~stob/data/bballgames03.csv'
+        # url = 'http://www.calvin.edu/~stob/data/bballgames03.csv'
+        url = 'http://web.archive.org/web/20191230231342if_/http://www.calvin.edu:80/~stob/data/bballgames03.csv'
         r = Rendering.objects.create(template=t, url=url)
         output = r.render('md')
         self.assertEqual(int(output), 2430)
