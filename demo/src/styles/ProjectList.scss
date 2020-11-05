@@ -189,10 +189,14 @@ body div.ReactModal__Content.ReactModal__Content--after-open {
   text-align: center;
   padding: 15px;
 
-  button {
+  button, a {
     margin: 0px 15px;
     padding: 8px;
     background-color: white;
     border: 1px solid #666;
+  }
+  a {
+    text-decoration: inherit;
+    color: inherit;
   }
 }
