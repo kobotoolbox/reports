@@ -92,7 +92,7 @@ var MetricsUiApp = React.createClass({
         </Header>
         <RouteHandler />
         <Footer>
-          {'Metrics for Management, 2016'}
+          {'Metrics for Management, 2020'}
         </Footer>
       </MainWrap>
     );
