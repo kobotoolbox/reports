@@ -20,7 +20,6 @@ var renderingsStore = Reflux.createStore({
     };
     this.listenTo(actions.listRenderings.completed, this.listRenderingsCompleted);
     this.listenTo(actions.listRenderings.failed, this.listRenderingsFailed);
-    this.listenTo(actions.getFormBuilderAccess.completed, this.getFormBuilderAccessCompleted);
     this.listenTo(actions.deleteRendering.completed, this.deleteRenderingCompleted);
     this.listenTo(actions.deleteRendering.failed, this.deleteRenderingFailed);
   },
@@ -34,10 +33,6 @@ var renderingsStore = Reflux.createStore({
     this.trigger({
       errorMessage: 'listing renderings failed',
     });
-  },
-  getFormBuilderAccessCompleted (data) {
-    this.state.formBuilder = data;
-    this.trigger(this.state);
   },
   deleteRenderingCompleted () {
     this.state.projects = [];

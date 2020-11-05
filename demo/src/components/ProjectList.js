@@ -42,7 +42,7 @@ var ProjectList = React.createClass({
       syncingProject: false,
       copiedLink: '',
       modalIsOpen: false,
-      formBuilder: {url: null, one_time_key: null}
+      formBuilder: {url: null}
     };
   },
   componentDidMount () {
@@ -70,9 +70,8 @@ var ProjectList = React.createClass({
   openUpdateModal: function(evt) {
     var $ect = evt.currentTarget;
     this.setState({
-      formBuilder: {url: null, one_time_key: null}
+      formBuilder: {url: $ect.dataset.editLink}
     });
-    actions.getFormBuilderAccess($ect.dataset.projectId);
     this.setState({modalType: 'update', modalIsOpen: true});
   },
   openDeleteModal: function(evt) {
@@ -129,7 +128,7 @@ var ProjectList = React.createClass({
                 Link copied to clipboard
               </div>
 
-              {this.state.projects.map(({name, submission_count, enter_data_link, created, form__name, /*template__name,*/ id}) => {
+              {this.state.projects.map(({name, submission_count, enter_data_link, created, form__name, /*template__name,*/ id, edit_link}) => {
                 var dateStr = moment(new Date(created)).format('D MMMM YYYY');
                 var hasSubmissions = submission_count > 0;
                 var isSyncing = this.state.syncingProject !== false && this.state.syncingProject === id;
@@ -173,15 +172,18 @@ var ProjectList = React.createClass({
                                 view report
                               </Navlink>
                           </ProjectAttribute>
-                        :
-                          <ProjectAttribute m='update-form'>
-                            <label>Update form: </label>
-                            <ProjectAttribute onClick={this.openUpdateModal} data-project-id={id}>
-                              <i />
-                              add questions
+                        : (
+                          edit_link ?
+                            <ProjectAttribute m='update-form'>
+                              <label>Update form: </label>
+                              <ProjectAttribute onClick={this.openUpdateModal} data-edit-link={edit_link}>
+                                <i />
+                                add questions
+                              </ProjectAttribute>
                             </ProjectAttribute>
-                          </ProjectAttribute>
-                        }
+                          :
+                            null
+                        )}
                         <ProjectAttribute m='danger-zone'>
                           <ProjectAttribute onClick={this.openDeleteModal} data-project-id={id}>
                             <i />
@@ -212,19 +214,12 @@ var ProjectList = React.createClass({
                 <p>After you have added your questions, click preview to test
                 your form. To make the changes live in your form, click Save,
                 then the 'x' button, and then click Redeploy.</p>
-                <form action={this.state.formBuilder.url} method="post" target="_blank" onSubmit={this.closeModal}>
-                  <input type="hidden" name="key" value={this.state.formBuilder.one_time_key} />
-                  <div className="modal-buttons">
-                    { this.state.formBuilder.one_time_key ?
-                        <button type="submit">
-                          OK, I understand
-                        </button>
-                      :
-                        <button disabled>Preparing your form...</button>
-                    }
-                    <button type="button" onClick={this.closeModal}>Cancel</button>
-                  </div>
-                </form>
+                <div className="modal-buttons">
+                  <a href={this.state.formBuilder.url}>
+                    OK, I understand
+                  </a>
+                  <button type="button" onClick={this.closeModal}>Cancel</button>
+                </div>
               </div>
             : this.state.modalType === 'delete' ?
               <div>

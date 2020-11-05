@@ -119,7 +119,7 @@ class Rendering(models.Model):
                 parsed_url.netloc,
                 parsed_url.path,
                 parsed_url.params,
-                '',  # remove the query parameters
+                '',  # remove the query string
                 '',  # remove the fragment
             )
         )
@@ -139,7 +139,7 @@ class Rendering(models.Model):
                 parsed_url.netloc,
                 '/exports/',
                 '',  # remove the params
-                '',  # remove the query parameters
+                '',  # remove the query string
                 '',  # remove the fragment
             )
         )
@@ -466,3 +466,29 @@ class Rendering(models.Model):
             raise Exception('Multiple KPI assets for a single KC project')
         else:
             return None
+
+    @property
+    def edit_link(self):
+        """
+        Get from `self.url`, which is something like
+            https://kf.kobotoolbox.org/api/v2/assets/aLGo7b3sjQ5iikqY7xhzZ6/?format=json
+        ...to a KPI URL that will prompt to login and redirect to the form
+        builder, e.g.:
+            https://kf.kobotoolbox.org/accounts/login/?next=/%23/forms/aLGo7b3sjQ5iikqY7xhzZ6/edit
+        """
+        parsed_url = urlparse(self.url)
+        if not parsed_url.path.startswith(KPI_PATH_HEAD):
+            return None
+        asset_path = parsed_url.path
+        asset_uid = asset_path.split('/')[-2]
+        # Make sure to use `%23` instead of `#`, otherwise the redirection will
+        # fail
+        kpi_edit_url = (
+            u'{scheme}://{netloc}/accounts/login/?next=/%23/forms/{uid}/edit'
+        ).format(
+            scheme=parsed_url.scheme,
+            netloc=parsed_url.netloc,
+            uid=asset_uid,
+        )
+        return kpi_edit_url
+

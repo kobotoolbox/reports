@@ -87,6 +87,7 @@ class RenderingSerializer(serializers.ModelSerializer):
             'modified',
             'submission_count',
             'enter_data_link',
+            'edit_link',
         )
 
 
@@ -112,32 +113,6 @@ class RenderingViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.delete_from_kobo()
         return super(RenderingViewSet, self).perform_destroy(instance)
-
-    @detail_route(methods=['get'])
-    def one_time_form_builder_access(self, request, pk=None):
-        rendering = self.get_object()
-        # The client will have to POST a one-time key to this URL in order to
-        # authenticate the user to KPI and load the form builder for this
-        # rendering
-        form_builder_access = {
-            'url': u'{kpi_url}{auth_shim}#/forms/{uid}/edit'.format(
-                kpi_url=settings.KPI_URL,
-                auth_shim='authorized_application/one_time_login/',
-                uid=None  # this whole method will be removed shortly (#134)
-            )
-        }
-        # Using our trusted application status, command KPI to create a
-        # one-time key for the currently logged in user
-        url = '{}authorized_application/one_time_authentication_keys/'.format(
-            settings.KPI_URL)
-        headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}
-        data = {'username': request.user.username}
-        response = requests.post(url, headers=headers, data=data)
-        # Raising an exception here doesn't help the user, but it at least
-        # makes debugging easier
-        response.raise_for_status()
-        form_builder_access['one_time_key'] = response.json()['key']
-        return Response(form_builder_access)
 
 
 def proxy_create_user(request):
