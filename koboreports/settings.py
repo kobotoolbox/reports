@@ -38,7 +38,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'rest_framework',
     'django.contrib.sites',
-    'social.apps.django_app.default',
     'private_storage',
     'reporter',
     'equitytool',
@@ -51,7 +50,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'koboreports.urls'
@@ -102,8 +100,6 @@ TEMPLATES = [{
             "django.template.context_processors.static",
             "django.template.context_processors.tz",
             "django.contrib.messages.context_processors.messages",
-            'social.apps.django_app.context_processors.backends',
-            'social.apps.django_app.context_processors.login_redirect',
         )
     }
 }]
@@ -135,36 +131,10 @@ LOGGING = {
 
 AUTHENTICATION_BACKENDS = (
     'reporter.kobo_backend.KoboApiAuthBackend',
-    'reporter.kobo_backend.KoboOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
-# START: Settings for python-social-auth
-#LOGIN_URL = '/login/kobo-oauth2/'
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
-SOCIAL_AUTH_KOBO_OAUTH2_KEY = os.environ.get('OAUTH_CLIENT_ID', 'myclientid')
-SOCIAL_AUTH_KOBO_OAUTH2_SECRET = os.environ.get(
-    'OAUTH_CLIENT_SECRET', 'mysecretid')
-# Don't prompt for authorization if we already have it.
-# http://django-oauth-toolkit.readthedocs.org/en/latest/advanced_topics.html#skip-authorization-form
-SOCIAL_AUTH_KOBO_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'approval_prompt': 'auto'}
-OAUTH2_AUTHORIZATION_URL = os.environ.get(
-    'OAUTH2_AUTHORIZATION_URL',
-    'https://kf.kobotoolbox.org/o/authorize/'
-)
-OAUTH2_ACCESS_TOKEN_URL = os.environ.get(
-    'OAUTH2_ACCESS_TOKEN_URL',
-    'https://kf.kobotoolbox.org/o/token/'
-)
-
 KC_URL = os.environ.get('KOBOCAT_URL', 'https://kc.kobotoolbox.org')
-
-# Enable SNI support (see
-# http://urllib3.readthedocs.org/en/latest/security.html#openssl-pyopenssl)
-import urllib3.contrib.pyopenssl
-urllib3.contrib.pyopenssl.inject_into_urllib3()
-
-# END: Settings for python-social-auth
 
 # KPI now used for user registration and authentication
 KPI_URL = os.environ.get('KPI_URL', 'https://kf.kobotoolbox.org/')
@@ -176,6 +146,7 @@ KPI_API_KEY = os.environ.get(
     'KPI_API_KEY',
     '8qg3bx7#a2j$o4tuplq==bhdo(4g^d_59ztq&je%pj%tv^!kwgo7&61duo-!'
 )
+
 LOGIN_URL = '/api-auth/login/'
 
 ''' Sentry configuration '''
