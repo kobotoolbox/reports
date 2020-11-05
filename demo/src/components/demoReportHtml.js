@@ -9,7 +9,7 @@ var demoReportHtml = `
         <h3>National quintile results</h3>
         <p>These are the national quintile results for these respondents:</p>
         <p>The table above shows you the percentage of your respondents that were in each national wealth quintile.</p>
-        <p>0% of your respondents were in the bottom two quintiles. This means that a relatively small number of respondents were poor. For more information on interpreting wealth quintile results, <a href="https://www.equitytool.org/wealth-quintiles/">please click here</a>.</p>
+        <p>0% of your respondents were in the bottom two quintiles. This means that a relatively small number of respondents were poor. For more information on interpreting wealth quintile results, <a href="https://www.equitytool.org/interpreting-results/">please click here</a>.</p>
       </div>
 
       <div class="column-graph">
@@ -40,7 +40,7 @@ var demoReportHtml = `
         <h3>Urban quintile results</h3>
         <p>These are the urban quintile results for these respondents:</p>
         <p>The table above shows you the percentage of your respondents that were in each urban wealth quintile.</p>
-        <p>100% of your respondents were in the bottom two quintiles. This means that a relatively large number of respondents were poor. For more information on interpreting wealth quintile results, <a href="https://www.equitytool.org/wealth-quintiles/">please click here</a>.</p>
+        <p>100% of your respondents were in the bottom two quintiles. This means that a relatively large number of respondents were poor. For more information on interpreting wealth quintile results, <a href="https://www.equitytool.org/interpreting-results/">please click here</a>.</p>
       </div>
       <div class="column-graph">
         <img src="${require('../images/sample_graph.png')}" />
