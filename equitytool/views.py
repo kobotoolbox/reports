@@ -1,8 +1,12 @@
+import base64
 import datetime
 import json
 import os
 import re
 import requests
+import time
+import unicodecsv
+import xlwt
 import zipfile
 from io import BytesIO
 
@@ -93,7 +97,7 @@ class Wrapper(object):
     ''' Allows the user to create useful "projects" by tying together
     `equitytool.Form`, `reporter.Template`, and `reporter.Rendering` '''
 
-    KC_URL = settings.KC_URL
+    KPI_URL = settings.KPI_URL
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
@@ -122,62 +126,108 @@ class Wrapper(object):
             template.save()
         self.template = template
 
-    def get_forms(self):
-        path = '/api/v1/forms?owner=%s' % self.user.username
-        url = self.KC_URL + path
-        response = requests.get(url, headers=self._headers())
-        # Raising an exception here doesn't help the user, but it at least
-        # makes debugging easier
-        response.raise_for_status()
-        l = json.loads(response.content)
-        forms_by_id = dict([(d['id_string'], d) for d in l])
-        return forms_by_id
-
     def _headers(self):
         return {'Authorization': 'Token %s' % self.api_token}
 
-    def _create_form(self):
-        # TODO: Do not use "form" to refer to both `equitytool.models.Form` and
-        # KoBoCat `XForm`
+    @staticmethod
+    def _csv_to_xlsform_io(csv_str):
+        """
+        It'd be better to skip the entire templating process now that we're
+        creating forms via KPI, since `id_string` cannot be set manually and
+        there's a better way to set the title (`asset.name`). However, while we
+        already have CSV strings in the database and possibly do not have their
+        original XLSForm sources, let's endure the grossness and convert CSV
+        back to XLS
+        """
+        for line in csv_str.split('\n'):
+            csv_io = BytesIO(csv_str.encode('utf-8'))
+            xls_io = BytesIO()
+            xl_wb = xlwt.Workbook()
+            xl_sheet = None
+            xl_row_index = 0
+            for row in unicodecsv.reader(csv_io):
+                if row[0]:
+                    # A new sheet in our weird "sheeted" CSV format
+                    xl_sheet = xl_wb.add_sheet(row[0])
+                    xl_row_index = 0
+                else:
+                    # A row within a sheet
+                    for xl_col_index, xl_value in enumerate(row[1:]):
+                        xl_sheet.write(xl_row_index, xl_col_index, xl_value)
+                    xl_row_index += 1
+            xl_wb.save(xls_io)
+            xls_io.seek(0)
+            return xls_io
+
+    def _create_kpi_asset(self):
         form = self.country
         template = DjangoTemplate(form.csv_form)
         context = Context({
             'form_title': self.name,
-            'form_id': self.id_string,
+            'form_id': '',  # not applicable to KPI deployments, but still
+                            # referenced by templates
         })
         csv = template.render(context)
-        url = self.KC_URL + '/api/v1/forms'
-        data = {'text_xls_form': csv}
+        # KPI doesn't support CSV imports; convert CSV to XLS
+        base64_xlsform = base64.b64encode(self._csv_to_xlsform_io(csv).read())
+        url = self.KPI_URL + 'imports/'
+        data = {
+            'name': self.name,
+            'base64Encoded': 'base64:' + base64_xlsform,
+            'library': 'false',
+        }
+        # Start the asynchronous import
         response = requests.post(url, data=data, headers=self._headers())
-        assert response.status_code == 201, response.content
-        return json.loads(response.content)
+        assert response.status_code == 201
+        import_url = response.json()['url']
+        # Poll for import completion; rely on the server (e.g. gunicorn) to
+        # kill us if this takes too long
+        import_info = None
+        while True:
+            response = requests.get(import_url, headers=self._headers())
+            assert response.status_code == 200
+            import_info = response.json()
+            if import_info['status'] == 'complete':
+                break
+            else:
+                time.sleep(2)
+        # Yikes
+        asset_uid = import_info['messages']['created'][0]['uid']
+        # Deploy the new KPI asset
+        deploy_url = '{}api/v2/assets/{}/deployment/?format=json'.format(
+            self.KPI_URL, asset_uid
+        )
+        data = {'active': True}
+        response = requests.post(deploy_url, data=data, headers=self._headers())
+        assert response.status_code == 200
+        return response.json()['asset']
 
     def set_form(self):
-        slug = slugify(self.name)
-        suffix = 0
-        forms_by_id = self.get_forms()
-        # Work fast! We've created a race condition.
-        # TODO: If our id_string is in use by the time we POST to KC, handle
-        # the failure gracefully
-        self.id_string = slug
-        while self.id_string in forms_by_id:
-            if suffix:
-                self.id_string = slug + str(suffix)
-            suffix += 1
-        # Always create a new XForm in KC
-        self.form = self._create_form()
+        self.form = self._create_kpi_asset()
 
     def set_rendering(self):
-        path = '/api/v1/data/%d?format=csv' % self.form['formid']
-        url = self.KC_URL + path
         self.rendering, created = Rendering.objects.get_or_create(
             user=self.user,
             template=self.template,
-            url=url,
+            url=self.form['url'],
             name=self.name,
             form_name=self.country.name,
             form_pk=self.country.pk
         )
+
+        # We don't have to worry about fetching Enketo links from KC because
+        # this method only gets called when creating *new* projects, which use
+        # KPI
+        try:
+            self.rendering._enter_data_link = self.form['deployment__links'][
+                'offline_url'
+            ]
+        except KeyError:
+            # If Enketo is down, we'll have another opportunity to try again
+            pass
+        else:
+            self.rendering.save(update_fields=['_enter_data_link'])
+
         self.rendering.download_data()
 
     @classmethod

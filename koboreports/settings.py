@@ -134,9 +134,6 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-KC_URL = os.environ.get('KOBOCAT_URL', 'https://kc.kobotoolbox.org')
-
-# KPI now used for user registration and authentication
 KPI_URL = os.environ.get('KPI_URL', 'https://kf.kobotoolbox.org/')
 if KPI_URL and KPI_URL[-1] != '/':
     # Make sure a trailing URL is included

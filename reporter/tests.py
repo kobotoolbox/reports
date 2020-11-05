@@ -12,7 +12,7 @@ _rmd_path = lambda x: os.path.join(os.path.dirname(__file__), 'rmd_templates', x
 class TestRendering(TestCase):
 
     # These are associated with the m4m_testing account on
-    # kc.kobotoolbox.org
+    # kf.kobotoolbox.org
     API_TOKEN = '9b751c0ae200d2f2a82a05f6af510baffe1b4c83'
     FORMID = 25320
 

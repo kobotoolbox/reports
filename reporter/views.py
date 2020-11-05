@@ -1,4 +1,5 @@
 import datetime
+import json
 import requests
 import logging
 from urlparse import urlparse
@@ -109,7 +110,7 @@ class RenderingViewSet(viewsets.ModelViewSet):
         return Rendering.objects.filter(user=user).order_by('-pk')
 
     def perform_destroy(self, instance):
-        instance.delete_from_kc_and_kpi()
+        instance.delete_from_kobo()
         return super(RenderingViewSet, self).perform_destroy(instance)
 
     @detail_route(methods=['get'])
@@ -122,7 +123,7 @@ class RenderingViewSet(viewsets.ModelViewSet):
             'url': u'{kpi_url}{auth_shim}#/forms/{uid}/edit'.format(
                 kpi_url=settings.KPI_URL,
                 auth_shim='authorized_application/one_time_login/',
-                uid=rendering.find_in_form_builder()
+                uid=None  # this whole method will be removed shortly (#134)
             )
         }
         # Using our trusted application status, command KPI to create a
@@ -145,7 +146,7 @@ def proxy_create_user(request):
     headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}
     response = requests.post(url, data=request.POST, headers=headers)
     content_type = response.headers.get('content-type')
-    # Store the user's organization in KC if the creation was successful
+    # Store the user's organization in KPI if the creation was successful
     organization = request.POST.get('organization', False)
     if organization and response.status_code == status.HTTP_201_CREATED:
         username = request.POST.get('username', False)
@@ -155,21 +156,23 @@ def proxy_create_user(request):
         # https://docs.djangoproject.com/en/1.9/topics/auth/default/#how-to-log-a-user-in
         user = authenticate(username=username, password=password)
         # Should now have user.external_api_token from KoboApiAuthBackend
-        profile_url = '{}/api/v1/profiles/{}'.format(settings.KC_URL, username)
+        # FUN FACT: if you omit the trailing slash, you'll always get a 200
+        # response, but nothing will ever be updated!
+        profile_url = '{}me/'.format(settings.KPI_URL)
         profile_headers = {
             'Authorization': 'Token {}'.format(user.external_api_token.key)
         }
-        # Patch the user's KC profile to set the organization
+        # Store the organization within KPI
         profile_response = requests.patch(
             profile_url,
-            data={'organization': organization},
+            data={'extra_details': json.dumps({'organization': organization})},
             headers=profile_headers
         )
         if profile_response.status_code != status.HTTP_200_OK:
             # The user has already been created, so it doesn't make sense to
             # fail completely at this point. We should log the error, though
             logging.error((
-                'Unable to set organization to "{}" for user "{}". KC '
+                'Unable to set organization to "{}" for user "{}". KPI '
                 'returned HTTP {}.'
             ).format(organization, username, profile_response.status_code))
 
