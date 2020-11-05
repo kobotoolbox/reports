@@ -27,10 +27,6 @@ KC_PATH_HEAD = '/api/v1/data/'
 logger = logging.getLogger('TIMING')
 
 
-class NotFoundInFormBuilder(Exception):
-    pass
-
-
 class UserExternalApiToken(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, related_name='external_api_token')
@@ -443,10 +439,7 @@ class Rendering(models.Model):
                 self._kc_pk))
         )
         if kc_response.status_code == 404:
-            raise NotFoundInFormBuilder(
-                'The corresponding KC form is missing; without it, no KPI '
-                'asset can be located or created'
-            )
+            return None
         kc_form_data = kc_response.json()
         # Construct an identifier URL using the username and id string
         parsed_url = urlparse(self.url)
@@ -460,7 +453,7 @@ class Rendering(models.Model):
         # project
         headers = {'Authorization': 'Token {}'.format(self.api_token)}
         kpi_search_url = '{}api/v2/assets/?format=json&' \
-            'q=deployment__identifier:"{}"'.format(
+            'q=_deployment_data__identifier:"{}"'.format(
                 settings.KPI_URL, identifier)
         response = requests.get(kpi_search_url, headers=headers)
         # Raising an exception here doesn't help the user, but it at least
