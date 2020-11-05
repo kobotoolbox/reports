@@ -40,6 +40,8 @@ class TestRendering(TestCase):
         # url = 'http://www.calvin.edu/~stob/data/bballgames03.csv'
         url = 'http://web.archive.org/web/20191230231342if_/http://www.calvin.edu:80/~stob/data/bballgames03.csv'
         r = Rendering.objects.create(template=t, url=url)
+        # Hack to bypass KoBo URL validity check
+        r._test_non_kobo_csv = True
         output = r.render('md')
         self.assertEqual(int(output), 2430)
 

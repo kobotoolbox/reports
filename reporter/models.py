@@ -96,16 +96,14 @@ class Rendering(models.Model):
         return stripped_content
 
     def _get_csv(self):
-        if not self.api_token:
-            raise Exception('Cannot download data without an API token')
-        headers = {
-            'Authorization': 'Token %s' % self.api_token
-        }
         parsed_url = urlparse(self.url)
 
-        if parsed_url.path.startswith(KC_PATH_HEAD):
+        if parsed_url.path.startswith(KC_PATH_HEAD) or getattr(
+            # Hack for unit tests that use non-KoBo CSV
+            self, '_test_non_kobo_csv', False
+        ):
             # Old project that was deployed to KoBoCAT
-            response = requests.get(self.url, headers=headers)
+            response = self._token_auth_request('get', self.url)
             # For easier debugging
             response.raise_for_status()
             return self._csv_from_response(response)
@@ -143,8 +141,8 @@ class Rendering(models.Model):
                 '',  # remove the fragment
             )
         )
-        response = requests.post(
-            export_list_url, headers=headers, data=export_options
+        response = self._token_auth_request(
+            'post', export_list_url, data=export_options
         )
         assert response.status_code == 201
         export_url = response.json()['url']
@@ -153,7 +151,7 @@ class Rendering(models.Model):
         # kill us if this takes too long
         while True:
             time.sleep(2)
-            response = requests.get(export_url, headers=headers)
+            response = self._token_auth_request('get', export_url)
             assert response.status_code == 200
             export_info = response.json()
             if export_info['status'] == 'complete':
@@ -162,7 +160,7 @@ class Rendering(models.Model):
             elif export_info['status'] == 'error':
                 raise Exception('Cannot download data: KPI export failed')
         # Get the exported CSV at last
-        response = requests.get(export_result_url, headers=headers)
+        response = self._token_auth_request('get', export_result_url)
         return self._csv_from_response(response)
 
     @property
@@ -213,13 +211,12 @@ class Rendering(models.Model):
         df = pd.DataFrame.from_csv(f, index_col=None)
         last_submission = df['_submission_time'].max()
         url = self.url
-        headers = {'Authorization': 'Token %s' % self.api_token}
         query = {"_submission_time": {"$gt": str(last_submission)}}
         params = {
             'format': 'csv',
             'query': json.dumps(query)
         }
-        response = requests.get(url=url, headers=headers, params=params)
+        response = self._token_auth_request('get', url, params=params)
         # Raising an exception here doesn't help the user, but it at least
         # makes debugging easier
         response.raise_for_status()
@@ -329,7 +326,7 @@ class Rendering(models.Model):
         assert parsed_url.path.startswith(KC_PATH_HEAD)
         return int(parsed_url.path.split('/')[-1])
 
-    def _token_auth_request(self, method, url):
+    def _token_auth_request(self, method, url, *args, **kwargs):
         """
         Make a request to KPI, using the associated user's token to
         authenticate
@@ -337,7 +334,9 @@ class Rendering(models.Model):
         headers = {}
         if self.api_token:
             headers['Authorization'] = 'Token {}'.format(self.api_token)
-        response = requests.request(method, url, headers=headers)
+        response = requests.request(
+            method, url, *args, headers=headers, **kwargs
+        )
         return response
 
     def delete_from_kobo(self):
@@ -451,11 +450,10 @@ class Rendering(models.Model):
         )
         # Search KPI for an asset whose deployment identifier matches our KC
         # project
-        headers = {'Authorization': 'Token {}'.format(self.api_token)}
         kpi_search_url = '{}api/v2/assets/?format=json&' \
             'q=_deployment_data__identifier:"{}"'.format(
                 settings.KPI_URL, identifier)
-        response = requests.get(kpi_search_url, headers=headers)
+        response = self._token_auth_request('get', kpi_search_url)
         # Raising an exception here doesn't help the user, but it at least
         # makes debugging easier
         response.raise_for_status()
