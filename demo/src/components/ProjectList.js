@@ -205,10 +205,10 @@ var ProjectList = React.createClass({
                 automatically in this form. These fields are required for the
                 EquityTool and should not be changed in any way. You may add
                 additional questions by clicking the “+” but no changes should
-                be made to the existing content. Visit <a
-                href="https://equitytool.org/addingquestions">equitytool.org/addingquestions</a>
-                for information on how to safely add questions to this
-                form.</p>
+                be made to the existing content. Visit <a target="_blank"
+                href="https://equitytool.org/addingquestions">
+                equitytool.org/addingquestions</a> for information on how to
+                safely add questions to this form.</p>
                 <p>After you have added your questions, click preview to test
                 your form. To make the changes live in your form, click Save,
                 then the 'x' button, and then click Redeploy.</p>

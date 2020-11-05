@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import render_to_string
 from django.conf import settings
-from urlparse import urlparse
+from urlparse import urlparse, urlunparse
 from requests.exceptions import HTTPError
 import json
 import os
@@ -15,13 +15,16 @@ import logging
 import datetime
 import dateutil
 import shutil
+import time
+
+
+# Used to detect whether an EquityTool survey was deployed to
+# KC (old) or KPI (new)
+KPI_PATH_HEAD = '/api/v2/'
+KC_PATH_HEAD = '/api/v1/data/'
 
 
 logger = logging.getLogger('TIMING')
-
-
-class NotFoundInFormBuilder(Exception):
-    pass
 
 
 class UserExternalApiToken(models.Model):
@@ -50,10 +53,10 @@ class Template(models.Model):
 
 
 class Rendering(models.Model):
-    ''' Retrieves data from KoBoCAT and processes it through a Template. The
-    data comes from KoBoCAT XForms, which KC calls "forms" in the API and
-    "projects" in the UI '''
-    user = models.ForeignKey(User, null=True, editable=False, related_name='renderings')
+    """ Retrieves data from KPI and processes it through a `Template` """
+    user = models.ForeignKey(
+        User, null=True, editable=False, related_name='renderings'
+    )
     template = models.ForeignKey(Template)
     url = models.URLField(blank=True)
     name = models.TextField(default='')
@@ -92,13 +95,75 @@ class Rendering(models.Model):
             pd.DataFrame.from_csv(StringIO(response.content), index_col=None)
         return stripped_content
 
-    @classmethod
-    def _get_csv(cls, *args, **kwargs):
-        response = requests.get(*args, **kwargs)
-        # Raising an exception here doesn't help the user, but it at least
-        # makes debugging easier
-        response.raise_for_status()
-        return cls._csv_from_response(response)
+    def _get_csv(self):
+        if not self.api_token:
+            raise Exception('Cannot download data without an API token')
+        headers = {
+            'Authorization': 'Token %s' % self.api_token
+        }
+        parsed_url = urlparse(self.url)
+
+        if parsed_url.path.startswith(KC_PATH_HEAD):
+            # Old project that was deployed to KoBoCAT
+            response = requests.get(self.url, headers=headers)
+            # For easier debugging
+            response.raise_for_status()
+            return self._csv_from_response(response)
+        elif not parsed_url.path.startswith(KPI_PATH_HEAD):
+            raise Exception('Cannot download data: invalid KoBo URL')
+
+        # New project using KPI
+        asset_url = urlunparse(
+            (
+                parsed_url.scheme,
+                parsed_url.netloc,
+                parsed_url.path,
+                parsed_url.params,
+                '',  # remove the query parameters
+                '',  # remove the fragment
+            )
+        )
+        # This tool was built to use KoBoCAT CSV exports, so mirror them as
+        # closely as possible
+        export_options = {
+            'source': asset_url,
+            'type': 'csv',
+            'fields_from_all_versions': 'false',
+            'lang': '_xml',
+            'hierarchy_in_labels': 'false',
+        }
+        # Request the export
+        export_list_url = urlunparse(
+            (
+                parsed_url.scheme,
+                parsed_url.netloc,
+                '/exports/',
+                '',  # remove the params
+                '',  # remove the query parameters
+                '',  # remove the fragment
+            )
+        )
+        response = requests.post(
+            export_list_url, headers=headers, data=export_options
+        )
+        assert response.status_code == 201
+        export_url = response.json()['url']
+        export_result_url = None
+        # Poll for export completion; rely on the server (e.g. gunicorn) to
+        # kill us if this takes too long
+        while True:
+            time.sleep(2)
+            response = requests.get(export_url, headers=headers)
+            assert response.status_code == 200
+            export_info = response.json()
+            if export_info['status'] == 'complete':
+                export_result_url = export_info['result']
+                break
+            elif export_info['status'] == 'error':
+                raise Exception('Cannot download data: KPI export failed')
+        # Get the exported CSV at last
+        response = requests.get(export_result_url, headers=headers)
+        return self._csv_from_response(response)
 
     @property
     def api_token(self):
@@ -110,8 +175,10 @@ class Rendering(models.Model):
             return None
 
     def download_data(self):
-        if not self.api_token:
-            self.data = self._get_csv(self.url)
+        self.data = self._get_csv()
+        self.save()
+        '''
+        # TODO: use this again once KPI supports filtered exports
         elif self.data:
             try:
                 self._download_new_data()
@@ -123,14 +190,13 @@ class Rendering(models.Model):
                 # Work around that by re-fetching the entire data set
                 self.data = ''
                 self.download_data()
-        else:
-            headers = {
-                'Authorization': 'Token %s' % self.api_token
-            }
-            self.data = self._get_csv(self.url, headers=headers)
-        self.save()
+        '''
 
     def _download_new_data(self):
+        # TODO: use this again once KPI supports filtered exports
+        raise NotImplementedError(
+            'KPI does not yet support exports with queries'
+        )
         old_lines = self.data.split('\n')
         new_data = self._get_new_data()
         if new_data:
@@ -139,6 +205,10 @@ class Rendering(models.Model):
             self.data = '\n'.join(combined_lines)
 
     def _get_new_data(self):
+        # TODO: use this again once KPI supports filtered exports
+        raise NotImplementedError(
+            'KPI does not yet support exports with queries'
+        )
         f = StringIO(self.data)
         df = pd.DataFrame.from_csv(f, index_col=None)
         last_submission = df['_submission_time'].max()
@@ -244,6 +314,7 @@ class Rendering(models.Model):
 
     def _get_kc_endpoint_url(self, endpoint):
         parsed_url = urlparse(self.url)
+        assert parsed_url.path.startswith(KC_PATH_HEAD)
         return '{}://{}/api/v1/{}'.format(
             parsed_url.scheme,
             parsed_url.netloc,
@@ -255,101 +326,120 @@ class Rendering(models.Model):
         # Assume the numeric ID is the last component of the URL path before
         # the query string
         parsed_url = urlparse(self.url)
+        assert parsed_url.path.startswith(KC_PATH_HEAD)
         return int(parsed_url.path.split('/')[-1])
 
     def _token_auth_request(self, method, url):
-        ''' Make a request to KC or KPI, using the associated user's token to
-        authenticate.  '''
+        """
+        Make a request to KPI, using the associated user's token to
+        authenticate
+        """
         headers = {}
         if self.api_token:
             headers['Authorization'] = 'Token {}'.format(self.api_token)
         response = requests.request(method, url, headers=headers)
         return response
 
-    def delete_from_kc_and_kpi(self):
-        ''' Delete the corresponding KC form and KPI asset, if any exists '''
-        # KPI must be deleted first, because `find_in_form_builder()` depends
-        # upon the KC form still existing
-        try:
-            kpi_asset_uid = self.find_in_form_builder(attempt_create=False)
-        except NotFoundInFormBuilder:
-            # Don't fail if we can't locate a corresponding KPI asset
-            pass
+    def delete_from_kobo(self):
+        """
+        Delete the corresponding KPI asset and/or KC project, if it exists
+        """
+        parsed_url = urlparse(self.url)
+        if parsed_url.path.startswith(KPI_PATH_HEAD):
+            kpi_asset_url = self.url
+        elif parsed_url.path.startswith(KC_PATH_HEAD):
+            # Old project that was deployed to KoBoCAT, but may have been
+            # synced to KPI at some point
+            kpi_asset_url = self.find_kpi_asset_url_for_kc_project()
+            if not kpi_asset_url:
+                # This is a KC-only project
+                kc_response = self._token_auth_request(
+                    'delete',
+                    # If you include a trailing slash after the pk, KC will
+                    # reject the request with a 403. Isn't that fun?
+                    self._get_kc_endpoint_url(
+                        'forms/{}?format=json'.format(self._kc_pk)
+                    ),
+                )
+                # Tolerating a 404 is the right thing to do if a user already
+                # deleted the project from KC, but it runs the risk of masking
+                # programming errors --jnm
+                if kc_response.status_code not in (204, 404):
+                    raise Exception(
+                        'Unexpected status code {} returned by KC'.format(
+                            kc_response.status_code
+                        )
+                    )
         else:
-            # Without `?format=json`, KPI will return 200 instead of 204 after
-            # successful deletion
-            kpi_asset_url = '{kpi_url}assets/{asset_uid}/?format=json'.format(
-                kpi_url=settings.KPI_URL,
-                asset_uid=kpi_asset_uid
-            )
+            raise Exception('Cannot delete: invalid KoBo URL')
+
+        if kpi_asset_url:
+            # Delete from KPI, which should clean up the KC project
+            # automatically
             kpi_response = self._token_auth_request('delete', kpi_asset_url)
-            # Yes, we found a corresponding asset, but let's not create a race
-            # condition by assuming it'll still be there when we go to delete
-            # it
             if kpi_response.status_code not in (204, 404):
                 raise Exception(
                     'Unexpected status code {} returned by KPI'.format(
-                        kpi_response.status_code)
+                        kpi_response.status_code
+                    )
                 )
-
-        # Delete any extant KC form
-        kc_response = self._token_auth_request(
-            'delete',
-            # If you include a trailing slash after the pk, KC will reject the
-            # request with a 403. Isn't that fun?
-            self._get_kc_endpoint_url(
-                'forms/{}?format=json'.format(self._kc_pk))
-        )
-        # Tolerating a 404 is the right thing to do if a user already deleted
-        # the project from KC, but it runs the risk of masking programming
-        # errors --jnm
-        if kc_response.status_code not in (204, 404):
-            raise Exception('Unexpected status code {} returned by KC'.format(
-                kc_response.status_code))
 
     @property
     def enter_data_link(self):
-        ''' Return the Enketo data-entry link, retrieving it from KC if
-        necessary '''
+        """
+        Return the Enketo data-entry link, retrieving it from KPI if
+        necessary
+        """
         VALUE_TO_RETURN_ON_FAILURE = u''
-        if not len(self._enter_data_link):
-            kc_response = self._token_auth_request(
-                'get',
-                self._get_kc_endpoint_url(
-                    'forms/{}/enketo?format=json'.format(self._kc_pk))
+        if self._enter_data_link:
+            return self._enter_data_link
+
+        parsed_url = urlparse(self.url)
+        if parsed_url.path.startswith(KC_PATH_HEAD):
+            url = self._get_kc_endpoint_url(
+                'forms/{}/enketo?format=json'.format(self._kc_pk)
             )
-            try:
-                kc_response.raise_for_status()
-            except HTTPError:
-                return VALUE_TO_RETURN_ON_FAILURE
-            try:
-                form_data = kc_response.json()
-            except ValueError:
-                return VALUE_TO_RETURN_ON_FAILURE
-            try:
+        elif parsed_url.path.startswith(KPI_PATH_HEAD):
+            url = self.url
+        else:
+            return VALUE_TO_RETURN_ON_FAILURE
+
+        response = self._token_auth_request(
+            'get',
+            url,
+        )
+        try:
+            response.raise_for_status()
+            form_data = response.json()
+        except (HTTPError, ValueError):
+            return VALUE_TO_RETURN_ON_FAILURE
+
+        try:
+            if parsed_url.path.startswith(KPI_PATH_HEAD):
+                self._enter_data_link = form_data['deployment__links'][
+                    'offline_url'
+                ]
+            else:
                 self._enter_data_link = form_data['enketo_url']
-            except KeyError:
-                return VALUE_TO_RETURN_ON_FAILURE
-            self.save(update_fields=['_enter_data_link'])
+        except KeyError:
+            return VALUE_TO_RETURN_ON_FAILURE
+
+        self.save(update_fields=['_enter_data_link'])
         return self._enter_data_link
 
-    def find_in_form_builder(self, attempt_create=True):
-        ''' Look for a matching asset in KPI. If none is found and
-        `attempt_create` is True, attempt to create the asset by opting the
-        user into KPI. Returns the uid of the KPI asset if successful'''
+    def find_kpi_asset_url_for_kc_project(self):
+        """
+        Assuming that `self` refers to a KC project, return the URL of its
+        corresponding KPI asset if one exists; otherwise return `None`
+        """
         # Get the form's id string from KC
         kc_response = self._token_auth_request(
             'get',
             self._get_kc_endpoint_url('forms/{}?format=json'.format(
                 self._kc_pk))
         )
-        # FIXME: Match only 404 here once KC #227 is fixed:
-        # https://github.com/kobotoolbox/kobocat/issues/227
-        if kc_response.status_code in (404, 500):
-            raise NotFoundInFormBuilder(
-                'The corresponding KC form is missing; without it, no KPI '
-                'asset can be located or created'
-            )
+        if kc_response.status_code == 404:
+            return None
         kc_form_data = kc_response.json()
         # Construct an identifier URL using the username and id string
         parsed_url = urlparse(self.url)
@@ -362,8 +452,8 @@ class Rendering(models.Model):
         # Search KPI for an asset whose deployment identifier matches our KC
         # project
         headers = {'Authorization': 'Token {}'.format(self.api_token)}
-        kpi_search_url = '{}assets/?format=json&' \
-            'q=deployment__identifier:"{}"'.format(
+        kpi_search_url = '{}api/v2/assets/?format=json&' \
+            'q=_deployment_data__identifier:"{}"'.format(
                 settings.KPI_URL, identifier)
         response = requests.get(kpi_search_url, headers=headers)
         # Raising an exception here doesn't help the user, but it at least
@@ -371,18 +461,8 @@ class Rendering(models.Model):
         response.raise_for_status()
         kpi_search_results = response.json()
         if kpi_search_results['count'] == 1:
-            return kpi_search_results['results'][0]['uid']
+            return kpi_search_results['results'][0]['url']
         elif kpi_search_results['count'] > 1:
             raise Exception('Multiple KPI assets for a single KC project')
-        elif kpi_search_results['count'] == 0 and attempt_create:
-            # Opt the user into KPI, which syncs KC projects to KPI assets
-            kpi_opt_in_url = '{}hub/switch_builder?beta=1&migrate=1'.format(
-                settings.KPI_URL)
-            response = requests.get(
-                kpi_opt_in_url, headers=headers, allow_redirects=False)
-            # Raising an exception here doesn't help the user, but it at least
-            # makes debugging easier
-            response.raise_for_status()
-            # Search again, but don't recurse
-            return self.find_in_form_builder(attempt_create=False)
-        raise NotFoundInFormBuilder('Failed to find matching KPI asset')
+        else:
+            return None

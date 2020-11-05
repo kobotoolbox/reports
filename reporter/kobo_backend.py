@@ -31,8 +31,8 @@ class KoboApiAuthBackend(ModelBackend):
         for attribute in user_attributes_to_set:
             setattr(user, attribute, response_data[attribute])
         user.save()
-        # Record the token returned by KPI, which will be used to access the
-        # KC API
+        # In our own database, record the token returned by KPI for this user
+        # so that we can use it for future authentication
         with transaction.atomic():
             token_storage = UserExternalApiToken.objects.get_or_create(
                 user=user)[0]
