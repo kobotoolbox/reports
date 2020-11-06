@@ -17,6 +17,10 @@ RUN bash /tmp/setup_6.x.bash && \
         texlive-full \
         wget
 
+# Work around a font rendering problem; see
+# https://github.com/kobotoolbox/reports/issues/136
+RUN apt-get remove -y tex-gyre
+
 ##########
 # pandoc #
 ##########
