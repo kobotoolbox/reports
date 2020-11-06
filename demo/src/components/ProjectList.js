@@ -215,7 +215,11 @@ var ProjectList = React.createClass({
                 your form. To make the changes live in your form, click Save,
                 then the 'x' button, and then click Redeploy.</p>
                 <div className="modal-buttons">
-                  <a href={this.state.formBuilder.url}>
+                  <a
+                    href={this.state.formBuilder.url}
+                    target="_blank"
+                    onClick={this.closeModal}
+                  >
                     OK, I understand
                   </a>
                   <button type="button" onClick={this.closeModal}>Cancel</button>
