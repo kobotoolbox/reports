@@ -9,7 +9,6 @@ import moment from 'moment';
 import {requireLoggedInMixin} from '../mixins/requireLogins';
 import actions from '../actions/actions';
 import {renderingsStore} from '../stores/renderings';
-import ReactZeroClipboard from 'react-zeroclipboard';
 import Modal from 'react-modal';
 
 require('styles/ProjectList.scss');
@@ -48,6 +47,12 @@ var ProjectList = React.createClass({
   componentDidMount () {
     this.listenTo(renderingsStore, this.renderingsStoreChanged);
     actions.listRenderings();
+  },
+  copyText (evt) {
+    var $ect = evt.currentTarget;
+    navigator.clipboard.writeText($ect.dataset.textToCopy).then(
+      this.afterCopy
+    );
   },
   syncProject (evt) {
     var $ect = evt.currentTarget;
@@ -151,9 +156,13 @@ var ProjectList = React.createClass({
                           <ProjectAttributeLink m='enter-data' href={enter_data_link} target='_blank'>
                             enter data
                           </ProjectAttributeLink>
-                          <ReactZeroClipboard text={enter_data_link} onAfterCopy={this.afterCopy}>
-                            <button className="button-copy">copy link</button>
-                          </ReactZeroClipboard>
+                          <button
+                            className="button-copy"
+                            onClick={this.copyText}
+                            data-text-to-copy={enter_data_link}
+                          >
+                            copy link
+                          </button>
                         </ProjectAttribute>
                         <ProjectAttribute m='submissions'>
                           <label>{submission_count} submissions</label>
