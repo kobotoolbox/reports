@@ -93,10 +93,10 @@ class Rendering(models.Model):
         if len(stripped_content):
             # Quasi-validate the CSV by trying to parse it with Pandas
             df = pd.DataFrame.from_csv(StringIO(response.content), index_col=None)
-            if df.size < 2:
+            if df.size < 2 or len(df.columns) < 2:
                 # No real data here; retry using semicolon as the separator
                 df = pd.DataFrame.from_csv(StringIO(response.content), index_col=None, sep=';')
-                if df.size >= 2:
+                if df.size >= 2 and len(df.columns) >= 2:
                     # Convert to standard comma-separated
                     stripped_content = df.to_csv().strip()
 
