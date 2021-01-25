@@ -8,6 +8,7 @@ from optparse import make_option
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
+from django.utils.encoding import smart_text
 
 from reporter.models import Rendering, UserExternalApiToken
 
@@ -51,7 +52,7 @@ KPI_PROFILE_ENDPOINT = '{}/me'.format(settings.KPI_URL)
 KPI_PROFILE_PARALLEL_REQUESTS = 5
 
 def coerce_and_join(separator, iterable):
-    return separator.join((str(i) for i in iterable))
+    return separator.join((smart_text(i) for i in iterable))
 
 def print_tabular(list_of_dicts, stdout):
     # TODO: Handle data that includes tab characters
