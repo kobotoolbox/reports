@@ -50,13 +50,16 @@ RENDERING_FIELDS = (
 KPI_PROFILE_ENDPOINT = '{}/me'.format(settings.KPI_URL)
 KPI_PROFILE_PARALLEL_REQUESTS = 5
 
+def coerce_and_join(separator, iterable):
+    return separator.join((str(i) for i in iterable))
+
 def print_tabular(list_of_dicts, stdout):
     # TODO: Handle data that includes tab characters
     if not len(list_of_dicts):
         return
-    stdout.write('\t'.join(list_of_dicts[0].keys()))
+    stdout.write(coerce_and_join('\t', list_of_dicts[0].keys()))
     for r in list_of_dicts:
-        stdout.write('\t'.join(r.values()))
+        stdout.write(coerce_and_join('\t', r.values()))
 
 def render_field(obj, field_name):
     if field_name.endswith('()'):
