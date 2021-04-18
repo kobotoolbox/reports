@@ -15,7 +15,6 @@ koboreports:
     - DEBUG=True
     - KPI_URL=https://kf.master.kbtdev.org/
     - KPI_API_KEY=forDevelopmentOnlyOKforDevelopmentOnlyOKforDevelopmentOnlyOK
-    - KOBOCAT_URL=https://kc.master.kbtdev.org
     - SECRET_KEY=notVerySecure
   volumes:
     - ./:/app

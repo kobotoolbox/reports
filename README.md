@@ -47,8 +47,6 @@ on how to install such an instance.
     1. Set the `KPI_API_KEY` environment variable equal to the application key
        generated above;
     1. Set `KPI_URL` to `https://[YOUR KPI DOMAIN]/`;
-    1. Set `KOBOCAT_URL` to `https://[YOUR KOBOCAT DOMAIN]` (must **not** end
-       with a slash!);
 1. Execute `docker-compose pull`;
 1. Execute `docker build -t kobotoolbox/reports_base -f Dockerfile.base .` (this is a slow process);
 1. Supplicate before the gods of JavaScript and execute `docker-compose build`;
