@@ -2,15 +2,15 @@ import datetime
 import json
 import requests
 import logging
-from urlparse import urlparse
+from urllib.parse import urlparse
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import RequestContext
 from django.conf import settings
 from django.contrib.auth import authenticate
-from models import Template, Rendering
+from .models import Template, Rendering
 from rest_framework import serializers, permissions, viewsets, status
-from rest_framework.decorators import api_view, detail_route
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from equitytool.models import Form
 
@@ -42,8 +42,7 @@ def current_user(request):
                          })
 
 def demo(request):
-    context = RequestContext(request)
-    return render(request, 'demo.html', context_instance=context)
+    return render(request, 'demo.html')
 
 def rendering(request, id, extension):
     r = Rendering.objects.get(id=id)

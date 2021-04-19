@@ -75,7 +75,7 @@ def render_field(obj, field_name):
         # Excel compatibility
         return field.strftime(DATE_FORMAT)
     else:
-        return unicode(field)
+        return str(field)
 
 def get_related_field(obj, field_name):
     # Is there really not a Django utility function for this?
@@ -91,10 +91,10 @@ def _get_profile(username_token_tuple):
         headers={'Authorization': 'Token %s' % username_token_tuple[1]}
     )
     if kpi_response.status_code == 200:
-        print kpi_response.json()
+        print(kpi_response.json())
         profile = kpi_response.json().get('extra_details')
     else:
-        _management_stderr.write(u'Failed to load profile for {}!\n'.format(
+        _management_stderr.write('Failed to load profile for {}!\n'.format(
             username_token_tuple[0]))
         profile = None
     return (
@@ -118,7 +118,7 @@ def user_report(stdout, stderr):
         try:
             profile = profiles[user.username]
         except KeyError:
-            stderr.write(u'No token for {}!\n'.format(user.username))
+            stderr.write('No token for {}!\n'.format(user.username))
             profile = None
         for f in LOCAL_USER_FIELDS:
             row[f] = render_field(user, f)

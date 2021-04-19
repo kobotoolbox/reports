@@ -57,16 +57,6 @@ on how to install such an instance.
 1. Start the application with `docker-compose up -d`;
 1. Get a shell inside the application container by running
    `docker-compose exec koboreports bash`;
-1. Set the domain for the Django sites framework to match the hostname
-   (or IP address) of your development machine:
-    1. (Inside the application container) `source activate koboreports`;
-    1. `./manage.py shell`;
-        1. `from django.contrib.sites.models import *`;
-        1. `s = Site.objects.first()`;
-        1. `s.domain = s.name = 'your.reports.domain'` (include `:port` if
-           necessary);
-        1. `s.save()`;
-        1. `exit()`;
 1. Load some sample `Form`s, if desired:
     1. (Inside the application container) `source activate koboreports`;
     1. `./manage.py loaddata dev/sample-forms.json`;

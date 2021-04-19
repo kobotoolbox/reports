@@ -1,6 +1,6 @@
 from django.db import models
 from private_storage.fields import PrivateFileField
-from xls2csv import xls2csv
+from .xls2csv import xls2csv
 
 
 class Form(models.Model):

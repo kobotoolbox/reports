@@ -6,6 +6,8 @@ FROM kobotoolbox/reports_base
 
 COPY . /app/
 
+RUN conda env update --prune
+
 WORKDIR /app/demo
 RUN grunt build
 WORKDIR /app

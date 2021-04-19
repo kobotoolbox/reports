@@ -3,7 +3,7 @@ from reporter.models import Template, Rendering
 import os
 import re
 import pandas as pd
-from StringIO import StringIO
+from io import StringIO
 
 
 _rmd_path = lambda x: os.path.join(os.path.dirname(__file__), 'rmd_templates', x)
@@ -22,7 +22,9 @@ class TestRendering(TestCase):
 
         r = Rendering.objects.create(template=t)
         output = r.render('md')
-        self.assertTrue(output.strip().endswith('2'))
+        self.assertEqual(
+            output.strip().decode('utf-8'), 'What is one plus one? 2'
+        )
 
         for ext in ['html', 'pdf', 'docx']:
             output = r.render(ext)
@@ -75,7 +77,9 @@ class TestRendering(TestCase):
         t = Template.objects.create(rmd=rmarkdown, slug='warning')
         r = Rendering.objects.create(template=t)
         output = r.render('md')
-        self.assertEqual(output.strip(), 'WARNING: Need more data.')
+        self.assertEqual(
+            output.strip().decode('utf-8'), 'WARNING: Need more data.'
+        )
 '''
     def test_kobo_api(self):
         url = 'https://kc.kobotoolbox.org/api/v1/data/%d.csv' % self.FORMID

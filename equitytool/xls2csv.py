@@ -19,7 +19,7 @@ class Converter(object):
             csv = sheet.to_csv(index=False, encoding='utf-8')
             lines = csv.strip().split('\n')
             shifted = '\n'.join([',' + line for line in lines])
-            print type(result), type(shifted)
+            print(type(result), type(shifted))
             result += shifted + '\n'
         return result
 
@@ -33,4 +33,4 @@ def xls2csv(io, **kwargs):
 
 if __name__ == '__main__':
     args = sys.argv[1:]
-    print xls2csv(*args)
+    print(xls2csv(*args))

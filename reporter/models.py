@@ -1,9 +1,9 @@
-from StringIO import StringIO
+from io import StringIO
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import render_to_string
 from django.conf import settings
-from urlparse import urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse
 from requests.exceptions import HTTPError
 import json
 import os
@@ -81,21 +81,21 @@ class Rendering(models.Model):
         return len(lines) - 1
 
     def __unicode__(self):
-        return unicode(self.id)
+        return str(self.id)
 
     @staticmethod
     def _csv_from_response(response):
         # Raise exception if status code does not indicate success
         response.raise_for_status()
-        stripped_content = response.content.strip()
+        stripped_content = response.text.strip()
         # An empty response is expected when there's no data, but Pandas won't
         # tolerate it
         if len(stripped_content):
             # Quasi-validate the CSV by trying to parse it with Pandas
-            df = pd.DataFrame.from_csv(StringIO(response.content), index_col=None)
+            df = pd.read_csv(StringIO(response.text), index_col=None)
             if df.size < 2 or len(df.columns) < 2:
                 # No real data here; retry using semicolon as the separator
-                df = pd.DataFrame.from_csv(StringIO(response.content), index_col=None, sep=';')
+                df = pd.read_csv(StringIO(response.text), index_col=None, sep=';')
                 if df.size >= 2 and len(df.columns) >= 2:
                     # Convert to standard comma-separated
                     stripped_content = df.to_csv().strip()
@@ -215,7 +215,7 @@ class Rendering(models.Model):
             'KPI does not yet support exports with queries'
         )
         f = StringIO(self.data)
-        df = pd.DataFrame.from_csv(f, index_col=None)
+        df = pd.read_csv(f, index_col=None)
         last_submission = df['_submission_time'].max()
         url = self.url
         query = {"_submission_time": {"$gt": str(last_submission)}}
@@ -281,7 +281,7 @@ class Rendering(models.Model):
                 if not self.data.endswith('\n'):
                     self.data += '\n'
                 with open(data_csv, 'w') as f:
-                    f.write(self.data.encode('utf-8'))
+                    f.write(self.data)
 
             context = {
                 'filename': filename,
@@ -308,7 +308,7 @@ class Rendering(models.Model):
                     self.pk, r_err))
 
             path = os.path.join(folder, self.template.slug + '.' + extension)
-            with open(path) as f:
+            with open(path, 'rb') as f:
                 result = f.read()
 
             self._log_message('render end    ')
@@ -396,7 +396,7 @@ class Rendering(models.Model):
         Return the Enketo data-entry link, retrieving it from KPI if
         necessary
         """
-        VALUE_TO_RETURN_ON_FAILURE = u''
+        VALUE_TO_RETURN_ON_FAILURE = ''
         if self._enter_data_link:
             return self._enter_data_link
 
@@ -449,7 +449,7 @@ class Rendering(models.Model):
         kc_form_data = kc_response.json()
         # Construct an identifier URL using the username and id string
         parsed_url = urlparse(self.url)
-        identifier = u'{scheme}://{netloc}/{username}/forms/{id_string}'.format(
+        identifier = '{scheme}://{netloc}/{username}/forms/{id_string}'.format(
             scheme=parsed_url.scheme,
             netloc=parsed_url.netloc,
             username=self.user.username,
@@ -489,7 +489,7 @@ class Rendering(models.Model):
         # Make sure to use `%23` instead of `#`, otherwise the redirection will
         # fail
         kpi_edit_url = (
-            u'{scheme}://{netloc}/accounts/login/?next=/%23/forms/{uid}/edit'
+            '{scheme}://{netloc}/accounts/login/?next=/%23/forms/{uid}/edit'
         ).format(
             scheme=parsed_url.scheme,
             netloc=parsed_url.netloc,

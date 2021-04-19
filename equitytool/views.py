@@ -31,7 +31,7 @@ from rest_framework.response import Response
 # authentication required to make those calls seems a little
 # tricky. And it seems like unnecessary work at the moment.
 from reporter.models import Template, Rendering, UserExternalApiToken
-from models import Form
+from .models import Form
 
 
 @xframe_options_exempt
@@ -173,7 +173,7 @@ class Wrapper(object):
         url = self.KPI_URL + 'imports/'
         data = {
             'name': self.name,
-            'base64Encoded': 'base64:' + base64_xlsform,
+            'base64Encoded': b'base64:' + base64_xlsform,
             'library': 'false',
         }
         # Start the asynchronous import
@@ -256,7 +256,7 @@ def superuser_stats(request):
         datetime.date.today()
     )
     with zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-        for filename, report_settings in REPORTS.iteritems():
+        for filename, report_settings in REPORTS.items():
             with BytesIO() as csv_io:
                 management.call_command(
                     'print_stats', stdout=csv_io, **report_settings['args'])

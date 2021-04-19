@@ -1,44 +1,29 @@
-FROM ubuntu:xenial
+FROM node:12
 
-###########
-# apt-get #
-###########
+# Docker default of `/bin/sh` doesn't support `source`
+SHELL ["/bin/bash", "-c"]
 
-ADD https://deb.nodesource.com/setup_6.x /tmp/setup_6.x.bash
+# Add conda repository
+# https://docs.conda.io/projects/conda/en/latest/user-guide/install/rpm-debian.html
+RUN curl https://repo.anaconda.com/pkgs/misc/gpgkeys/anaconda.asc | gpg --dearmor > conda.gpg && \
+    install -o root -g root -m 644 conda.gpg /usr/share/keyrings/conda-archive-keyring.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/conda-archive-keyring.gpg] https://repo.anaconda.com/pkgs/misc/debrepo/conda stable main" > /etc/apt/sources.list.d/conda.list
 
-RUN bash /tmp/setup_6.x.bash && \
-    apt-get install -y --no-install-recommends \
-        build-essential \
-        curl \
-        libgmp10 \
-        libpq-dev \
-        libxrender1 \
-        nodejs \
-        texlive-full \
-        wget
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    conda \
+    pandoc \
+    libgmp10 \
+    libpq-dev \
+    libxrender1 \
+    texlive-full
 
 # Work around a font rendering problem; see
 # https://github.com/kobotoolbox/reports/issues/136
+# Do not `apt-get autoremove` after this
 RUN apt-get remove -y tex-gyre
 
-##########
-# pandoc #
-##########
-
-# TODO: Remove --no-check-certificate
-RUN wget --no-check-certificate https://github.com/jgm/pandoc/releases/download/1.15.0.6/pandoc-1.15.0.6-1-amd64.deb -O pandoc.deb && \
-    dpkg -i pandoc.deb && \
-    rm pandoc.deb
-
-##############################
-# conda install Python and R #
-##############################
-
-RUN wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh && \
-    chmod +x miniconda.sh && \
-    ./miniconda.sh -b && \
-    rm miniconda.sh
-ENV PATH /root/miniconda2/bin:$PATH
+# `apt-get install conda` does not actually put conda on the PATH
+ENV PATH /opt/conda/bin:$PATH
 RUN conda update --yes conda
 
 RUN mkdir /app
@@ -46,15 +31,13 @@ WORKDIR /app
 
 # https://www.continuum.io/content/conda-data-science
 COPY environment.yml /app/
-RUN conda env create
 
-# http://stackoverflow.com/a/25423366/3756632
-# need this for "source activate" commands
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+RUN conda env create
 
 # R libraries not available through conda
 RUN source activate koboreports && \
-    Rscript -e "install.packages('pander', repos='http://cran.rstudio.com/', type='source')" -e "library(pander)"
+    Rscript -e "install.packages('pander', repos='http://cran.rstudio.com/', type='source')" \
+        -e "library(pander)"
 
 #############################
 # install node dependencies #
