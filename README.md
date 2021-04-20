@@ -28,6 +28,8 @@ deployment has fewer than 150 responses. See
 * `request__show_urban`: the value of `?show_urban=` in the URL used to request
   the report
 
+# Caveats
+* Tables in DOCX exports do not appear properly in LibreOffice: see https://github.com/jgm/pandoc/issues/515
 
 # Development _without_ Dokku
 
