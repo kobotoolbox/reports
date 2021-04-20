@@ -88,4 +88,4 @@ var Report = React.createClass({
   }
 });
 
-module.exports = Report;
+export default Report;

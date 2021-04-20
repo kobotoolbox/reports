@@ -6,63 +6,51 @@
 
 'use strict';
 
-var webpack = require('webpack');
+const webpack = require('webpack');
+const path = require('path');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
+  mode: "production",
 
-  output: {
-    publicPath: '/assets/',
-    path: '../koboreports/static/assets/',
-    filename: 'main.js'
-  },
-
-  debug: false,
-  devtool: false,
   entry: './src/components/main.js',
 
-  stats: {
-    colors: true,
-    reasons: false
+  output: {
+    path: path.resolve(__dirname, '../koboreports/static/assets/'),
+    filename: 'main.js',
+    publicPath: '/assets/',
   },
 
-  plugins: [
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.NoErrorsPlugin()
-  ],
-
   resolve: {
-    extensions: ['', '.js', '.jsx'],
-    alias: {
-      'styles': __dirname + '/src/styles',
-      'mixins': __dirname + '/src/mixins',
-      'components': __dirname + '/src/components/',
-      'stores': __dirname + '/src/stores/',
-      'actions': __dirname + '/src/actions/'
-    }
+    extensions: ['.js', '.jsx', '.css', '.scss'],
+    alias: { // TODO: reconsider this for being too magical?
+      'styles': path.resolve(__dirname, './src/styles'),
+      'mixins': path.resolve(__dirname, './src/mixins'),
+      'components': path.resolve(__dirname, './src/components/'),
+      'stores': path.resolve(__dirname, './src/stores/'),
+      'actions': path.resolve(__dirname, './src/actions/'),
+    },
   },
 
   module: {
-    preLoaders: [{
-      test: /\.(js|jsx)$/,
-      exclude: /node_modules/,
-      loader: 'eslint-loader'
-    }],
-    loaders: [{
+    rules: [
+    {
       test: /\.(js|jsx)$/,
       exclude: /node_modules/,
       loader: 'babel-loader'
     }, {
       test: /\.css$/,
-      loader: 'style-loader!css-loader'
+      use: ['style-loader', 'css-loader']
     }, {
-      test: /\.scss/,
-      loader: 'style-loader!css-loader!sass-loader?outputStyle=expanded'
+      test: /\.s[ac]ss$/i,
+      use: ['style-loader', 'css-loader', { loader: 'sass-loader', options: { sassOptions: {outputStyle: 'expanded'} } } ]
+      //loader: 'style-loSader!css-loader!sass-loader?outputStyle=expanded'
     }, {
       test: /\.(png|jpg|woff|woff2)$/,
-      loader: 'url-loader?limit=8192'
+      use: [ { loader: 'url-loader', options: {limit: 8192} } ]
     }]
-  }
+  },
+
+  plugins: [new ESLintPlugin()],
+
 };

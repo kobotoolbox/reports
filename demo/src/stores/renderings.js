@@ -57,7 +57,7 @@ var individualRenderingStore = Reflux.createStore({
   },
 });
 
-export default {
-  renderingsStore: renderingsStore,
-  individualRenderingStore: individualRenderingStore,
+export {
+  renderingsStore,
+  individualRenderingStore,
 };

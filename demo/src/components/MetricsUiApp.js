@@ -99,4 +99,4 @@ var MetricsUiApp = React.createClass({
   }
 });
 
-module.exports = MetricsUiApp;
+export default MetricsUiApp;

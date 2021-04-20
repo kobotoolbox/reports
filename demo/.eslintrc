@@ -2,6 +2,11 @@
   "plugins": [
     "react"
   ],
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "allowImportExportEverywhere": true,
+  },
   "ecmaFeatures": {
     "jsx": true,
     "modules": true
@@ -13,12 +18,12 @@
   },
   "rules": {
     "quotes": [ 1, "single" ],
-    "no-undef": false,
-    "no-console": false,
-    "camelcase": false,
-    "global-strict": false,
+    "no-undef": 0,
+    "no-console": 0,
+    "camelcase": 0,
+    "global-strict": 0,
     "no-extra-semi": 1,
     "comma-dangle": 0,
-    "no-underscore-dangle": false
+    "no-underscore-dangle": 0
   }
 }

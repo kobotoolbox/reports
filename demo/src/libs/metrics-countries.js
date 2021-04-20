@@ -1,6 +1,6 @@
 'use strict';
 
-var Countries = [
+export const allCountries = [
 {'value': 'afghanistan', 'label': 'Afghanistan '},
 {'value': 'angola', 'label': 'Angola'},
 {'value': 'bangladesh', 'label': 'Bangladesh '},
@@ -43,5 +43,3 @@ var Countries = [
 {'value': 'uganda', 'label': 'Uganda'},
 {'value': 'zambia', 'label': 'Zambia'},
 {'value': 'zimbabwe', 'label': 'Zimbabwe'}];
-
-module.exports = Countries;

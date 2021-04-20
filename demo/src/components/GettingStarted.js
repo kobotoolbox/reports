@@ -103,4 +103,4 @@ var GettingStarted = React.createClass({
   }
 });
 
-module.exports = GettingStarted;
+export default GettingStarted;

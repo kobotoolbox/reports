@@ -34,4 +34,4 @@ var Terms = React.createClass({
   }
 });
 
-module.exports = Terms;
+export default Terms;

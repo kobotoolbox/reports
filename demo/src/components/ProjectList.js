@@ -263,4 +263,4 @@ var ProjectList = React.createClass({
   }
 });
 
-module.exports = ProjectList;
+export default ProjectList;

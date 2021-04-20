@@ -1,13 +1,13 @@
 'use strict';
 
-var MetricsUiApp = require('./MetricsUiApp');
-var GettingStarted = require('./GettingStarted');
-var ProjectList = require('./ProjectList');
-var NewProject = require('./NewProject');
-var Login = require('./Login');
-var Register = require('./Register');
-var Terms = require('./Terms');
-var React = require('react');
+import MetricsUiApp from './MetricsUiApp';
+import GettingStarted from './GettingStarted';
+import ProjectList from './ProjectList';
+import NewProject from './NewProject';
+import Login from './Login';
+import Register from './Register';
+import Terms from './Terms';
+import React from 'react';
 import Report from './Report';
 import Router from 'react-router';
 

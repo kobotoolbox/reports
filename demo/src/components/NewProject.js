@@ -3,7 +3,7 @@
 import React from 'react/addons';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
-import allCountries from '../libs/metrics-countries';
+import {allCountries} from '../libs/metrics-countries';
 import actions from '../actions/actions';
 import {requireLoggedInMixin} from '../mixins/requireLogins';
 import sessionStore from '../stores/session';
@@ -127,4 +127,4 @@ var NewProject = React.createClass({
   }
 });
 
-module.exports = NewProject;
+export default NewProject;
