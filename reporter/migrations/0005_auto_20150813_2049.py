@@ -15,11 +15,21 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='rendering',
             name='user',
-            field=models.ForeignKey(editable=False, to=settings.AUTH_USER_MODEL, null=True),
+            field=models.ForeignKey(
+                editable=False,
+                to=settings.AUTH_USER_MODEL,
+                null=True,
+                on_delete=models.CASCADE,
+            ),
         ),
         migrations.AlterField(
             model_name='template',
             name='user',
-            field=models.ForeignKey(editable=False, to=settings.AUTH_USER_MODEL, null=True),
+            field=models.ForeignKey(
+                editable=False,
+                to=settings.AUTH_USER_MODEL,
+                null=True,
+                on_delete=models.CASCADE,
+            ),
         ),
     ]

@@ -29,7 +29,10 @@ logger = logging.getLogger('TIMING')
 
 class UserExternalApiToken(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, related_name='external_api_token')
+        settings.AUTH_USER_MODEL,
+        related_name='external_api_token',
+        on_delete=models.CASCADE,
+    )
     key = models.CharField(max_length=120)
 
 
@@ -55,9 +58,13 @@ class Template(models.Model):
 class Rendering(models.Model):
     """ Retrieves data from KPI and processes it through a `Template` """
     user = models.ForeignKey(
-        User, null=True, editable=False, related_name='renderings'
+        User,
+        null=True,
+        editable=False,
+        related_name='renderings',
+        on_delete=models.CASCADE,
     )
-    template = models.ForeignKey(Template)
+    template = models.ForeignKey(Template, on_delete=models.CASCADE)
     url = models.URLField(blank=True)
     name = models.TextField(default='')
     # Getting this requires a slow API call, so store it in our local DB

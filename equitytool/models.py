@@ -12,8 +12,11 @@ class Form(models.Model):
     name = models.CharField(max_length=255, unique=True)
     xls_form = PrivateFileField(default=None)
     csv_form = models.TextField(
-        default='', blank=True, help_text='Always overwritten by `xls_form`')
-    parent = models.ForeignKey('equitytool.Form', null=True, blank=True)
+        default='', blank=True, help_text='Always overwritten by `xls_form`'
+    )
+    parent = models.ForeignKey(
+        'equitytool.Form', null=True, blank=True, on_delete=models.CASCADE
+    )
 
     def save(self, *args, **kwargs):
         settings = {

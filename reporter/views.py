@@ -16,7 +16,7 @@ from equitytool.models import Form
 
 
 def index(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         renderings = Rendering.objects.filter(user=request.user)
     extensions = ['html', 'pdf', 'docx']
     return render(request, 'index.html', dictionary=locals())
@@ -27,7 +27,7 @@ def current_user(request):
     countries = Form.objects.all().values(
         'id', 'name', 'parent'
     ).order_by('name')
-    if user.is_anonymous():
+    if user.is_anonymous:
         return Response({'message': 'user is not logged in'})
     else:
         return Response({'username': user.username,
@@ -105,7 +105,7 @@ class RenderingViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_anonymous():
+        if user.is_anonymous:
             return Rendering.objects.none()
         return Rendering.objects.filter(user=user).order_by('-pk')
 

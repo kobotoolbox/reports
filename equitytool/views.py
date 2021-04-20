@@ -14,11 +14,11 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.core import management
-from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.template import Template as DjangoTemplate, Context
+from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -37,7 +37,7 @@ from .models import Form
 @xframe_options_exempt
 def index(request):
     extensions = ['html', 'pdf', 'docx']
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         projects = request.user.renderings.order_by('name')
     return render(request, 'equity.html', locals())
 
@@ -85,7 +85,7 @@ def create_friendly(request):
     A version of the 'create' method that returns a 201 "CREATED" code
     on successful creation
     '''
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         raise exceptions.NotAuthenticated()
     proj = _create_project(request.POST, request.user)
     if proj:

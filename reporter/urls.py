@@ -1,22 +1,22 @@
-from django.conf.urls import url, include
-from django.contrib.auth.views import logout
+from django.urls import include, path
+from django.contrib.auth.views import LogoutView
 from rest_framework.routers import DefaultRouter
 
 from . import views
 
 router = DefaultRouter()
-router.register(r'templates', views.TemplateView)
-router.register(r'renderings', views.RenderingViewSet)
+router.register('templates', views.TemplateView)
+router.register('renderings', views.RenderingViewSet)
 
 urlpatterns = [
-    url(r'^$', views.demo, name='demo'),
-    url(r'^me/$', views.current_user, name='current_user'),
-    url(r'^reports/$', views.index, name='index'),
-    url(r'^rendering/(?P<id>[^\.]+).(?P<extension>[^\.]+)$', views.rendering, name='rendering'),
-    url(r'^api-auth/logout/$', logout, {
+    path('', views.demo, name='demo'),
+    path('me/', views.current_user, name='current_user'),
+    path('reports/', views.index, name='index'),
+    path('rendering/<int:id>.<slug:extension>', views.rendering, name='rendering'),
+    path('api-auth/logout/', LogoutView.as_view(), {
         'next_page': 'https://www.equitytool.org/'
     }),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^register/', views.proxy_create_user),
-    url(r'^', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('register/', views.proxy_create_user),
+    path('', include(router.urls)),
 ]
