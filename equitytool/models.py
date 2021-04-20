@@ -26,5 +26,5 @@ class Form(models.Model):
         self.csv_form = xls2csv(self.xls_form, **settings)
         super(Form, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name

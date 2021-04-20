@@ -51,7 +51,7 @@ class Template(models.Model):
         name, ext = os.path.splitext(l[-1])
         return cls.objects.create(rmd=rmd, slug=name)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.slug
 
 
@@ -87,7 +87,7 @@ class Rendering(models.Model):
         lines = self.data.split('\n')
         return len(lines) - 1
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.id)
 
     @staticmethod
