@@ -4,63 +4,67 @@
  * This file is set up for serving the webpack-dev-server, which will watch for changes and recompile as required if
  * the subfolder /webpack-dev-server/ is visited. Visiting the root will not automatically reload.
  */
+
 'use strict';
-var webpack = require('webpack');
+
+const webpack = require('webpack');
+const path = require('path');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
+  mode: "development",
 
-  output: {
-    filename: 'main.js',
-    publicPath: '/assets/'
-  },
-
-  cache: true,
-  debug: true,
-  devtool: 'sourcemap',
   entry: [
-      'webpack/hot/only-dev-server',
       './src/components/main.js'
   ],
 
-  stats: {
-    colors: true,
-    reasons: true
+  devServer: {
+    contentBase: false,
+    // send everything except /static/assets/main.js to the Python server
+    // (hopefully that is localhost:5000!)
+    proxy: {
+      '/': 'http://localhost:5000'
+    },
+  },
+
+  output: {
+    path: path.resolve(__dirname, '../koboreports/static/assets/'),
+    filename: 'main.js',
+    publicPath: '/static/assets/'
   },
 
   resolve: {
-    extensions: ['', '.js', '.jsx'],
-    alias: {
-      'styles': __dirname + '/src/styles',
-      'mixins': __dirname + '/src/mixins',
-      'components': __dirname + '/src/components/',
-      'stores': __dirname + '/src/stores/',
-      'actions': __dirname + '/src/actions/'
-    }
+    extensions: ['.js', '.jsx', '.css', '.scss'],
+    alias: { // TODO: reconsider this for being too magical?
+      'styles': path.resolve(__dirname, './src/styles'),
+      'mixins': path.resolve(__dirname, './src/mixins'),
+      'components': path.resolve(__dirname, './src/components/'),
+      'stores': path.resolve(__dirname, './src/stores/'),
+      'actions': path.resolve(__dirname, './src/actions/'),
+    },
   },
+
   module: {
-    preLoaders: [{
+    rules: [
+    {
       test: /\.(js|jsx)$/,
       exclude: /node_modules/,
-      loader: 'eslint-loader'
-    }],
-    loaders: [{
-      test: /\.(js|jsx)$/,
-      exclude: /node_modules/,
-      loader: 'react-hot!babel-loader'
-    }, {
-      test: /\.scss/,
-      loader: 'style-loader!css-loader!sass-loader?outputStyle=expanded'
+      loader: 'babel-loader'
     }, {
       test: /\.css$/,
-      loader: 'style-loader!css-loader'
+      use: ['style-loader', 'css-loader']
+    }, {
+      test: /\.s[ac]ss$/i,
+      use: ['style-loader', 'css-loader', { loader: 'sass-loader', options: { sassOptions: {outputStyle: 'expanded'} } } ]
+      //loader: 'style-loSader!css-loader!sass-loader?outputStyle=expanded'
     }, {
       test: /\.(png|jpg|woff|woff2)$/,
-      loader: 'url-loader?limit=8192'
+      use: [ { loader: 'url-loader', options: {limit: 8192} } ]
     }]
   },
 
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new ESLintPlugin(),
   ]
 
 };

@@ -43,7 +43,6 @@ RUN source activate koboreports && \
 # install node dependencies #
 #############################
 
-RUN npm install -g grunt-cli
 COPY demo/package.json /tmp/package.json
 RUN cd /tmp && npm install && mkdir /app/demo && \
     cp -a /tmp/node_modules /app/demo/

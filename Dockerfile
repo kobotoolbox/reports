@@ -9,7 +9,7 @@ COPY . /app/
 RUN conda env update --prune
 
 WORKDIR /app/demo
-RUN grunt build
+RUN npm build
 WORKDIR /app
 
 RUN source activate koboreports && \
