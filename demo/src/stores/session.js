@@ -1,6 +1,5 @@
 import Reflux from 'reflux';
 import actions from '../actions/actions';
-import assign from 'react/lib/Object.assign';
 
 var sessionStore = Reflux.createStore({
   init () {
@@ -58,11 +57,11 @@ var sessionStore = Reflux.createStore({
       delete data.countries;
     }
     if (data.username) {
-      this.state = assign({
+      this.state = Object.assign({
         loggedIn: true,
       }, data);
     } else {
-      this.state = assign({
+      this.state = Object.assign({
         loggedIn: false,
       }, data);
     }

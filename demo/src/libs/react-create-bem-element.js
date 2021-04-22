@@ -35,7 +35,6 @@
 */
 import React from 'react';
 import classNames from 'classnames';
-import assign from 'react/lib/Object.assign';
 
 /* eslint-disable no-console */
 var bemClasses = false;
@@ -63,7 +62,7 @@ var reactCreateBemElement = function(base, el='div'){
   var c = React.createClass({
     displayName: `BEM.${base}`,
     render () {
-      var props = assign({}, this.props);
+      var props = Object.assign({}, this.props);
 
       // allows modifiers to be a string, an array, or undefined (ignored)
       var modifier = [].concat(this.props.m || this.props.modifier)
@@ -122,7 +121,7 @@ reactCreateBemElement.stop = function () {
   klasses = false;
 };
 
-var logClassNames = assign(function(...args){
+var logClassNames = Object.assign(function(...args){
   if (!logClassNames.on) {
     return false;
   }

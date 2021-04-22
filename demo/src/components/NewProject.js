@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import {allCountries} from '../libs/metrics-countries';
@@ -10,7 +10,6 @@ import sessionStore from '../stores/session';
 import Select from 'react-select';
 import alertify from 'alertifyjs';
 
-require('../../node_modules/react-select/dist/default.css');
 require('styles/Forms.scss');
 require('styles/NewProject.scss');
 

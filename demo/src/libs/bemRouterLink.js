@@ -1,6 +1,6 @@
-import React from 'react/addons';
+import React from 'react';
 import Router from 'react-router';
-import assign from 'react/lib/Object.assign';
+
 import bem from '../libs/react-create-bem-element';
 
 /*
@@ -31,7 +31,7 @@ export default function(baseKls) {
       Router.Navigation,
     ],
     componentWillMount () {
-      var props = assign({}, this.props);
+      var props = Object.assign({}, this.props);
       if (props.mTo) {
         props.m = props.to = props.mTo;
       }

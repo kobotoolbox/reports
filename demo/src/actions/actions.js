@@ -1,8 +1,6 @@
 import Reflux from 'reflux';
 import $ from 'jquery';
-import assign from 'react/lib/Object.assign';
 import alertify from 'alertifyjs';
-
 require('../styles/libs/alertify.scss');
 
 var token = (function(){
@@ -23,7 +21,7 @@ var dataInterface = (function(){
   */
 
   this.createTemplate = (templateData) => {
-    var postData = assign({csrfmiddlewaretoken: token}, templateData);
+    var postData = Object.assign({csrfmiddlewaretoken: token}, templateData);
     return $.ajax({
       url: '/equitytool/create_friendly',
       dataType: 'json',
@@ -55,7 +53,7 @@ var dataInterface = (function(){
   };
 
   this.registerAccount = (accountData) => {
-    var postData = assign({csrfmiddlewaretoken: token}, accountData);
+    var postData = Object.assign({csrfmiddlewaretoken: token}, accountData);
     return $.ajax({
       url: '/register/',
       dataType: 'json',

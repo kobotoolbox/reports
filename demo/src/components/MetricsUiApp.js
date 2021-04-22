@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
 import bem from '../libs/react-create-bem-element';
 // import bemRouterLink from '../libs/bemRouterLink';
 import sessionStore from '../stores/session';

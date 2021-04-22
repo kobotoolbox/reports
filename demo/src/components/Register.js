@@ -1,7 +1,7 @@
 
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
 import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
