@@ -4,16 +4,16 @@ import React from 'react';
 import reactMixin from 'react-mixin';
 import bem from '../libs/react-create-bem-element';
 import sessionStore from '../stores/session';
-import bemRouterLink from '../libs/bemRouterLink';
+import bemRouterLink from '../libs/bemRouterLink'; // !
 import Reflux from 'reflux';
 import accountStore from '../stores/account';
 import authUrls from '../stores/authUrls';
 
 require('styles/GettingStarted.scss');
 
-let {
-  Navigation,
-} = require('react-router');
+// let {
+//   Navigation,
+// } = require('react-router');
 
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
@@ -100,7 +100,7 @@ class GettingStarted extends React.Component {
   }
 }
 
-reactMixin(GettingStarted.prototype, Navigation);
+// reactMixin(GettingStarted.prototype, Navigation);
 reactMixin(GettingStarted.prototype, Reflux.connect(sessionStore, 'session'));
 
 export default GettingStarted;

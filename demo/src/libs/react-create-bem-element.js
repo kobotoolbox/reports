@@ -60,7 +60,8 @@ var reactCreateBemElement = function(base, el='div'){
   };
 
   class c extends React.Component {
-    constructor () {
+    constructor (props) {
+      super(props);
       this.displayName = `BEM.${base}`;
     }
     render () {

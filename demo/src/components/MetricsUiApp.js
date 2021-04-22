@@ -8,10 +8,6 @@ import sessionStore from '../stores/session';
 import authUrls from '../stores/authUrls';
 import Reflux from 'reflux';
 
-let {
-  RouteHandler,
-} = require('react-router');
-
 // CSS
 require('normalize.css');
 require('../styles/main.scss');
@@ -94,7 +90,6 @@ class MetricsUiApp extends Reflux.Component {
 
           </nav>
         </Header>
-        <RouteHandler />
         <Footer>
           {'Metrics for Management, 2021'}
         </Footer>

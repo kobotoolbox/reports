@@ -6,6 +6,11 @@ import assign from 'react/lib/Object.assign';
 class Identicon extends React.Component {
   constructor () {
     this.displayName = 'Identicon';
+    this.propTypes = {
+      id: React.PropTypes.any,
+      size: React.PropTypes.number,
+      type: React.PropTypes.string,
+    }
   }
   getDefaultProps () {
     return {
@@ -13,14 +18,9 @@ class Identicon extends React.Component {
       type: 'identicon',
       size: 80,
     };
-  },
-  propTypes: {
-    id: React.PropTypes.any,
-    size: React.PropTypes.number,
-    type: React.PropTypes.string,
-  },
+  }
   componentDidMount () {
-    this._Props = assign({}, this.props);
+    this._Props = Object.assign({}, this.props);
     this._idTypeSize = {
       id: this.props.id,
       type: this.props.type,
@@ -29,7 +29,7 @@ class Identicon extends React.Component {
     delete this._Props.id;
     delete this._Props.type;
     delete this._Props.size;
-  },
+  }
   render () {
     var { id, type, size } = this.props;
     var gUrl = `//www.gravatar.com/avatar/${md5(id)}?d=${type}&f=y&s=${size}`;

@@ -5,7 +5,7 @@ import React from 'react';
 import reactMixin from 'react-mixin';
 import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
-import bemRouterLink from '../libs/bemRouterLink';
+// import bemRouterLink from '../libs/bemRouterLink';
 import actions from '../actions/actions';
 import accountStore from '../stores/account';
 import authUrls from '../stores/authUrls';
@@ -13,9 +13,9 @@ import {requireNotLoggedInMixin} from '../mixins/requireLogins';
 
 require('styles/Forms.scss');
 
-let {
-  Navigation,
-} = require('react-router');
+// let {
+//   Navigation,
+// } = require('react-router');
 
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
@@ -24,8 +24,8 @@ var Content = bem('content'),
     Inputfield = bem('field', '<input>'),
     InputWrap = bem('field-wrap'),
     InputfieldMessage = bem('field-message'),
-    BorderedButton = bem('bordered-button', '<button>'),
-    SimpleLink = bemRouterLink('simple-link');
+    BorderedButton = bem('bordered-button', '<button>');
+    // SimpleLink = bemRouterLink('simple-link');
 
 var registration = accountStore.state.registrationForm;
 
@@ -39,6 +39,12 @@ const fieldLabels = {
 };
 
 class Register extends React.Component {
+  constructor (props) {
+    super(props);
+    registration.state.terms = false;
+    this.state = registration.state;
+
+  }
   componentDidMount () {
     this.listenTo(accountStore, this.accountStoreChanged);
   }
@@ -51,10 +57,6 @@ class Register extends React.Component {
       actions.confirmLogin();
       this.transitionTo('getting-started');
     }
-  }
-  getInitialState () {
-    registration.state.terms = false;
-    return registration.state;
   }
   formFieldChange (evt) {
     registration.updateField(evt.target, false);
@@ -100,9 +102,9 @@ class Register extends React.Component {
                                 m='required'
                                 onChange={this.formFieldChange} />
                             <span> By signing up, I agree to the&nbsp;
-                              <SimpleLink m='terms' to='terms' target='_blank'>
+                              {/* <SimpleLink m='terms' to='terms' target='_blank'>
                                 Terms and Conditions
-                              </SimpleLink>
+                              </SimpleLink> */}
                               .</span>
                           <InputfieldMessage>
                             { error ?
@@ -145,9 +147,9 @@ class Register extends React.Component {
                 Create Account
               </BorderedButton>
               <span> Already have an account? </span>
-              <SimpleLink href={authUrls.login} to='login'>
+              {/* <SimpleLink href={authUrls.login} to='login'>
                 Login here
-              </SimpleLink>
+              </SimpleLink> */}
             </form>
           </ContentBg>
         </Content>
@@ -155,7 +157,7 @@ class Register extends React.Component {
   }
 }
 
-reactMixin(Register.prototype, Navigation);
+// reactMixin(Register.prototype, Navigation);
 reactMixin(Register.prototype, requireNotLoggedInMixin({failTo: 'getting-started'}));
 reactMixin(Register.prototype, Reflux.ListenerMixin);
 
