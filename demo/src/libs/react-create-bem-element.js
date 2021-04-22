@@ -59,8 +59,10 @@ var reactCreateBemElement = function(base, el='div'){
     return s;
   };
 
-  var c = React.createClass({
-    displayName: `BEM.${base}`,
+  class c extends React.Component {
+    constructor () {
+      this.displayName = `BEM.${base}`;
+    }
     render () {
       var props = Object.assign({}, this.props);
 
@@ -82,7 +84,7 @@ var reactCreateBemElement = function(base, el='div'){
       // passes remaining props to the children
       return React.createElement(el, props);
     }
-  });
+  }
   c.__createBemChildElement = c.__ = function(addition, _el='div') {
     return reactCreateBemElement(`${base}__${addition}`, _el);
   };

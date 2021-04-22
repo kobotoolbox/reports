@@ -2,6 +2,7 @@
 'use strict';
 
 import React from 'react';
+import reactMixin from 'react-mixin';
 import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
@@ -28,12 +29,7 @@ var Content = bem('content'),
     ProjectAttributeGroup = bem('project__attribute-group', '<div>'),
     ProjectAttributeLink = bem('project__attribute-link', '<a>');
 
-var ProjectList = React.createClass({
-  mixins: [
-    Navigation,
-    requireLoggedInMixin({failTo: 'getting-started'}),
-    Reflux.ListenerMixin,
-  ],
+class ProjectList extends React.Component {
   getInitialState () {
     return {
       projects: [],
@@ -43,27 +39,27 @@ var ProjectList = React.createClass({
       modalIsOpen: false,
       formBuilder: {url: null}
     };
-  },
+  }
   componentDidMount () {
     this.listenTo(renderingsStore, this.renderingsStoreChanged);
     actions.listRenderings();
-  },
+  }
   copyText (evt) {
     var $ect = evt.currentTarget;
     navigator.clipboard.writeText($ect.dataset.textToCopy).then(
       this.afterCopy
     );
-  },
+  }
   syncProject (evt) {
     var $ect = evt.currentTarget;
     this.setState({
       syncingProject: parseInt($ect.dataset.projectId),
     });
     actions.syncProject($ect.dataset.projectId);
-  },
+  }
   renderingsStoreChanged (state) {
     this.setState(state);
-  },
+  }
   afterCopy () {
     this.state.copiedLink = 'visible';
     this.setState(this.state);
@@ -71,15 +67,15 @@ var ProjectList = React.createClass({
       this.state.copiedLink = '';
       this.setState(this.state);
     }.bind(this), 2000);
-  },
-  openUpdateModal: function(evt) {
+  }
+  openUpdateModal (evt) {
     var $ect = evt.currentTarget;
     this.setState({
       formBuilder: {url: $ect.dataset.editLink}
     });
     this.setState({modalType: 'update', modalIsOpen: true});
-  },
-  openDeleteModal: function(evt) {
+  }
+  openDeleteModal (evt) {
     var $ect = evt.currentTarget;
     this.setState({
       modalType: 'delete',
@@ -87,17 +83,17 @@ var ProjectList = React.createClass({
       deletePending: false,
       modalIsOpen: true
     });
-  },
+  }
   closeModal () {
     setTimeout(() => {
       this.setState({modalIsOpen: false});
     }, 0);
-  },
+  }
   deleteProject () {
     this.setState({deletePending: true});
     actions.deleteRendering(this.state.projectId);
-  },
-  render: function () {
+  }
+  render () {
     // var projects = [
     //   {name: 'a1', created: new Date(), submission_count: 2, enter_data_link: '1234', id: 1},
     //   {name: 'a2', created: new Date(), submission_count: 3, enter_data_link: '1234', id: 2},
@@ -261,6 +257,10 @@ var ProjectList = React.createClass({
         </Content>
       );
   }
-});
+}
+
+reactMixin(ProjectList.prototype, Navigation);
+reactMixin(ProjectList.prototype, requireLoggedInMixin({failTo: 'getting-started'}));
+reactMixin(ProjectList.prototype, Reflux.ListenerMixin);
 
 export default ProjectList;

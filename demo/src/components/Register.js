@@ -2,6 +2,7 @@
 'use strict';
 
 import React from 'react';
+import reactMixin from 'react-mixin';
 import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
@@ -37,15 +38,10 @@ const fieldLabels = {
   password_confirmation: 'password confirmation',
 };
 
-var Register = React.createClass({
-  mixins: [
-    Navigation,
-    requireNotLoggedInMixin({failTo: 'getting-started'}),
-    Reflux.ListenerMixin,
-  ],
+class Register extends React.Component {
   componentDidMount () {
     this.listenTo(accountStore, this.accountStoreChanged);
-  },
+  }
   accountStoreChanged (acctState) {
     if (acctState.errors) {
       console.log('errors: ', acctState);
@@ -55,19 +51,19 @@ var Register = React.createClass({
       actions.confirmLogin();
       this.transitionTo('getting-started');
     }
-  },
+  }
   getInitialState () {
     registration.state.terms = false;
     return registration.state;
-  },
+  }
   formFieldChange (evt) {
     registration.updateField(evt.target, false);
     this.setState(registration.state);
-  },
+  }
   formFieldBlur (evt) {
     registration.updateField(evt.target, true);
     this.setState(registration.state);
-  },
+  }
   submitForm (evt) {
     evt.preventDefault();
     FIELDS.forEach((key) => {
@@ -80,8 +76,8 @@ var Register = React.createClass({
     } else {
       this.setState(registration.state);
     }
-  },
-  render: function () {
+  }
+  render () {
     return (
         <Content m='register'>
           <ContentBg>
@@ -157,6 +153,10 @@ var Register = React.createClass({
         </Content>
       );
   }
-});
+}
+
+reactMixin(Register.prototype, Navigation);
+reactMixin(Register.prototype, requireNotLoggedInMixin({failTo: 'getting-started'}));
+reactMixin(Register.prototype, Reflux.ListenerMixin);
 
 export default Register;

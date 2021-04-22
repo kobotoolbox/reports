@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import reactMixin from 'react-mixin';
 import bem from '../libs/react-create-bem-element';
 import sessionStore from '../stores/session';
 import bemRouterLink from '../libs/bemRouterLink';
@@ -22,34 +23,30 @@ var Content = bem('content'),
     InfoMessage__link = bemRouterLink('info-message__link'),
     BorderedNavlink = bemRouterLink('bordered-navlink');
 
-var GettingStarted = React.createClass({
-  mixins: [
-    Navigation,
-    Reflux.connect(sessionStore, 'session'),
-  ],
+class GettingStarted extends React.Component {
   componentDidMount () {
     this.listenTo(accountStore, this.accountStoreUpdated);
     this.listenTo(sessionStore, this.sessionStoreUpdated);
-  },
+  }
   accountStoreUpdated ({created}) {
     if (created) {
       this.setState({
         accountCreated: created,
       });
     }
-  },
+  }
   sessionStoreUpdated () {
     if (this.state.session && this.state.session.loggedIn) {
         this.transitionTo('project-list');
     }
-  },
+  }
   getInitialState() {
     return {
       accountCreated: accountStore.state.created,
       session: sessionStore.state,
     };
-  },
-  render: function () {
+  }
+  render () {
     return (
         <Content m='getting-started'>
           <ContentBg>
@@ -101,6 +98,9 @@ var GettingStarted = React.createClass({
         </Content>
       );
   }
-});
+}
+
+reactMixin(GettingStarted.prototype, Navigation);
+reactMixin(GettingStarted.prototype, Reflux.connect(sessionStore, 'session'));
 
 export default GettingStarted;

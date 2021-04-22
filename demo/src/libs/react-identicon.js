@@ -3,8 +3,10 @@ import React from 'react';
 import md5 from 'md5';
 import assign from 'react/lib/Object.assign';
 
-var Identicon = React.createClass({
-  displayName: 'Identicon',
+class Identicon extends React.Component {
+  constructor () {
+    this.displayName = 'Identicon';
+  }
   getDefaultProps () {
     return {
       id: '',
@@ -35,6 +37,6 @@ var Identicon = React.createClass({
         <img src={gUrl} {...this._Props} className='identicon' />
       );
   }
-});
+}
 
 export default Identicon;

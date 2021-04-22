@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import reactMixin from 'react-mixin';
 import bem from '../libs/react-create-bem-element';
 
 require('styles/Terms.scss');
@@ -14,11 +15,8 @@ var Content = bem('content'),
     ContentWrap = bem('content-wrap'),
     ContentTitle = bem('content-title', '<h2>');
 
-var Terms = React.createClass({
-  mixins: [
-    Navigation,
-  ],
-  render: function () {
+class Terms extends React.Component {
+  render () {
     return (
         <Content m='terms'>
           <ContentBg>
@@ -32,6 +30,8 @@ var Terms = React.createClass({
         </Content>
       );
   }
-});
+}
+
+reactMixin(Term.prototype, Navigation);
 
 export default Terms;

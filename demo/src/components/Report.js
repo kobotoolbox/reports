@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import reactMixin from 'react-mixin';
 import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
@@ -17,36 +18,31 @@ var Content = bem('content'),
     ProjectLink = bem('project-link', '<a>'),
     UrbanToggle = bem('urban-toggle', '<div>');
 
-var Report = React.createClass({
-  mixins: [
-    Navigation,
-    requireLoggedInMixin({failTo: 'getting-started'}),
-    Reflux.ListenerMixin,
-  ],
+class Report extends React.Component {
   componentDidMount () {
     this.listenTo(individualRenderingStore, this.individualRenderingStoreChanged);
     actions.getRendering(this.props.params.id);
-  },
+  }
   getInitialState () {
     return {
       renderingHtml: 'loading',
       urbanVisible: false
     };
-  },
+  }
   individualRenderingStoreChanged (projId, html) {
     if (this.props.params.id === projId) {
       this.setState({
         renderingHtml: html,
       });
     }
-  },
+  }
   toggleUrbanState () {
       this.setState({
         urbanVisible: !this.state.urbanVisible,
       });
 
-  },
-  render: function () {
+  }
+  render () {
     return (
         <Content m='report'>
           <ContentBg className={this.state.urbanVisible ? 'urban-visible' : 'urban-hidden'}>
@@ -86,6 +82,10 @@ var Report = React.createClass({
         </Content>
       );
   }
-});
+}
+
+reactMixin(Report.prototype, Navigation);
+reactMixin(Report.prototype, requireLoggedInMixin({failTo: 'getting-started'}));
+reactMixin(Report.prototype, Reflux.ListenerMixin);
 
 export default Report;

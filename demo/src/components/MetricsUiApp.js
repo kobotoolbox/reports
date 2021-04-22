@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import reactMixin from 'react-mixin';
 import bem from '../libs/react-create-bem-element';
 // import bemRouterLink from '../libs/bemRouterLink';
 import sessionStore from '../stores/session';
@@ -21,22 +22,25 @@ var MainWrap = bem('main-wrap'),
     Header = bem('header', '<header>'),
     Footer = bem('footer', '<footer>');
 
-var MetricsUiApp = React.createClass({
-  mixins: [
-    Reflux.connect(sessionStore, 'session'),
-  ],
+class MetricsUiApp extends Reflux.Component {
+  constructor(props) {
+    // https://github.com/reflux/refluxjs#hooking-stores-to-components
+    super(props);
+    this.state = {};
+    this.store = sessionStore;
+  }
   getInitialState () {
     return {
-      session: sessionStore.state,
+      session: sessionStore.state, // TODO: remove?
       mobileMenuVisible: false,
     };
-  },
-  handleClick: function(){
+  }
+  handleClick () {
     this.setState({mobileMenuVisible: !this.state.mobileMenuVisible});
-  },
+  }
   logout () {
     sessionStore.logout();
-  },
+  }
   render() {
     return (
       <MainWrap>
@@ -97,6 +101,6 @@ var MetricsUiApp = React.createClass({
       </MainWrap>
     );
   }
-});
+}
 
 export default MetricsUiApp;

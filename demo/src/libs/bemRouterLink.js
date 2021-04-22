@@ -1,4 +1,5 @@
 import React from 'react';
+import reactMixin from 'react-mixin';
 import Router from 'react-router';
 
 import bem from '../libs/react-create-bem-element';
@@ -26,10 +27,7 @@ With this:
 
 export default function(baseKls) {
   var El = bem(baseKls, '<a>');
-  return React.createClass({
-    mixins: [
-      Router.Navigation,
-    ],
+  class c extends React.Component {
     componentWillMount () {
       var props = Object.assign({}, this.props);
       if (props.mTo) {
@@ -43,9 +41,11 @@ export default function(baseKls) {
       delete props.params;
       delete props.query;
       this._Props = props;
-    },
+    }
     render () {
       return <El {...this._Props} />;
     }
-  });
+  }
+  reactMixin(c.prototype, Router.Navigation);
+  return c;
 }

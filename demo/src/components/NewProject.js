@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import reactMixin from 'react-mixin';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import {allCountries} from '../libs/metrics-countries';
@@ -26,18 +27,14 @@ var Content = bem('content'),
     BorderedNavlink = bemRouterLink('bordered-navlink'),
     BorderedButton = bem('bordered-button', '<button>');
 
-var NewProject = React.createClass({
-  mixins: [
-    Navigation,
-    requireLoggedInMixin({failTo: 'getting-started'}),
-  ],
+class NewProject extends React.Component {
   getInitialState () {
     return {
       country: null,
       regions: [],
       region: null,
     };
-  },
+  }
   createNewProject (evt) {
     evt.preventDefault();
     let createButton = evt.target;
@@ -61,7 +58,7 @@ var NewProject = React.createClass({
         alertify.error('Survey creation failed!');
       }
     });
-  },
+  }
   changeCountry (country) {
     this.setState({
       country: country,
@@ -70,13 +67,13 @@ var NewProject = React.createClass({
       ),
       region: null,
     });
-  },
+  }
   changeRegion (region) {
     this.setState({
       region: region,
     });
-  },
-  render: function () {
+  }
+  render () {
     var countries = sessionStore.countries || allCountries;
     return (
         <Content m='new-project'>
@@ -124,6 +121,9 @@ var NewProject = React.createClass({
         </Content>
       );
   }
-});
+}
+
+reactMixin(NewProject.prototype, Navigation);
+reactMixin(NewProject.prototype, requireLoggedInMixin({failTo: 'getting-started'}));
 
 export default NewProject;

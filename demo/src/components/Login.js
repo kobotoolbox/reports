@@ -2,6 +2,7 @@
 'use strict';
 
 import React from 'react';
+import reactMixin from 'react-mixin';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import actions from '../actions/actions';
@@ -22,16 +23,12 @@ var Content = bem('content'),
     Inputfield = bem('field', '<input>'),
     Navlink = bemRouterLink('navlink');
 
-var Login = React.createClass({
-  mixins: [
-    Navigation,
-    requireNotLoggedInMixin({failTo: 'getting-started'}),
-  ],
+class Login extends React.Component {
   login (evt) {
     evt.preventDefault();
     actions.placeholder('login');
-  },
-  render: function () {
+  }
+  render () {
     return (
         <Content m='login'>
           <ContentBg>
@@ -58,6 +55,9 @@ var Login = React.createClass({
         </Content>
       );
   }
-});
+}
+
+reactMixin(Login.prototype,  Navigation);
+reactMixin(Login.prototype,  requireNotLoggedInMixin({failTo: 'getting-started'}));
 
 export default Login;
