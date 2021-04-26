@@ -1,21 +1,17 @@
-
 'use strict';
 
 import React from 'react';
 import reactMixin from 'react-mixin';
 import Reflux from 'reflux';
+import { withRouter } from 'react-router-dom'; // to include history in the props
 import bem from '../libs/react-create-bem-element';
-// import bemRouterLink from '../libs/bemRouterLink';
+import bemRouterLink from '../libs/bemRouterLink';
 import actions from '../actions/actions';
 import accountStore from '../stores/account';
 import authUrls from '../stores/authUrls';
-import {requireNotLoggedInMixin} from '../mixins/requireLogins';
+import {RequireNotLoggedIn} from '../mixins/requireLogins';
 
 require('styles/Forms.scss');
-
-// let {
-//   Navigation,
-// } = require('react-router');
 
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
@@ -24,8 +20,8 @@ var Content = bem('content'),
     Inputfield = bem('field', '<input>'),
     InputWrap = bem('field-wrap'),
     InputfieldMessage = bem('field-message'),
-    BorderedButton = bem('bordered-button', '<button>');
-    // SimpleLink = bemRouterLink('simple-link');
+    BorderedButton = bem('bordered-button', '<button>'),
+    SimpleLink = bemRouterLink('simple-link');
 
 var registration = accountStore.state.registrationForm;
 
@@ -38,24 +34,22 @@ const fieldLabels = {
   password_confirmation: 'password confirmation',
 };
 
-class Register extends React.Component {
+class Register extends Reflux.Component {
   constructor (props) {
     super(props);
     registration.state.terms = false;
     this.state = registration.state;
-
   }
   componentDidMount () {
     this.listenTo(accountStore, this.accountStoreChanged);
   }
   accountStoreChanged (acctState) {
     if (acctState.errors) {
-      console.log('errors: ', acctState);
       this.setState(acctState);
     } else {
       console.log('success: ', acctState);
       actions.confirmLogin();
-      this.transitionTo('getting-started');
+      this.props.history.push('/getting-started');
     }
   }
   formFieldChange (evt) {
@@ -69,7 +63,7 @@ class Register extends React.Component {
   submitForm (evt) {
     evt.preventDefault();
     FIELDS.forEach((key) => {
-      registration.updateField(this.refs[key].getDOMNode(), true);
+      registration.updateField(this.refs[key].props, true);
     });
     if (registration.isValid()) {
       actions.registerAccount(
@@ -82,6 +76,7 @@ class Register extends React.Component {
   render () {
     return (
         <Content m='register'>
+          <RequireNotLoggedIn failTo='/getting-started' />
           <ContentBg>
             <ContentTitle>Sign Up</ContentTitle>
             <form>
@@ -98,13 +93,13 @@ class Register extends React.Component {
                           <Inputfield ref={att}
                                 name={att}
                                 type='checkbox'
-                                defaultChecked={this.state.terms}
+                                checked={this.state.terms}
                                 m='required'
-                                onChange={this.formFieldChange} />
+                                onChange={this.formFieldChange.bind(this)} />
                             <span> By signing up, I agree to the&nbsp;
-                              {/* <SimpleLink m='terms' to='terms' target='_blank'>
+                              <SimpleLink m='terms' to='terms' target='_blank'>
                                 Terms and Conditions
-                              </SimpleLink> */}
+                              </SimpleLink>
                               .</span>
                           <InputfieldMessage>
                             { error ?
@@ -125,8 +120,8 @@ class Register extends React.Component {
                                 value={this.state[att]}
                                 m='required'
                                 placeholder={fieldLabels[att] || att}
-                                onBlur={this.formFieldBlur}
-                                onChange={this.formFieldChange} />
+                                onBlur={this.formFieldBlur.bind(this)}
+                                onChange={this.formFieldChange.bind(this)} />
                           <InputfieldMessage>
                             { error ?
                               error
@@ -142,14 +137,14 @@ class Register extends React.Component {
               <BorderedButton m={{
                 'create-account': true,
               }}
-                onClick={this.submitForm}
+                onClick={this.submitForm.bind(this)}
               >
                 Create Account
               </BorderedButton>
               <span> Already have an account? </span>
-              {/* <SimpleLink href={authUrls.login} to='login'>
+              <SimpleLink href={authUrls.login} to='login'>
                 Login here
-              </SimpleLink> */}
+              </SimpleLink>
             </form>
           </ContentBg>
         </Content>
@@ -157,8 +152,6 @@ class Register extends React.Component {
   }
 }
 
-// reactMixin(Register.prototype, Navigation);
-reactMixin(Register.prototype, requireNotLoggedInMixin({failTo: 'getting-started'}));
 reactMixin(Register.prototype, Reflux.ListenerMixin);
 
-export default Register;
+export default withRouter(Register);

@@ -105,6 +105,7 @@ TEMPLATES = [{
 }]
 
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = 'https://www.equitytool.org/'  # FIXME - does not work!
 
 # modify logging settings to see timing data
 LOGGING = {

@@ -47,6 +47,14 @@ module.exports = {
   module: {
     rules: [
     {
+      // Extract source maps of third-party libraries
+      // Fixes `DevTools failed to load SourceMap … net::ERR_UNKNOWN_URL_SCHEME`
+      // https://stackoverflow.com/a/62222479/2402324
+      test: /\.js$/,
+      enforce: "pre",
+      use: ["source-map-loader"],
+    },
+    {
       test: /\.(js|jsx)$/,
       exclude: /node_modules/,
       loader: 'babel-loader'

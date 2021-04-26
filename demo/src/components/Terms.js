@@ -6,10 +6,6 @@ import bem from '../libs/react-create-bem-element';
 
 require('styles/Terms.scss');
 
-let {
-  Navigation,
-} = require('react-router');
-
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
     ContentWrap = bem('content-wrap'),
@@ -31,7 +27,5 @@ class Terms extends React.Component {
       );
   }
 }
-
-reactMixin(Term.prototype, Navigation);
 
 export default Terms;

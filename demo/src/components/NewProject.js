@@ -1,22 +1,21 @@
 'use strict';
 
 import React from 'react';
+import Reflux from 'reflux';
 import reactMixin from 'react-mixin';
+import { withRouter } from 'react-router-dom';
+import history from 'history/hash';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import {allCountries} from '../libs/metrics-countries';
 import actions from '../actions/actions';
-import {requireLoggedInMixin} from '../mixins/requireLogins';
+import {RequireLoggedIn} from '../mixins/requireLogins';
 import sessionStore from '../stores/session';
 import Select from 'react-select';
 import alertify from 'alertifyjs';
 
 require('styles/Forms.scss');
 require('styles/NewProject.scss');
-
-let {
-  Navigation,
-} = require('react-router');
 
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
@@ -27,9 +26,10 @@ var Content = bem('content'),
     BorderedNavlink = bemRouterLink('bordered-navlink'),
     BorderedButton = bem('bordered-button', '<button>');
 
-class NewProject extends React.Component {
-  getInitialState () {
-    return {
+class NewProject extends Reflux.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
       country: null,
       regions: [],
       region: null,
@@ -42,12 +42,12 @@ class NewProject extends React.Component {
     createButton.disabled = true;
     createButton.innerText = 'Creating...';
     actions.createTemplate({
-      name: this.refs.name.getDOMNode().value,
+      name: this.refs.name.props.value,
       country: this.state.region || this.state.country,
       regional: !!this.state.region,
     }).then(() => {
       alertify.success('Survey creation successful!');
-      this.transitionTo('project-list');
+      this.props.history.push('/project-list');
       actions.listRenderings();
     }, (data) => {
       createButton.innerText = createButtonInitialText;
@@ -63,7 +63,7 @@ class NewProject extends React.Component {
     this.setState({
       country: country,
       regions: sessionStore.regions.filter(
-        function(r) { return r.country === country; }
+        function(r) { return r.country === country.value; }
       ),
       region: null,
     });
@@ -77,6 +77,7 @@ class NewProject extends React.Component {
     var countries = sessionStore.countries || allCountries;
     return (
         <Content m='new-project'>
+          <RequireLoggedIn failTo='/getting-started' />
           <ContentBg>
             <ContentTitle>Create a New Survey</ContentTitle>
             <form>
@@ -92,7 +93,7 @@ class NewProject extends React.Component {
                     placeholder='Country'
                     value={this.state.country || null}
                     ref='country'
-                    onChange={this.changeCountry}
+                    onChange={this.changeCountry.bind(this)}
                 />
                 </FormItem>
 
@@ -104,12 +105,12 @@ class NewProject extends React.Component {
                         placeholder='Region (optional)'
                         value={this.state.region || null}
                         ref='country'
-                        onChange={this.changeRegion}
+                        onChange={this.changeRegion.bind(this)}
                     />
                   </FormItem>
                 }
               </FormFields>
-              <BorderedButton onClick={this.createNewProject}>
+              <BorderedButton onClick={this.createNewProject.bind(this)}>
                 Create
               </BorderedButton>
               <span> or </span>
@@ -123,7 +124,4 @@ class NewProject extends React.Component {
   }
 }
 
-reactMixin(NewProject.prototype, Navigation);
-reactMixin(NewProject.prototype, requireLoggedInMixin({failTo: 'getting-started'}));
-
-export default NewProject;
+export default withRouter(NewProject);

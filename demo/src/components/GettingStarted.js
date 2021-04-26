@@ -2,6 +2,7 @@
 
 import React from 'react';
 import reactMixin from 'react-mixin';
+import {Redirect} from 'react-router-dom';
 import bem from '../libs/react-create-bem-element';
 import sessionStore from '../stores/session';
 import bemRouterLink from '../libs/bemRouterLink'; // !
@@ -11,46 +12,36 @@ import authUrls from '../stores/authUrls';
 
 require('styles/GettingStarted.scss');
 
-// let {
-//   Navigation,
-// } = require('react-router');
-
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
     ContentWrap = bem('content-wrap'),
     ContentTitle = bem('content-title', '<h2>'),
     InfoMessage = bem('info-message'),
-    InfoMessage__link = bemRouterLink('info-message__link'),
-    BorderedNavlink = bemRouterLink('bordered-navlink');
+    InfoMessage__link = bem('info-message__link', '<a>'),
+    BorderedNavlink = bemRouterLink('bordered-navlink'),
+    BorderedNavlinkExternal = bem('bordered-navlink', '<a>');
 
-class GettingStarted extends React.Component {
-  componentDidMount () {
-    this.listenTo(accountStore, this.accountStoreUpdated);
-    this.listenTo(sessionStore, this.sessionStoreUpdated);
+class GettingStarted extends Reflux.Component {
+  constructor (props) {
+    super(props);
+
+    // https://github.com/reflux/refluxjs/tree/master/docs/components#manually-mapping-states-with-thismapstoretostate
+    this.mapStoreToState(accountStore, (fromStore) => {
+      return {accountCreated: fromStore.created};
+    });
+    this.mapStoreToState(sessionStore, (fromStore) => {
+      return {session: fromStore};
+    });
   }
-  accountStoreUpdated ({created}) {
-    if (created) {
-      this.setState({
-        accountCreated: created,
-      });
-    }
-  }
-  sessionStoreUpdated () {
-    if (this.state.session && this.state.session.loggedIn) {
-        this.transitionTo('project-list');
-    }
-  }
-  getInitialState() {
-    return {
-      accountCreated: accountStore.state.created,
-      session: sessionStore.state,
-    };
-  }
+
   render () {
+    if (this.state.session?.loggedIn) {
+      return <Redirect push to='/project-list' />;
+    }
     return (
         <Content m='getting-started'>
           <ContentBg>
-            { this.state.session.loggedIn ?
+            { this.state.session?.loggedIn ?
               <ContentWrap>
                 <ContentTitle>EquityTool Surveys</ContentTitle>
                 <p>Create a new survey or a view a list of your current surveys.</p>
@@ -73,13 +64,13 @@ class GettingStarted extends React.Component {
               <p>Create a free account to begin measuring the wealth distribution of your program beneficiaries. After registration, you will immediately be able to log in to the EquityTool to set up a survey, and begin collecting data.</p>
               <p>For more information about how to use the tool, click <a href="https://www.equitytool.org/data-collection-options/">here</a>.</p>
               <div className='getting-started__buttons'>
-                <BorderedNavlink href={authUrls.register} m='register'>
+                <BorderedNavlink to='/register' m='register'>
                   Create account
                 </BorderedNavlink>
                 <span> or </span>
-                <BorderedNavlink href={authUrls.login} to='login'>
+                <BorderedNavlinkExternal href={authUrls.login} m='login'>
                   Log in
-                </BorderedNavlink>
+                </BorderedNavlinkExternal>
               </div>
             </ContentWrap>
             }
@@ -99,8 +90,5 @@ class GettingStarted extends React.Component {
       );
   }
 }
-
-// reactMixin(GettingStarted.prototype, Navigation);
-reactMixin(GettingStarted.prototype, Reflux.connect(sessionStore, 'session'));
 
 export default GettingStarted;

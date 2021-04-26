@@ -1,19 +1,19 @@
-
 'use strict';
+
+/*********************************
+ Currently UNUSED:
+ /api-auth/login/ is used instead.
+**********************************/
 
 import React from 'react';
 import reactMixin from 'react-mixin';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import actions from '../actions/actions';
-import {requireNotLoggedInMixin} from '../mixins/requireLogins';
+import {RequireNotLoggedIn} from '../mixins/requireLogins';
 
 require('styles/Forms.scss');
 require('styles/Login.scss');
-
-let {
-  Navigation,
-} = require('react-router');
 
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
@@ -31,6 +31,7 @@ class Login extends React.Component {
   render () {
     return (
         <Content m='login'>
+          <RequireNotLoggedIn failTo='/getting-started' />
           <ContentBg>
             <ContentTitle>Login</ContentTitle>
             <form>
@@ -43,7 +44,7 @@ class Login extends React.Component {
                 </Navlink>
                 <br/>
               </FormFields>
-              <BorderedButton onClick={this.login}>
+              <BorderedButton onClick={this.login.bind(this)}>
                 Log in
               </BorderedButton>
               <span> No account yet? </span>
@@ -56,8 +57,5 @@ class Login extends React.Component {
       );
   }
 }
-
-reactMixin(Login.prototype,  Navigation);
-reactMixin(Login.prototype,  requireNotLoggedInMixin({failTo: 'getting-started'}));
 
 export default Login;

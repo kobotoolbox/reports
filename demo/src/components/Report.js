@@ -5,8 +5,7 @@ import reactMixin from 'react-mixin';
 import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
-import {Navigation} from 'react-router';
-import {requireLoggedInMixin} from '../mixins/requireLogins';
+import {RequireLoggedIn} from '../mixins/requireLogins';
 import actions from '../actions/actions';
 import {individualRenderingStore} from '../stores/renderings';
 
@@ -18,16 +17,16 @@ var Content = bem('content'),
     ProjectLink = bem('project-link', '<a>'),
     UrbanToggle = bem('urban-toggle', '<div>');
 
-class Report extends React.Component {
-  componentDidMount () {
-    this.listenTo(individualRenderingStore, this.individualRenderingStoreChanged);
-    actions.getRendering(this.props.params.id);
-  }
-  getInitialState () {
-    return {
+class Report extends Reflux.Component {
+  constructor (props) {
+    this.state = {
       renderingHtml: 'loading',
       urbanVisible: false
     };
+  }
+  componentDidMount () {
+    this.listenTo(individualRenderingStore, this.individualRenderingStoreChanged);
+    actions.getRendering(this.props.params.id);
   }
   individualRenderingStoreChanged (projId, html) {
     if (this.props.params.id === projId) {
@@ -45,10 +44,11 @@ class Report extends React.Component {
   render () {
     return (
         <Content m='report'>
+          <RequireLoggedIn failTo='/getting-started' />
           <ContentBg className={this.state.urbanVisible ? 'urban-visible' : 'urban-hidden'}>
             <div className="rendering" dangerouslySetInnerHTML={{ __html: this.state.renderingHtml }} />
             {this.state.renderingHtml !== 'loading' &&
-              <UrbanToggle onClick={this.toggleUrbanState}>
+              <UrbanToggle onClick={this.toggleUrbanState.bind(this)}>
                 {this.state.urbanVisible ?
                   <div className="bordered-navlink">Hide Urban Results <i className="fa fa-chevron-up" /></div>
                 :
@@ -84,8 +84,6 @@ class Report extends React.Component {
   }
 }
 
-reactMixin(Report.prototype, Navigation);
-reactMixin(Report.prototype, requireLoggedInMixin({failTo: 'getting-started'}));
 reactMixin(Report.prototype, Reflux.ListenerMixin);
 
 export default Report;

@@ -1,6 +1,5 @@
 import React from 'react';
-import reactMixin from 'react-mixin';
-import Router from 'react-router';
+import {Link} from 'react-router-dom';
 
 import bem from '../libs/react-create-bem-element';
 
@@ -25,27 +24,30 @@ With this:
   </SampleReport>
 */
 
-export default function(baseKls) {
-  var El = bem(baseKls, '<a>');
-  class c extends React.Component {
-    componentWillMount () {
-      var props = Object.assign({}, this.props);
+export default function(bemBaseClass) {
+  class BemRouterLink extends React.Component {
+    constructor (frozenProps) {
+      const props = {...frozenProps};
       if (props.mTo) {
+        // unused but apparently a shortcut for when `m` and `to` are the same
         props.m = props.to = props.mTo;
+        delete props.mTo;
       }
-      if (!props.href) {
-        props.href = this.makeHref(props.to, props.params, props.query);
-      }
-      delete props.to;
-      delete props.mTo;
-      delete props.params;
-      delete props.query;
+      let modifier = props.m;
+      delete props.m;
+
+      // BemElementClass is a JS class; bemBaseClass is a CSS class
+      const BemElementClass = bem(bemBaseClass, '<a>');
+      // Instantiate a temporary BEM element and copy its CSS class names
+      const elementWithBemClassNames = new BemElementClass({m: modifier});
+      props.className = elementWithBemClassNames.render().props.className;
+
+      super(frozenProps);
       this._Props = props;
     }
     render () {
-      return <El {...this._Props} />;
+      return <Link {...this._Props} />;
     }
   }
-  reactMixin(c.prototype, Router.Navigation);
-  return c;
+  return BemRouterLink;
 }

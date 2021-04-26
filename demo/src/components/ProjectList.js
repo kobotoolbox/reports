@@ -7,16 +7,12 @@ import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import moment from 'moment';
-import {requireLoggedInMixin} from '../mixins/requireLogins';
+import {RequireLoggedIn} from '../mixins/requireLogins';
 import actions from '../actions/actions';
 import {renderingsStore} from '../stores/renderings';
 import Modal from 'react-modal';
 
 require('styles/ProjectList.scss');
-
-let {
-  Navigation,
-} = require('react-router');
 
 var Content = bem('content'),
     ContentBg = bem('content-bg'),
@@ -29,9 +25,10 @@ var Content = bem('content'),
     ProjectAttributeGroup = bem('project__attribute-group', '<div>'),
     ProjectAttributeLink = bem('project__attribute-link', '<a>');
 
-class ProjectList extends React.Component {
-  getInitialState () {
-    return {
+class ProjectList extends Reflux.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
       projects: [],
       projectsLoading: true,
       syncingProject: false,
@@ -103,6 +100,7 @@ class ProjectList extends React.Component {
 
     return (
         <Content m='project-list'>
+          <RequireLoggedIn failTo='/getting-started' />
           <ContentBg>
             <ContentTitle>My Surveys</ContentTitle>
             <p>This page contains a list of your survey projects. Each survey is assigned a unique URL that can be used by multiple data collectors at the same time. Simply copy the link and send it to your data collectors. Remember, surveys can be conducted online or offline. Before viewing a report, be sure to click "sync" to update all data collected and to see the most up-to-date results. </p>
@@ -154,7 +152,7 @@ class ProjectList extends React.Component {
                           </ProjectAttributeLink>
                           <button
                             className="button-copy"
-                            onClick={this.copyText}
+                            onClick={this.copyText.bind(this)}
                             data-text-to-copy={enter_data_link}
                           >
                             copy link
@@ -165,7 +163,7 @@ class ProjectList extends React.Component {
                           <ProjectAttribute m={{
                             sync: true,
                             syncpending: isSyncing,
-                          }} onClick={this.syncProject} data-project-id={id}>
+                          }} onClick={this.syncProject.bind(this)} data-project-id={id}>
                             <i />
                             sync
                           </ProjectAttribute>
@@ -181,7 +179,7 @@ class ProjectList extends React.Component {
                           edit_link ?
                             <ProjectAttribute m='update-form'>
                               <label>Update form: </label>
-                              <ProjectAttribute onClick={this.openUpdateModal} data-edit-link={edit_link}>
+                              <ProjectAttribute onClick={this.openUpdateModal.bind(this)} data-edit-link={edit_link}>
                                 <i />
                                 add questions
                               </ProjectAttribute>
@@ -190,7 +188,7 @@ class ProjectList extends React.Component {
                             null
                         )}
                         <ProjectAttribute m='danger-zone'>
-                          <ProjectAttribute onClick={this.openDeleteModal} data-project-id={id}>
+                          <ProjectAttribute onClick={this.openDeleteModal.bind(this)} data-project-id={id}>
                             <i />
                           </ProjectAttribute>
                         </ProjectAttribute>
@@ -202,8 +200,7 @@ class ProjectList extends React.Component {
           </ContentBg>
           <Modal
             isOpen={this.state.modalIsOpen}
-            onAfterOpen={this.afterOpenModal}
-            onRequestClose={this.closeModal}
+            onRequestClose={this.closeModal.bind(this)}
           >
             {this.state.modalType === 'update' ?
               <div>
@@ -223,11 +220,11 @@ class ProjectList extends React.Component {
                   <a
                     href={this.state.formBuilder.url}
                     target="_blank"
-                    onClick={this.closeModal}
+                    onClick={this.closeModal.bind(this)}
                   >
                     OK, I understand
                   </a>
-                  <button type="button" onClick={this.closeModal}>Cancel</button>
+                  <button type="button" onClick={this.closeModal.bind(this)}>Cancel</button>
                 </div>
               </div>
             : this.state.modalType === 'delete' ?
@@ -242,8 +239,8 @@ class ProjectList extends React.Component {
                   </div>
                 :
                   <div className="modal-buttons">
-                      <button onClick={this.closeModal}>Cancel</button>
-                      <button onClick={this.deleteProject}>
+                      <button onClick={this.closeModal.bind(this)}>Cancel</button>
+                      <button onClick={this.deleteProject.bind(this)}>
                         OK
                       </button>
                   </div>
@@ -259,8 +256,6 @@ class ProjectList extends React.Component {
   }
 }
 
-reactMixin(ProjectList.prototype, Navigation);
-reactMixin(ProjectList.prototype, requireLoggedInMixin({failTo: 'getting-started'}));
 reactMixin(ProjectList.prototype, Reflux.ListenerMixin);
 
 export default ProjectList;

@@ -8,6 +8,8 @@ import sessionStore from '../stores/session';
 import authUrls from '../stores/authUrls';
 import Reflux from 'reflux';
 
+import GettingStarted from './GettingStarted';
+
 // CSS
 require('normalize.css');
 require('../styles/main.scss');
@@ -19,17 +21,14 @@ var MainWrap = bem('main-wrap'),
     Footer = bem('footer', '<footer>');
 
 class MetricsUiApp extends Reflux.Component {
-  constructor(props) {
-    // https://github.com/reflux/refluxjs#hooking-stores-to-components
+  constructor (props) {
     super(props);
-    this.state = {};
-    this.store = sessionStore;
-  }
-  getInitialState () {
-    return {
-      session: sessionStore.state, // TODO: remove?
+    this.state = {
       mobileMenuVisible: false,
     };
+    this.mapStoreToState(sessionStore, (fromStore) => {
+      return {session: fromStore};
+    });
   }
   handleClick () {
     this.setState({mobileMenuVisible: !this.state.mobileMenuVisible});
@@ -45,11 +44,11 @@ class MetricsUiApp extends Reflux.Component {
               <a href="https://www.equitytool.org/"><img src="https://www.equitytool.org/wp-content/uploads/2015/08/EquityToolLogoWhiteOnly.png" alt="Equity Tool" /></a>
           </div>
           <div className="mobile-nav">
-            <span className="mob-nav-btn" onClick={this.handleClick}>Menu</span>
+            <span className="mob-nav-btn" onClick={this.handleClick.bind(this)}>Menu</span>
           </div>
           <nav className={this.state.mobileMenuVisible ? 'navigation-container nav-menu visible' : 'navigation-container nav-menu not-visible'}>
             <ul id="menu-main" className="menu-ul">
-              <li><a href="https://www.equitytool.org/the-equity-tool-2/">About<span class="drop-arrow"></span></a>
+              <li><a href="https://www.equitytool.org/the-equity-tool-2/">About<span className="drop-arrow"></span></a>
                 <ul>
                   <li><a href="https://www.equitytool.org/the-equity-tool-2/">The EquityTool</a></li>
                   <li><a href="https://www.equitytool.org/equity/">Equity & Wealth</a></li>
@@ -90,6 +89,7 @@ class MetricsUiApp extends Reflux.Component {
 
           </nav>
         </Header>
+        {this.props.children}
         <Footer>
           {'Metrics for Management, 2021'}
         </Footer>
