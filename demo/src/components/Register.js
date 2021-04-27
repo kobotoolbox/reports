@@ -97,7 +97,7 @@ class Register extends Reflux.Component {
                                 m='required'
                                 onChange={this.formFieldChange.bind(this)} />
                             <span> By signing up, I agree to the&nbsp;
-                              <SimpleLink m='terms' to='terms' target='_blank'>
+                              <SimpleLink m='terms' to='/terms' target='_blank'>
                                 Terms and Conditions
                               </SimpleLink>
                               .</span>
@@ -142,7 +142,7 @@ class Register extends Reflux.Component {
                 Create Account
               </BorderedButton>
               <span> Already have an account? </span>
-              <SimpleLink href={authUrls.login} to='login'>
+              <SimpleLink href={authUrls.login} to='/login'>
                 Login here
               </SimpleLink>
             </form>

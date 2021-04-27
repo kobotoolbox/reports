@@ -37,9 +37,7 @@ from .models import Form
 @xframe_options_exempt
 def index(request):
     extensions = ['html', 'pdf', 'docx']
-    if request.user.is_authenticated:
-        projects = request.user.renderings.order_by('name')
-    return render(request, 'equity.html', locals())
+    return HttpResponse('OK')
 
 
 @xframe_options_exempt

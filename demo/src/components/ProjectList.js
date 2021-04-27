@@ -44,7 +44,7 @@ class ProjectList extends Reflux.Component {
   copyText (evt) {
     var $ect = evt.currentTarget;
     navigator.clipboard.writeText($ect.dataset.textToCopy).then(
-      this.afterCopy
+      this.afterCopy.bind(this)
     );
   }
   syncProject (evt) {
@@ -107,7 +107,7 @@ class ProjectList extends Reflux.Component {
             <p>Each survey shows the number of submissions, or surveys with complete data uploaded to the project. Click on the "sync" button to update data collected across all survey enumerators. Under "View report" select how you would like to view your survey results: in your browser, as a PDF or as a Word document.</p>
             <p>For more information about how to use the tool, click <a href="https://www.equitytool.org/data-collection-options/">here</a>.</p>
             <div className="new-project-wrapper" >
-              <BorderedNavlink m='new-project' to='new-project'>
+              <BorderedNavlink m='new-project' to='/new-project'>
                 New survey
               </BorderedNavlink>
             </div>
@@ -171,7 +171,7 @@ class ProjectList extends Reflux.Component {
                         {hasSubmissions ?
                           <ProjectAttribute m='view-report'>
                             <label>View report:</label>
-                              <Navlink m='view-report' to='report' params={{ id: id }}>
+                              <Navlink m='view-report' to={`/report/${id}`}> 
                                 view report
                               </Navlink>
                           </ProjectAttribute>

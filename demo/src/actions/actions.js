@@ -1,7 +1,12 @@
 import Reflux from 'reflux';
 import $ from 'jquery';
 import alertify from 'alertifyjs';
+
+import RefluxPromise from '../libs/reflux-promise';
+
 require('../styles/libs/alertify.scss');
+
+Reflux.use(RefluxPromise(window.Promise));
 
 var token = (function(){
   var _m = document.head.querySelector('meta[name=csrf-token]');

@@ -48,11 +48,11 @@ class GettingStarted extends Reflux.Component {
                 <p>For more information about how to use the tool, click <a href="https://www.equitytool.org/data-collection-options/">here</a>.</p>
                 <div>
                   <p>
-                    <BorderedNavlink m='new-project' to='new-project'>
+                    <BorderedNavlink m='new-project' to='/new-project'>
                       New survey
                     </BorderedNavlink>
                     <span> or </span>
-                    <BorderedNavlink m='projects' to='project-list'>
+                    <BorderedNavlink m='projects' to='/project-list'>
                       Survey list
                     </BorderedNavlink>
                   </p>
@@ -79,7 +79,7 @@ class GettingStarted extends Reflux.Component {
                 {'You have created an account with the username "' +
                   this.state.accountCreated.username +
                  '". Please '}
-                <InfoMessage__link href={authUrls.login} to='login'>
+                <InfoMessage__link href={authUrls.login} to='/login'>
                   log in
                 </InfoMessage__link>
                 {'.'}

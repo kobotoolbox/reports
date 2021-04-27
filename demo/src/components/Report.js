@@ -19,6 +19,7 @@ var Content = bem('content'),
 
 class Report extends Reflux.Component {
   constructor (props) {
+    super(props);
     this.state = {
       renderingHtml: 'loading',
       urbanVisible: false
@@ -26,10 +27,10 @@ class Report extends Reflux.Component {
   }
   componentDidMount () {
     this.listenTo(individualRenderingStore, this.individualRenderingStoreChanged);
-    actions.getRendering(this.props.params.id);
+    actions.getRendering(this.props.match.params.id);
   }
   individualRenderingStoreChanged (projId, html) {
-    if (this.props.params.id === projId) {
+    if (this.props.match.params.id === projId) {
       this.setState({
         renderingHtml: html,
       });
@@ -60,20 +61,20 @@ class Report extends Reflux.Component {
               <div className="project-links">
                 <ProjectLink
                   className="bordered-navlink"
-                  href={'/rendering/' + this.props.params.id + '.pdf?show_urban=' + this.state.urbanVisible}
+                  href={'/rendering/' + this.props.match.params.id + '.pdf?show_urban=' + this.state.urbanVisible}
                 >
                   download PDF
                 </ProjectLink>
                 <ProjectLink
                   className="bordered-navlink"
-                  href={'/rendering/' + this.props.params.id + '.docx?show_urban=' + this.state.urbanVisible}
+                  href={'/rendering/' + this.props.match.params.id + '.docx?show_urban=' + this.state.urbanVisible}
                 >
                   download DOC
                 </ProjectLink>
               </div>
             }
             <div className="project-footer">
-              <BorderedNavlink to='project-list'>
+              <BorderedNavlink to='/project-list'>
                 <i className="fa fa-chevron-left" />
                 go back
               </BorderedNavlink>

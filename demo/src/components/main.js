@@ -14,6 +14,7 @@ import {
   Switch,
   Route
 } from 'react-router-dom';
+import Modal from 'react-modal';
 
 var content = document.getElementById('content');
 
@@ -26,7 +27,7 @@ ReactDOM.render(
           <Route path="/register">        <Register/>       </Route>
           <Route path="/new-project">     <NewProject/>     </Route>
           <Route path="/project-list">    <ProjectList/>    </Route>
-          <Route path="/report/:id">      <Report/>         </Route>
+          <Route path="/report/:id" component={Report} /> {/* to get access to this.props.match.params.id */}
           <Route path="/terms">           <Terms/>          </Route>
           <Route>{/* default */}          <GettingStarted/> </Route>
           }
@@ -34,5 +35,8 @@ ReactDOM.render(
       </MetricsUiApp>
     </Route>
   </HashRouter>,
-  document.getElementById('content')
+  content
 )
+
+// https://github.com/reactjs/react-modal/blob/master/docs/accessibility/index.md#app-element
+Modal.setAppElement(content);

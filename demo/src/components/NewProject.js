@@ -30,6 +30,7 @@ class NewProject extends Reflux.Component {
   constructor (props) {
     super(props);
     this.state = {
+      name: '',
       country: null,
       regions: [],
       region: null,
@@ -41,10 +42,10 @@ class NewProject extends Reflux.Component {
     let createButtonInitialText = createButton.innerText;
     createButton.disabled = true;
     createButton.innerText = 'Creating...';
-    actions.createTemplate({
+    actions.createTemplate.triggerAsync({
       name: this.refs.name.props.value,
-      country: this.state.region || this.state.country,
-      regional: !!this.state.region,
+      country: this.state.region?.value || this.state.country.value,
+      regional: !!this.state.region?.value,
     }).then(() => {
       alertify.success('Survey creation successful!');
       this.props.history.push('/project-list');
@@ -52,11 +53,16 @@ class NewProject extends Reflux.Component {
     }, (data) => {
       createButton.innerText = createButtonInitialText;
       createButton.disabled = false;
-      if('name' in data.responseJSON) {
+      if(data.responseJSON && 'name' in data.responseJSON) {
         alertify.error(data.responseJSON.name);
       } else {
         alertify.error('Survey creation failed!');
       }
+    });
+  }
+  changeName (evt) {
+    this.setState({
+      name: evt.target.value,
     });
   }
   changeCountry (country) {
@@ -83,7 +89,15 @@ class NewProject extends Reflux.Component {
             <form>
               <FormFields m='register'>
                 <FormItem>
-                  <InputField name={'projectname'} type='text' m='required' placeholder='Project Name' ref='name' />
+                  <InputField
+                    name={'projectname'}
+                    type='text'
+                    m='required'
+                    placeholder='Project Name'
+                    ref='name'
+                    value={this.state.name}
+                    onChange={this.changeName.bind(this)}
+                  />
                 </FormItem>
 
                 <FormItem m='country'>
@@ -114,7 +128,7 @@ class NewProject extends Reflux.Component {
                 Create
               </BorderedButton>
               <span> or </span>
-              <BorderedNavlink m={'back'} to='project-list'>
+              <BorderedNavlink m={'back'} to='/project-list'>
                 Back
               </BorderedNavlink>
             </form>
