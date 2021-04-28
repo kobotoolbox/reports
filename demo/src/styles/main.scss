@@ -1,5 +1,10 @@
 /* Stiziles */
 
+html {
+  /* normalize.css v3.0.3 did this, but v8.0.1 does not! */
+  font-family: sans-serif;
+}
+
 /* main */
 
 .main {

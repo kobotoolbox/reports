@@ -22,15 +22,16 @@ ReactDOM.render(
   <HashRouter>
     <Route path="/">
       <MetricsUiApp>
-        <Switch>
-          <Route path="/getting-started"> <GettingStarted/> </Route>
-          <Route path="/register">        <Register/>       </Route>
-          <Route path="/new-project">     <NewProject/>     </Route>
-          <Route path="/project-list">    <ProjectList/>    </Route>
-          <Route path="/report/:id" component={Report} /> {/* to get access to this.props.match.params.id */}
-          <Route path="/terms">           <Terms/>          </Route>
-          <Route>{/* default */}          <GettingStarted/> </Route>
-          }
+        <Switch> {/* stops after the first match */}
+          <Route path="/getting-started" component={GettingStarted} />
+          <Route path="/register"        component={Register} />
+          <Route path="/new-project"     component={NewProject} />
+          <Route path="/project-list"    component={ProjectList} />
+          {/* id available in the component as this.props.match.params.id */}
+          <Route path="/report/:id"      component={Report} />
+          <Route path="/terms"           component={Terms} />
+          {/* omitting the path matches everything, i.e. makes the route the default */}
+          <Route component={GettingStarted} />
         </Switch>
       </MetricsUiApp>
     </Route>

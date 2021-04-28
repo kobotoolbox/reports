@@ -231,7 +231,7 @@ class ProjectList extends Reflux.Component {
               <div>
                 <p> Are you sure you want to remove this survey from your
                 survey list? Please understand that this will permanently
-                delete your project data as well as your EquityTools report.
+                delete your project data as well as your EquityTool report.
                 </p>
                 { this.state.deletePending ?
                   <div className="modal-buttons">

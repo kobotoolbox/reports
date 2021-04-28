@@ -3,7 +3,6 @@
 import React from 'react';
 import reactMixin from 'react-mixin';
 import bem from '../libs/react-create-bem-element';
-// import bemRouterLink from '../libs/bemRouterLink';
 import sessionStore from '../stores/session';
 import authUrls from '../stores/authUrls';
 import Reflux from 'reflux';
@@ -91,7 +90,7 @@ class MetricsUiApp extends Reflux.Component {
         </Header>
         {this.props.children}
         <Footer>
-          {'Metrics for Management, 2021'}
+          {`Metrics for Management, ${(new Date()).getFullYear()}`}
         </Footer>
       </MainWrap>
     );

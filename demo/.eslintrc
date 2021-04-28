@@ -7,10 +7,6 @@
     "sourceType": "module",
     "allowImportExportEverywhere": true,
   },
-  "ecmaFeatures": {
-    "jsx": true,
-    "modules": true
-  },
   "env": {
     "browser": true,
     "amd": true,
