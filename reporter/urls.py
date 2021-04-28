@@ -8,7 +8,7 @@ router.register('templates', views.TemplateView)
 router.register('renderings', views.RenderingViewSet)
 
 urlpatterns = [
-    path('', views.demo, name='demo'),
+    path('', views.demo, name='demo'),  # FIXME: rename
     path('me/', views.current_user, name='current_user'),
     path('reports/', views.index, name='index'),
     path('rendering/<int:id>.<slug:extension>', views.rendering, name='rendering'),

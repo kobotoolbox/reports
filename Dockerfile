@@ -8,7 +8,7 @@ COPY . /app/
 
 RUN conda env update --prune
 
-WORKDIR /app/demo
+WORKDIR /app/jsapp
 RUN npm run build
 WORKDIR /app
 

@@ -43,6 +43,6 @@ RUN source activate koboreports && \
 # install node dependencies #
 #############################
 
-COPY demo/package.json /tmp/package.json
-RUN cd /tmp && npm install && mkdir /app/demo && \
-    cp -a /tmp/node_modules /app/demo/
+COPY jsapp/package.json /tmp/package.json
+RUN cd /tmp && npm install && mkdir /app/jsapp && \
+    cp -a /tmp/node_modules /app/jsapp/
