@@ -9,7 +9,7 @@ import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import {allCountries} from '../libs/metrics-countries';
 import actions from '../actions/actions';
-import {RequireLoggedIn} from '../mixins/requireLogins';
+import {RequireLoggedIn} from '../libs/requireLogins';
 import sessionStore from '../stores/session';
 import Select from 'react-select';
 import alertify from 'alertifyjs';

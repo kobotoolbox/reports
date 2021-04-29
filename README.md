@@ -5,7 +5,7 @@ This is a custom application that runs at https://data.equitytool.org. It relies
 ## What else is it?
 
 `reports` is a Django project for compiling dynamic reports. It is
-built on the R package [knitr][knitr].
+built on the R package knitr: http://yihui.name/knitr/.
 
 # Features
 
@@ -29,12 +29,13 @@ deployment has fewer than 150 responses. See
   the report
 
 # Caveats
+
 * Tables in DOCX exports do not appear properly in LibreOffice: see https://github.com/jgm/pandoc/issues/515
 
 # Development _without_ Dokku
 
 This application requires a working instance of KoBoToolbox to run. See
-[kobo-docker](https://github.com/kobotoolbox/kobo-docker) for instructions
+[kobo-install](https://github.com/kobotoolbox/kobo-install) for instructions
 on how to install such an instance.
 
 1. Go to `https://[YOUR KPI DOMAIN]/admin/kpi/authorizedapplication/` (you will
@@ -65,49 +66,3 @@ on how to install such an instance.
 1. You may want to create a superuser:
     1. (Inside the application container) `source activate koboreports`;
     1. `./manage.py createsuperuser`.
-
-# Backburner
-
-On each compilation of a report, it would be nice to save the
-corresponding CSV file. That way when the report is recompiled we can
-pull only the new / updated data from the API to get the latest
-data. I'm not going to worry about setting this up right now, but I'll
-keep it in mind in my design decisions.
-
-I am going to ignore different user roles for the moment.  It seems
-like there is a large NGO that wants to write reports, and then there
-are satellite offices collecting data that will want to view the
-reports. For the moment I'm not going to worry too much about
-supporting different users and groups.
-
-We will want to share sessions with the other kobo projects on the
-server, this will allow users to log in once.
-
-# My Notes
-
-Right now I am deploying this web application using [dokku][dokku]. To
-see an instance of this application running go to
-[koboreports][koboreports].
-
-Here's how I set up an admin account using dokku:
-
-1.  SSH into AWS server.
-2.  Find name of the docker container that is running the application
-    using `docker ps`.
-3.  Open a bash terminal inside that docker container:
-
-        docker exec -it {{ container_name }} bash
-
-4.  Use django's management command to create a super user:
-
-        python manage.py createsuperuser
-
-One thing to keep in mind when deploying with dokku is every time you
-deploy, a new docker container is built. If you are using sqlite to
-store data inside a container that data will be lost when you redeploy
-the application. I am using postgres to persist data across
-deployments.
-
-[knitr]: http://yihui.name/knitr/
-[dokku]: http://progrium.viewdocs.io/dokku/
-[koboreports]: http://koboreports.hbs-rcs.org/

@@ -3,12 +3,13 @@ FROM node:12
 # Docker default of `/bin/sh` doesn't support `source`
 SHELL ["/bin/bash", "-c"]
 
-# Add conda repository
+# Add Conda repository
 # https://docs.conda.io/projects/conda/en/latest/user-guide/install/rpm-debian.html
 RUN curl https://repo.anaconda.com/pkgs/misc/gpgkeys/anaconda.asc | gpg --dearmor > conda.gpg && \
     install -o root -g root -m 644 conda.gpg /usr/share/keyrings/conda-archive-keyring.gpg && \
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/conda-archive-keyring.gpg] https://repo.anaconda.com/pkgs/misc/debrepo/conda stable main" > /etc/apt/sources.list.d/conda.list
 
+# Install Conda and other OS-level dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     conda \
     pandoc \
@@ -22,27 +23,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Do not `apt-get autoremove` after this
 RUN apt-get remove -y tex-gyre
 
-# `apt-get install conda` does not actually put conda on the PATH
+# `apt-get install conda` does not actually put Conda on the PATH
 ENV PATH /opt/conda/bin:$PATH
 RUN conda update --yes conda
 
 RUN mkdir /app
 WORKDIR /app
 
-# https://www.continuum.io/content/conda-data-science
+# Copy only the files that define dependencies, not all the source files, to
+# avoid unnecessarily invalidating the Docker layer cache
 COPY environment.yml /app/
+COPY jsapp/package.json jsapp/package-lock.json /app/jsapp/
 
+# Install Python and R dependencies
 RUN conda env create
 
-# R libraries not available through conda
+# Install R libraries not available through Conda
 RUN source activate koboreports && \
     Rscript -e "install.packages('pander', repos='http://cran.rstudio.com/', type='source')" \
         -e "library(pander)"
 
-#############################
-# install node dependencies #
-#############################
-
-COPY jsapp/package.json /tmp/package.json
-RUN cd /tmp && npm install && mkdir /app/jsapp && \
-    cp -a /tmp/node_modules /app/jsapp/
+# Install Node.js dependencies
+RUN cd jsapp && npm install

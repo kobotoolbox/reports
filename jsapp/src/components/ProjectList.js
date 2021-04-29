@@ -7,7 +7,7 @@ import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import moment from 'moment';
-import {RequireLoggedIn} from '../mixins/requireLogins';
+import {RequireLoggedIn} from '../libs/requireLogins';
 import actions from '../actions/actions';
 import {renderingsStore} from '../stores/renderings';
 import Modal from 'react-modal';

@@ -4,16 +4,22 @@ FROM kobotoolbox/reports_base
 # koboreports #
 ###############
 
+# Freshen dependencies in case they've changed since the base
+# image was built
+COPY environment.yml /app/
+COPY jsapp/package.json jsapp/package-lock.json /app/jsapp/
+RUN conda env update --prune
+RUN cd jsapp && npm install
+
+# Include all remaining source files
 COPY . /app/
 
-RUN conda env update --prune
+# Build the front end
+RUN cd jsapp && npm run build
 
-WORKDIR /app/jsapp
-RUN npm run build
-WORKDIR /app
-
+# Run Python unit tests
 RUN source activate koboreports && \
-    python manage.py test --noinput
+    SECRET_KEY=bogus KPI_API_KEY=bogus python manage.py test --noinput
 
 # Persistent storage of uploaded XLSForms!
 VOLUME ["/app/media"]

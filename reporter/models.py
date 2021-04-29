@@ -24,9 +24,6 @@ KPI_PATH_HEAD = '/api/v2/'
 KC_PATH_HEAD = '/api/v1/data/'
 
 
-logger = logging.getLogger('TIMING')
-
-
 class UserExternalApiToken(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -236,10 +233,6 @@ class Rendering(models.Model):
         response.raise_for_status()
         return self._csv_from_response(response)
 
-    def _log_message(self, msg):
-        full_msg = '<Rendering: %s> | %s' % (str(self), msg)
-        logger.info(full_msg)
-
     @staticmethod
     def _write_variable_to_file(folder, name, value):
         filename = os.path.join(folder, name)
@@ -248,7 +241,6 @@ class Rendering(models.Model):
         return filename
 
     def render(self, extension, request=None):
-        self._log_message('render begin  ')
         folder = tempfile.mkdtemp()
         try:
             filename = '%s.Rmd' % self.template.slug
@@ -281,9 +273,7 @@ class Rendering(models.Model):
                 f.write(self.template.rmd)
 
             if self.url:
-                self._log_message('download begin')
                 self.download_data()
-                self._log_message('download end  ')
                 data_csv = os.path.join(folder, 'data.csv')
                 if not self.data.endswith('\n'):
                     self.data += '\n'
@@ -318,7 +308,6 @@ class Rendering(models.Model):
             with open(path, 'rb') as f:
                 result = f.read()
 
-            self._log_message('render end    ')
             return result
         finally:
             shutil.rmtree(folder)

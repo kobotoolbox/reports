@@ -4,10 +4,12 @@ from .xls2csv import xls2csv
 
 
 class Form(models.Model):
-    ''' An administrator-defined form that regular users can select when they
-    create new projects. The form is then POSTed to KoBoCAT, creating a new
-    XForm under the regular user's account there. That XForm, in turn, will be
-    referenced by a `reporter.Rendering` '''
+    """
+    An administrator-defined form that regular users can select when they
+    create new projects. The form is then sent to the regular user's linked
+    KoBoToolbox account, creating a new project that, in turn, is referenced by
+    a `reporter.Rendering`
+    """
     # `name` means country name in the current implementation
     name = models.CharField(max_length=255, unique=True)
     xls_form = PrivateFileField(default=None)

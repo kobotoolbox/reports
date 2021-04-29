@@ -15,12 +15,6 @@ from rest_framework.response import Response
 from equitytool.models import Form
 
 
-def index(request):
-    if request.user.is_authenticated:
-        renderings = Rendering.objects.filter(user=request.user)
-    extensions = ['html', 'pdf', 'docx']
-    return render(request, 'index.html', dictionary=locals())
-
 @api_view(['GET'])
 def current_user(request):
     user = request.user
@@ -41,8 +35,8 @@ def current_user(request):
                          'last_login': user.last_login,
                          })
 
-def demo(request):
-    return render(request, 'demo.html')
+def root(request):
+    return render(request, 'root.html')
 
 def rendering(request, id, extension):
     r = Rendering.objects.get(id=id)

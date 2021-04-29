@@ -35,16 +35,10 @@ from .models import Form
 
 
 @xframe_options_exempt
-def index(request):
-    extensions = ['html', 'pdf', 'docx']
-    return HttpResponse('OK')
-
-
-@xframe_options_exempt
 def sync(request, pk):
     r = Rendering.objects.get(pk=pk)
     r.download_data()
-    return HttpResponseRedirect(reverse('equity-tool'))
+    return HttpResponse('OK')
 
 
 class ProjectForm(forms.Form):
@@ -66,23 +60,9 @@ def _create_project(posted_data, user):
                     'You already have a project with this name')})
             return Wrapper.create_project(**d)
 
-@xframe_options_exempt
-def create(request):
-    if request.method == 'POST':
-        proj = _create_project(request.POST, request.user)
-        if proj:
-            return HttpResponseRedirect(reverse('equity-tool'))
-    else:
-        form = ProjectForm()
-    return render(request, 'create.html', {'form': form})
-
 
 @api_view(['POST'])
-def create_friendly(request):
-    '''
-    A version of the 'create' method that returns a 201 "CREATED" code
-    on successful creation
-    '''
+def create(request):
     if not request.user.is_authenticated:
         raise exceptions.NotAuthenticated()
     proj = _create_project(request.POST, request.user)
@@ -90,6 +70,7 @@ def create_friendly(request):
         return Response({}, status=status.HTTP_201_CREATED)
     else:
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class Wrapper(object):
     ''' Allows the user to create useful "projects" by tying together

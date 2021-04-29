@@ -9,7 +9,7 @@ import bemRouterLink from '../libs/bemRouterLink';
 import actions from '../actions/actions';
 import accountStore from '../stores/account';
 import authUrls from '../stores/authUrls';
-import {RequireNotLoggedIn} from '../mixins/requireLogins';
+import {RequireNotLoggedIn} from '../libs/requireLogins';
 
 require('styles/Forms.scss');
 

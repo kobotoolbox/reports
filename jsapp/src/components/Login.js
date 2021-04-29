@@ -10,7 +10,7 @@ import reactMixin from 'react-mixin';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
 import actions from '../actions/actions';
-import {RequireNotLoggedIn} from '../mixins/requireLogins';
+import {RequireNotLoggedIn} from '../libs/requireLogins';
 
 require('styles/Forms.scss');
 require('styles/Login.scss');

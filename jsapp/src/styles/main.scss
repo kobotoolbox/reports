@@ -1,10 +1,5 @@
 /* Stiziles */
 
-html {
-  /* normalize.css v3.0.3 did this, but v8.0.1 does not! */
-  font-family: sans-serif;
-}
-
 /* main */
 
 .main {
@@ -37,3 +32,17 @@ html {
 .fade-leave.fade-leave-active {
   opacity: 0.01;
 }
+
+/* things that normalize.css v3.0.3 did but v8.0.1 does not */
+
+html {
+  font-family: sans-serif;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td, th {
+  padding: 0;
+}
+

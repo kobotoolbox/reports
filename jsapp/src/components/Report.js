@@ -5,7 +5,7 @@ import reactMixin from 'react-mixin';
 import Reflux from 'reflux';
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';
-import {RequireLoggedIn} from '../mixins/requireLogins';
+import {RequireLoggedIn} from '../libs/requireLogins';
 import actions from '../actions/actions';
 import {individualRenderingStore} from '../stores/renderings';
 

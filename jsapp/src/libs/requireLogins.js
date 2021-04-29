@@ -1,4 +1,3 @@
-// TODO: move out of mixins directory
 import React from 'react';
 import Reflux from 'reflux';
 import {Redirect} from 'react-router-dom';

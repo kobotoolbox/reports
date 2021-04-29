@@ -28,7 +28,7 @@ var dataInterface = (function(){
   this.createTemplate = (templateData) => {
     var postData = Object.assign({csrfmiddlewaretoken: token}, templateData);
     return $.ajax({
-      url: '/equitytool/create_friendly',
+      url: '/equitytool/create/',
       dataType: 'json',
       method: 'POST',
       data: postData,
