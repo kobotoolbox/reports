@@ -11,8 +11,11 @@ COPY jsapp/package.json jsapp/package-lock.json /app/jsapp/
 RUN conda env update --prune
 RUN cd jsapp && npm install
 
-# Include all remaining source files
-COPY . /app/
+# Include all remaining source files except for jsapp/node_modules, which might
+# be peculiar to a developer's host environment
+COPY . /tmp/app/
+RUN (test \! -e /tmp/app/jsapp/node_modules || rm -r /tmp/app/jsapp/node_modules) && \
+    (shopt -s dotglob && cp -a /tmp/app/* /app/ && rm -r /tmp/app)
 
 # Build the front end
 RUN cd jsapp && npm run build
