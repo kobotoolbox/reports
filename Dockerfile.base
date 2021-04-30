@@ -1,4 +1,4 @@
-FROM node:12
+FROM node:14
 
 # Docker default of `/bin/sh` doesn't support `source`
 SHELL ["/bin/bash", "-c"]
@@ -42,6 +42,10 @@ RUN conda env create
 RUN source activate koboreports && \
     Rscript -e "install.packages('pander', repos='http://cran.rstudio.com/', type='source')" \
         -e "library(pander)"
+
+# At this time, the `node:14` image includes npm 6, but npm pesters us about
+# upgrading to 7. Oblige it:
+RUN npm install -g npm@7
 
 # Install Node.js dependencies
 RUN cd jsapp && npm install

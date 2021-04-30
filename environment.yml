@@ -2,16 +2,16 @@ name: koboreports
 channels:
   - r
 dependencies:
-  - pandas
-  - pip
-  - pyasn1
-  - pyopenssl
-  - r-base
-  - r-dplyr
-  - r-ggplot2
-  - r-rmarkdown
-  - r-tidyr
-  - r-whisker
+  - pandas=1.2.4=py37ha9443f7_0
+  - pip=21.0.1=py37h06a4308_0
+  - pyasn1=0.4.8=py_0
+  - pyopenssl=20.0.1=pyhd3eb1b0_1
+  - r-base=3.6.1=haffb61f_2
+  - r-dplyr=0.8.0.1=r36h29659fb_0
+  - r-ggplot2=3.1.1=r36h6115d3f_0
+  - r-rmarkdown=1.12=r36h6115d3f_0
+  - r-tidyr=0.8.3=r36h29659fb_0
+  - r-whisker=0.3_2=r36h6115d3f_4
 
   - pip:
     - Django==3.2
