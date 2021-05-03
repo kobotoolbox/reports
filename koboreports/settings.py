@@ -13,6 +13,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(strtobool(os.environ.get('DEBUG', 'False')))
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+if not DEBUG and not ''.join(ALLOWED_HOSTS):
+    raise ImproperlyConfigured(
+        'You must define ALLOWED_HOSTS in your environment when running in '
+        'production mode'
+    )
+
 
 # Django doesn't always recognize HTTPS when terminated by Dokku's NGINX proxy
 # Allow recognition of HTTPS by reading a header injected by NGINX, e.g.
