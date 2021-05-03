@@ -22,7 +22,7 @@ RUN cd jsapp && npm run build
 
 # Run Python unit tests
 RUN source activate koboreports && \
-    SECRET_KEY=bogus KPI_API_KEY=bogus python manage.py test --noinput
+    SECRET_KEY=bogus KPI_API_KEY=bogus ALLOWED_HOSTS=bogus python manage.py test --noinput
 
 # Persistent storage of uploaded XLSForms!
 VOLUME ["/app/media"]
