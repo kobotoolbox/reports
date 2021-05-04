@@ -11,7 +11,8 @@ export var [RequireLoggedIn, RequireNotLoggedIn] = (function(){
         this.store = sessionStore;
       }
       render () {
-        if (this.state.loggedIn !== loginBool) {
+        console.log(this.state.loggedIn);
+        if (!!this.state.loggedIn !== loginBool) {
           return <Redirect push to={this.props.failTo} />
         }
         return null;
