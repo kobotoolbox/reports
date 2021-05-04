@@ -25,6 +25,8 @@ RUN source activate koboreports && \
     SECRET_KEY=bogus KPI_API_KEY=bogus ALLOWED_HOSTS=bogus python manage.py test --noinput
 
 # Persistent storage of uploaded XLSForms!
+# In production, you should also configure persistent storage in Dokku:
+# https://dokku.com/docs~v0.24.7/advanced-usage/persistent-storage/#persistent-storage
 VOLUME ["/app/media"]
 
 # As of Dokku 0.5.0, no ports should be `EXPOSE`d; see
