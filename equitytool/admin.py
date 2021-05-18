@@ -37,8 +37,8 @@ class FormAdmin(admin.ModelAdmin):
 @admin.register(AdminStatsReportTask)
 class AdminStatsReportTaskAdmin(admin.ModelAdmin):
     instructions = (
-        'Click "SAVE" to start generating a new report. After that, refresh '
-        'the page periodically until the report completes.'
+        'If "Result" is empty, click "SAVE" to start generating a new report. '
+        'After that, refresh the page periodically until the report completes.'
     )
     readonly_fields = ['result']
     fieldsets = (

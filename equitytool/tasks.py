@@ -53,11 +53,15 @@ def generate_admin_stats(report_task_pk):
 
 
 @djhuey.signal(huey.signals.SIGNAL_ERROR)
-def mark_task_as_failed(signal, task, exc=None):
+def mark_task_as_failed(signal, huey_task, exc=None):
     from .models import AdminStatsReportTask
 
     # this is an okay assumption because there's only one task defined
-    report_task_pk = task.args[0]
-    AdminStatsReportTask.objects.filter(pk=report_task_pk).update(
-        status=AdminStatsReportTask.FAILED
-    )
+    report_task_pk = huey_task.args[0]
+    with transaction.atomic():
+        report_task = AdminStatsReportTask.objects.select_for_update().get(
+            pk=report_task_pk
+        )
+        if report_task.status != report_task.COMPLETE:
+            report_task.status = report_task.FAILED
+            report_task.save(update_fields=['status'])
