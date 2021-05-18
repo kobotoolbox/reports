@@ -1,24 +1,19 @@
 import base64
-import datetime
 import json
 import os
-import re
 import requests
 import time
 import unicodecsv
 import xlwt
-import zipfile
 from io import BytesIO
 
 from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
-from django.core import management
 from django.db import transaction
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.template import Template as DjangoTemplate, Context
-from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -216,28 +211,3 @@ class Wrapper(object):
         w.set_template()
         w.set_rendering()
         return w
-
-
-@user_passes_test(lambda u: u.is_superuser)
-def superuser_stats(request):
-    REPORTS = {
-        'users.csv': {
-            'args': {'user_report': True}
-        },
-        'projects.csv': {
-            'args': {'project_report': True}
-        }
-    }
-
-    response = HttpResponse(content_type='application/zip')
-    response['Content-Disposition'] = 'attachment;filename="{}_{}.zip"'.format(
-        re.sub('[^a-zA-Z0-9]', '-', request.META['HTTP_HOST']),
-        datetime.date.today()
-    )
-    with zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-        for filename, report_settings in REPORTS.items():
-            with BytesIO() as csv_io:
-                management.call_command(
-                    'print_stats', stdout=csv_io, **report_settings['args'])
-                zip_file.writestr(filename, csv_io.getvalue())
-    return response

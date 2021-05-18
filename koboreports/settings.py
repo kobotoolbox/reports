@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'rest_framework',
     'private_storage',
+    'huey.contrib.djhuey',
     'reporter',
     'equitytool',
 )
@@ -147,3 +148,12 @@ if sentry_dsn:
         traces_sample_rate=1.0,
         send_default_pii=True,
     )
+
+
+''' Asynchronous task queue for admin reports '''
+# https://huey.readthedocs.io/en/latest/django.html#setting-things-up
+HUEY = {
+    # Persistence is not important here; no need to run Redis
+    'huey_class': 'huey.SqliteHuey',
+    'immediate': False,  # By default this mirrors DEBUG
+}

@@ -1,3 +1,4 @@
+import json
 import requests
 import datetime
 
@@ -48,7 +49,7 @@ RENDERING_FIELDS = (
 
 # Configuration ends here
 
-KPI_PROFILE_ENDPOINT = '{}/me'.format(settings.KPI_URL)
+KPI_PROFILE_ENDPOINT = settings.KPI_URL + 'me/'
 KPI_PROFILE_PARALLEL_REQUESTS = 5
 
 def coerce_and_join(separator, iterable):
@@ -91,28 +92,36 @@ def _get_profile(username_token_tuple):
         headers={'Authorization': 'Token %s' % username_token_tuple[1]}
     )
     if kpi_response.status_code == 200:
-        print(kpi_response.json())
-        profile = kpi_response.json().get('extra_details')
+        try:
+            profile_json = kpi_response.json()
+        except json.decoder.JSONDecodeError:
+            profile = None
+        else:
+            profile = kpi_response.json().get('extra_details')
     else:
+        profile = None
+    if profile is None:
         _management_stderr.write('Failed to load profile for {}!\n'.format(
             username_token_tuple[0]))
-        profile = None
     return (
         username_token_tuple[0],
         profile
     )
 
-def user_report(stdout, stderr):
+def user_report(stdout, stderr, parallel_kpi_requests=True):
     user_report = []
 
     global _management_stderr
     _management_stderr = stderr
-    pool = Pool(processes=KPI_PROFILE_PARALLEL_REQUESTS)
     profiles = list(
         User.objects.exclude(external_api_token__key=None).values_list(
             'username', 'external_api_token__key')
     )
-    profiles = dict(pool.map(_get_profile, profiles))
+    if parallel_kpi_requests:
+        with Pool(processes=KPI_PROFILE_PARALLEL_REQUESTS) as pool:
+            profiles = dict(pool.map(_get_profile, profiles))
+    else:
+        profiles = dict([_get_profile(x) for x in profiles])
     for user in User.objects.all():
         row = OrderedDict()
         try:
@@ -141,20 +150,22 @@ def project_report(stdout, stderr):
     print_tabular(project_report, stdout)
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option(
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--users',
             action='store_true',
             dest='user_report',
             default=False,
-            help='Print user report to stdout'),
-        make_option(
+            help='Print user report to stdout',
+        )
+        parser.add_argument(
             '--projects',
             action='store_true',
             dest='project_report',
             default=False,
-            help='Print project (`Rendering`) report to stdout'),
-    )
+            help='Print project (`Rendering`) report to stdout',
+        )
+
     def handle(self, *args, **options):
         if options.get('user_report'):
             user_report(self.stdout, self.stderr)
