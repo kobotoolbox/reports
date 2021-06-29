@@ -20,7 +20,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Work around a font rendering problem; see
 # https://github.com/kobotoolbox/reports/issues/136
-# Do not `apt-get autoremove` after this
+# FIXME: figure out what subset of `texlive-full` is actually needed
+# Do not `apt-get autoremove` after this(!) since it would remove necessary
+# packages
 RUN apt-get remove -y tex-gyre
 
 # `apt-get install conda` does not actually put Conda on the PATH

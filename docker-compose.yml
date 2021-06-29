@@ -1,5 +1,5 @@
 postgres:
-  image: postgres:9.6
+  image: postgres:11.6
   environment:
     - POSTGRES_USER=reports
     - POSTGRES_PASSWORD=reports
@@ -15,10 +15,20 @@ koboreports:
     # in webpack.config.js
     - PORT=5000
     - DEBUG=True
-    - KPI_URL=https://kf.master.kbtdev.org/
+    - KPI_URL=http://kf.kobo.local/
+    # You MUST change these keys for a production environment!
     - KPI_API_KEY=forDevelopmentOnlyOKforDevelopmentOnlyOKforDevelopmentOnlyOK
-    - SECRET_KEY=notVerySecure
+    - SECRET_KEY=notVerySecureGenerateYourOwnRandomly
+    # For local development only, it might be helpful to disable Django's
+    # hostname checking. DO NOT DO THIS IN PRODUCTION!
+    # - ALLOWED_HOSTS=*
+    # Optional Sentry logging of Python exceptions
+    # - SENTRY_DSN=http://your/sentry/dsn
   volumes:
     - ./:/app
   links:
     - postgres
+  # If hosting KoBoToolbox locally, set this to match your /etc/hosts record
+  # so that the hostname will resolve correctly inside the Docker container
+  # extra_hosts:
+  #  - kf.kobo.local:172.17.0.1

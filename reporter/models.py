@@ -34,8 +34,12 @@ class UserExternalApiToken(models.Model):
 
 
 class Template(models.Model):
-    ''' Global R Markdown templates. Available read-only to all users, but
-    require model-level permissions or superuser access to modify '''
+    """
+    Global R Markdown templates. These transform collected data from its raw
+    state into formatted reports (narrative, tables, charts). Available
+    read-only to all users, but require model-level permissions or superuser
+    access to modify
+    """
     rmd = models.TextField()
     slug = models.SlugField(default='', unique=True)
     name = models.TextField(default='')
