@@ -5,12 +5,13 @@
 
 source activate koboreports
 
-python manage.py migrate --noinput
-python manage.py collectstatic --noinput
+# Do not proceed with startup if these fail
+python manage.py migrate --noinput || exit 1
+python manage.py collectstatic --noinput || exit 1
 
 # Start the asynchronous task runner for admin report generation
 trap 'kill $(jobs -p)' EXIT
-python manage.py run_huey --no-periodic &
+python manage.py run_huey --no-periodic || exit 1 &
 
 # Enable Gunicorn auto-reloading if DEBUG=True (case insensitive)
 if [ "${DEBUG,,}" == 'true' ]
