@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Form
+from .models import Form, AdminStatsReportTask
 
 
 class ChildFormInline(admin.StackedInline):
@@ -20,6 +20,7 @@ class ChildFormInline(admin.StackedInline):
         # would not automatically have their `parent` field set correctly
         return False
 
+
 @admin.register(Form)
 class FormAdmin(admin.ModelAdmin):
     inlines = [ChildFormInline]
@@ -31,3 +32,15 @@ class FormAdmin(admin.ModelAdmin):
         # not have a `fields` attribute
         form.base_fields['csv_form'].widget.attrs['disabled'] = True
         return form
+
+
+@admin.register(AdminStatsReportTask)
+class AdminStatsReportTaskAdmin(admin.ModelAdmin):
+    instructions = (
+        'If "Result" is empty, click "SAVE" to start generating a new report. '
+        'After that, refresh the page periodically until the report completes.'
+    )
+    readonly_fields = ['result']
+    fieldsets = (
+        (instructions, {'fields': ('result',)}),
+    )

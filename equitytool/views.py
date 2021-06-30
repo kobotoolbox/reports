@@ -1,20 +1,15 @@
 import base64
-import datetime
 import json
 import os
-import re
 import requests
 import time
 import unicodecsv
 import xlwt
-import zipfile
 from io import BytesIO
 
 from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
-from django.core import management
-from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
@@ -31,22 +26,14 @@ from rest_framework.response import Response
 # authentication required to make those calls seems a little
 # tricky. And it seems like unnecessary work at the moment.
 from reporter.models import Template, Rendering, UserExternalApiToken
-from models import Form
-
-
-@xframe_options_exempt
-def index(request):
-    extensions = ['html', 'pdf', 'docx']
-    if request.user.is_authenticated():
-        projects = request.user.renderings.order_by('name')
-    return render(request, 'equity.html', locals())
+from .models import Form
 
 
 @xframe_options_exempt
 def sync(request, pk):
     r = Rendering.objects.get(pk=pk)
     r.download_data()
-    return HttpResponseRedirect(reverse('equity-tool'))
+    return HttpResponse('OK')
 
 
 class ProjectForm(forms.Form):
@@ -68,30 +55,17 @@ def _create_project(posted_data, user):
                     'You already have a project with this name')})
             return Wrapper.create_project(**d)
 
-@xframe_options_exempt
-def create(request):
-    if request.method == 'POST':
-        proj = _create_project(request.POST, request.user)
-        if proj:
-            return HttpResponseRedirect(reverse('equity-tool'))
-    else:
-        form = ProjectForm()
-    return render(request, 'create.html', {'form': form})
-
 
 @api_view(['POST'])
-def create_friendly(request):
-    '''
-    A version of the 'create' method that returns a 201 "CREATED" code
-    on successful creation
-    '''
-    if not request.user.is_authenticated():
+def create(request):
+    if not request.user.is_authenticated:
         raise exceptions.NotAuthenticated()
     proj = _create_project(request.POST, request.user)
     if proj:
         return Response({}, status=status.HTTP_201_CREATED)
     else:
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class Wrapper(object):
     ''' Allows the user to create useful "projects" by tying together
@@ -173,7 +147,7 @@ class Wrapper(object):
         url = self.KPI_URL + 'imports/'
         data = {
             'name': self.name,
-            'base64Encoded': 'base64:' + base64_xlsform,
+            'base64Encoded': b'base64:' + base64_xlsform,
             'library': 'false',
         }
         # Start the asynchronous import
@@ -237,28 +211,3 @@ class Wrapper(object):
         w.set_template()
         w.set_rendering()
         return w
-
-
-@user_passes_test(lambda u: u.is_superuser)
-def superuser_stats(request):
-    REPORTS = {
-        'users.csv': {
-            'args': {'user_report': True}
-        },
-        'projects.csv': {
-            'args': {'project_report': True}
-        }
-    }
-
-    response = HttpResponse(content_type='application/zip')
-    response['Content-Disposition'] = 'attachment;filename="{}_{}.zip"'.format(
-        re.sub('[^a-zA-Z0-9]', '-', request.META['HTTP_HOST']),
-        datetime.date.today()
-    )
-    with zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-        for filename, report_settings in REPORTS.iteritems():
-            with BytesIO() as csv_io:
-                management.call_command(
-                    'print_stats', stdout=csv_io, **report_settings['args'])
-                zip_file.writestr(filename, csv_io.getvalue())
-    return response

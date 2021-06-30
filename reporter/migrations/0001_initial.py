@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 from django.conf import settings
@@ -15,7 +15,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Rendering',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                (
+                    'id',
+                    models.AutoField(
+                        verbose_name='ID',
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
                 ('url', models.URLField(blank=True)),
                 ('md', models.TextField(editable=False)),
                 ('html', models.TextField(editable=False)),
@@ -25,7 +33,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Template',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                (
+                    'id',
+                    models.AutoField(
+                        verbose_name='ID',
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
                 ('rmd', models.TextField()),
                 ('name', models.TextField()),
             ],
@@ -33,11 +49,18 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='rendering',
             name='template',
-            field=models.ForeignKey(to='reporter.Template'),
+            field=models.ForeignKey(
+                to='reporter.Template', on_delete=models.CASCADE
+            ),
         ),
         migrations.AddField(
             model_name='rendering',
             name='user',
-            field=models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            field=models.ForeignKey(
+                blank=True,
+                to=settings.AUTH_USER_MODEL,
+                null=True,
+                on_delete=models.CASCADE,
+            ),
         ),
     ]

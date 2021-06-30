@@ -1,0 +1,48 @@
+/* Stiziles */
+
+/* main */
+
+.main {
+  width: 100%;
+  height: 100%;
+  img {
+    width: 93px;
+    height: 89px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+}
+
+/* transitions */
+
+.fade-enter {
+  opacity: 0.01;
+  transition: opacity .5s ease-in;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+}
+
+.fade-leave {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}
+
+.fade-leave.fade-leave-active {
+  opacity: 0.01;
+}
+
+/* things that normalize.css v3.0.3 did but v8.0.1 does not */
+
+html {
+  font-family: sans-serif;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td, th {
+  padding: 0;
+}
+

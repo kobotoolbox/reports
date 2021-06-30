@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>{% block title %}Equity Tool{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    {% load static %}
+    {% if csrf_token %}<meta name="csrf-token" content="{{csrf_token}}">{% endif %}
+  </head>
+  <body class="loading">
+    <div id="content">
+      EquityTool page loading...
+    </div>
+    <script src="{% static 'assets/main.js' %}"></script>
+    <script type="text/javascript">
+      document.body.classList.remove('loading');
+    </script>
+  </body>
+</html>

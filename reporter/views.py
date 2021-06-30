@@ -2,24 +2,18 @@ import datetime
 import json
 import requests
 import logging
-from urlparse import urlparse
+from urllib.parse import urlparse
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import RequestContext
 from django.conf import settings
 from django.contrib.auth import authenticate
-from models import Template, Rendering
+from .models import Template, Rendering
 from rest_framework import serializers, permissions, viewsets, status
-from rest_framework.decorators import api_view, detail_route
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from equitytool.models import Form
 
-
-def index(request):
-    if request.user.is_authenticated():
-        renderings = Rendering.objects.filter(user=request.user)
-    extensions = ['html', 'pdf', 'docx']
-    return render(request, 'index.html', dictionary=locals())
 
 @api_view(['GET'])
 def current_user(request):
@@ -27,7 +21,7 @@ def current_user(request):
     countries = Form.objects.all().values(
         'id', 'name', 'parent'
     ).order_by('name')
-    if user.is_anonymous():
+    if user.is_anonymous:
         return Response({'message': 'user is not logged in'})
     else:
         return Response({'username': user.username,
@@ -41,9 +35,8 @@ def current_user(request):
                          'last_login': user.last_login,
                          })
 
-def demo(request):
-    context = RequestContext(request)
-    return render(request, 'demo.html', context_instance=context)
+def root(request):
+    return render(request, 'root.html')
 
 def rendering(request, id, extension):
     r = Rendering.objects.get(id=id)
@@ -52,8 +45,16 @@ def rendering(request, id, extension):
     result = r.render(extension, request)
     response = HttpResponse(result)
     if extension != 'html':
+        EXTENSIONS_TO_MIME_TYPES = {
+            'pdf': 'application/pdf',
+            'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        }
         filename = '%(id)s.%(extension)s' % locals()
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        try:
+            response['Content-Type'] = EXTENSIONS_TO_MIME_TYPES[extension]
+        except IndexError:
+            pass
     return response
 
 
@@ -106,7 +107,7 @@ class RenderingViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_anonymous():
+        if user.is_anonymous:
             return Rendering.objects.none()
         return Rendering.objects.filter(user=user).order_by('-pk')
 

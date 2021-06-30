@@ -1,9 +1,9 @@
-from StringIO import StringIO
+from io import StringIO
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import render_to_string
 from django.conf import settings
-from urlparse import urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse
 from requests.exceptions import HTTPError
 import json
 import os
@@ -24,18 +24,22 @@ KPI_PATH_HEAD = '/api/v2/'
 KC_PATH_HEAD = '/api/v1/data/'
 
 
-logger = logging.getLogger('TIMING')
-
-
 class UserExternalApiToken(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, related_name='external_api_token')
+        settings.AUTH_USER_MODEL,
+        related_name='external_api_token',
+        on_delete=models.CASCADE,
+    )
     key = models.CharField(max_length=120)
 
 
 class Template(models.Model):
-    ''' Global R Markdown templates. Available read-only to all users, but
-    require model-level permissions or superuser access to modify '''
+    """
+    Global R Markdown templates. These transform collected data from its raw
+    state into formatted reports (narrative, tables, charts). Available
+    read-only to all users, but require model-level permissions or superuser
+    access to modify
+    """
     rmd = models.TextField()
     slug = models.SlugField(default='', unique=True)
     name = models.TextField(default='')
@@ -48,16 +52,20 @@ class Template(models.Model):
         name, ext = os.path.splitext(l[-1])
         return cls.objects.create(rmd=rmd, slug=name)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.slug
 
 
 class Rendering(models.Model):
     """ Retrieves data from KPI and processes it through a `Template` """
     user = models.ForeignKey(
-        User, null=True, editable=False, related_name='renderings'
+        User,
+        null=True,
+        editable=False,
+        related_name='renderings',
+        on_delete=models.CASCADE,
     )
-    template = models.ForeignKey(Template)
+    template = models.ForeignKey(Template, on_delete=models.CASCADE)
     url = models.URLField(blank=True)
     name = models.TextField(default='')
     # Getting this requires a slow API call, so store it in our local DB
@@ -80,22 +88,22 @@ class Rendering(models.Model):
         lines = self.data.split('\n')
         return len(lines) - 1
 
-    def __unicode__(self):
-        return unicode(self.id)
+    def __str__(self):
+        return str(self.id)
 
     @staticmethod
     def _csv_from_response(response):
         # Raise exception if status code does not indicate success
         response.raise_for_status()
-        stripped_content = response.content.strip()
+        stripped_content = response.text.strip()
         # An empty response is expected when there's no data, but Pandas won't
         # tolerate it
         if len(stripped_content):
             # Quasi-validate the CSV by trying to parse it with Pandas
-            df = pd.DataFrame.from_csv(StringIO(response.content), index_col=None)
+            df = pd.read_csv(StringIO(response.text), index_col=None)
             if df.size < 2 or len(df.columns) < 2:
                 # No real data here; retry using semicolon as the separator
-                df = pd.DataFrame.from_csv(StringIO(response.content), index_col=None, sep=';')
+                df = pd.read_csv(StringIO(response.text), index_col=None, sep=';')
                 if df.size >= 2 and len(df.columns) >= 2:
                     # Convert to standard comma-separated
                     stripped_content = df.to_csv().strip()
@@ -215,7 +223,7 @@ class Rendering(models.Model):
             'KPI does not yet support exports with queries'
         )
         f = StringIO(self.data)
-        df = pd.DataFrame.from_csv(f, index_col=None)
+        df = pd.read_csv(f, index_col=None)
         last_submission = df['_submission_time'].max()
         url = self.url
         query = {"_submission_time": {"$gt": str(last_submission)}}
@@ -229,10 +237,6 @@ class Rendering(models.Model):
         response.raise_for_status()
         return self._csv_from_response(response)
 
-    def _log_message(self, msg):
-        full_msg = '<Rendering: %s> | %s' % (str(self), msg)
-        logger.info(full_msg)
-
     @staticmethod
     def _write_variable_to_file(folder, name, value):
         filename = os.path.join(folder, name)
@@ -241,7 +245,6 @@ class Rendering(models.Model):
         return filename
 
     def render(self, extension, request=None):
-        self._log_message('render begin  ')
         folder = tempfile.mkdtemp()
         try:
             filename = '%s.Rmd' % self.template.slug
@@ -274,14 +277,12 @@ class Rendering(models.Model):
                 f.write(self.template.rmd)
 
             if self.url:
-                self._log_message('download begin')
                 self.download_data()
-                self._log_message('download end  ')
                 data_csv = os.path.join(folder, 'data.csv')
                 if not self.data.endswith('\n'):
                     self.data += '\n'
                 with open(data_csv, 'w') as f:
-                    f.write(self.data.encode('utf-8'))
+                    f.write(self.data)
 
             context = {
                 'filename': filename,
@@ -308,10 +309,9 @@ class Rendering(models.Model):
                     self.pk, r_err))
 
             path = os.path.join(folder, self.template.slug + '.' + extension)
-            with open(path) as f:
+            with open(path, 'rb') as f:
                 result = f.read()
 
-            self._log_message('render end    ')
             return result
         finally:
             shutil.rmtree(folder)
@@ -396,7 +396,7 @@ class Rendering(models.Model):
         Return the Enketo data-entry link, retrieving it from KPI if
         necessary
         """
-        VALUE_TO_RETURN_ON_FAILURE = u''
+        VALUE_TO_RETURN_ON_FAILURE = ''
         if self._enter_data_link:
             return self._enter_data_link
 
@@ -449,7 +449,7 @@ class Rendering(models.Model):
         kc_form_data = kc_response.json()
         # Construct an identifier URL using the username and id string
         parsed_url = urlparse(self.url)
-        identifier = u'{scheme}://{netloc}/{username}/forms/{id_string}'.format(
+        identifier = '{scheme}://{netloc}/{username}/forms/{id_string}'.format(
             scheme=parsed_url.scheme,
             netloc=parsed_url.netloc,
             username=self.user.username,
@@ -489,7 +489,7 @@ class Rendering(models.Model):
         # Make sure to use `%23` instead of `#`, otherwise the redirection will
         # fail
         kpi_edit_url = (
-            u'{scheme}://{netloc}/accounts/login/?next=/%23/forms/{uid}/edit'
+            '{scheme}://{netloc}/accounts/login/?next=/%23/forms/{uid}/edit'
         ).format(
             scheme=parsed_url.scheme,
             netloc=parsed_url.netloc,

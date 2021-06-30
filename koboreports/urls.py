@@ -1,11 +1,10 @@
-from django.conf.urls import patterns, include, url
-
+from django.urls import include, path
 from django.contrib import admin
+
 admin.autodiscover()
 
-urlpatterns = patterns(
-    '',
-    url('^admin/', include(admin.site.urls)),
-    url('', include('reporter.urls')),
-    url('^equitytool/', include('equitytool.urls')),
-)
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('reporter.urls')),
+    path('equitytool/', include('equitytool.urls')),
+]

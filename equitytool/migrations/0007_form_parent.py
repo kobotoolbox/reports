@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 
@@ -14,6 +14,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='form',
             name='parent',
-            field=models.ForeignKey(blank=True, to='equitytool.Form', null=True),
+            field=models.ForeignKey(
+                blank=True,
+                to='equitytool.Form',
+                null=True,
+                on_delete=models.CASCADE,
+            ),
         ),
     ]

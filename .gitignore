@@ -9,3 +9,4 @@ koboreports/static/assets
 /media/
 /koboreports/static/login.css
 node_modules
+huey.db*

@@ -2,20 +2,23 @@ import os
 import json
 import dj_database_url
 from distutils.util import strtobool
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 THIS_DIR = os.path.dirname(__file__)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'secret')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(strtobool(os.environ.get('DEBUG', 'True')))
-TEMPLATE_DEBUG = os.environ.get('TEMPLATE_DEBUG', DEBUG)
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+DEBUG = bool(strtobool(os.environ.get('DEBUG', 'False')))
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+if not DEBUG and not ''.join(ALLOWED_HOSTS):
+    raise ImproperlyConfigured(
+        'You must define ALLOWED_HOSTS in your environment when running in '
+        'production mode'
+    )
+
 
 # Django doesn't always recognize HTTPS when terminated by Dokku's NGINX proxy
 # Allow recognition of HTTPS by reading a header injected by NGINX, e.g.
@@ -32,25 +35,26 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'django.contrib.sites',
     'private_storage',
+    'huey.contrib.djhuey',
     'reporter',
     'equitytool',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 ROOT_URLCONF = 'koboreports.urls'
 
@@ -92,42 +96,16 @@ TEMPLATES = [{
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': (
-            "django.contrib.auth.context_processors.auth",
-            "django.template.context_processors.debug",
-            "django.template.context_processors.i18n",
-            "django.template.context_processors.media",
-            "django.template.context_processors.request",
-            "django.template.context_processors.static",
-            "django.template.context_processors.tz",
-            "django.contrib.messages.context_processors.messages",
+            'django.template.context_processors.debug',
+            'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth',
+            'django.contrib.messages.context_processors.messages',
         )
     }
 }]
 
 LOGIN_REDIRECT_URL = '/'
-
-# modify logging settings to see timing data
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'my_formatter': {
-            'format': '%(name)s | %(message)s | %(asctime)s'
-        }
-    },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'my_formatter',
-        },
-    },
-    'loggers': {
-        'TIMING': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-        },
-    },
-}
+LOGOUT_REDIRECT_URL = 'https://www.equitytool.org/'
 
 AUTHENTICATION_BACKENDS = (
     'reporter.kobo_backend.KoboApiAuthBackend',
@@ -139,68 +117,43 @@ if KPI_URL and KPI_URL[-1] != '/':
     # Make sure a trailing URL is included
     KPI_URL += '/'
 
-KPI_API_KEY = os.environ.get(
-    'KPI_API_KEY',
-    '8qg3bx7#a2j$o4tuplq==bhdo(4g^d_59ztq&je%pj%tv^!kwgo7&61duo-!'
-)
+KPI_API_KEY = os.environ.get('KPI_API_KEY')
+if not KPI_API_KEY:
+    raise ImproperlyConfigured('You must define KPI_API_KEY in your environment')
 
 LOGIN_URL = '/api-auth/login/'
 
-''' Sentry configuration '''
-if 'RAVEN_DSN' in os.environ:
-    import raven
-    INSTALLED_APPS = INSTALLED_APPS + (
-        'raven.contrib.django.raven_compat',
-    )
-    RAVEN_CONFIG = {
-        'dsn': os.environ['RAVEN_DSN'],
-    }
+# Default primary key field type
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+''' Sentry error-logging configuration '''
+
+try:
+    sentry_dsn = os.environ['SENTRY_DSN']
+except KeyError:
     try:
-        RAVEN_CONFIG['release'] = raven.fetch_git_sha(BASE_DIR)
-    except raven.exceptions.InvalidGitRepository:
-        pass
-    # The below is NOT required for Sentry to log unhandled exceptions, but it
-    # is necessary for capturing messages sent via the `logging` module.
-    # https://docs.getsentry.com/hosted/clients/python/integrations/django/#integration-with-logging
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False, # Was `True` in Sentry documentation
-        'root': {
-            'level': 'WARNING',
-            'handlers': ['sentry'],
-        },
-        'formatters': {
-            'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s '
-                          '%(process)d %(thread)d %(message)s'
-            },
-        },
-        'handlers': {
-            'sentry': {
-                'level': 'WARNING',
-                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            },
-            'console': {
-                'level': 'DEBUG',
-                'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
-            }
-        },
-        'loggers': {
-            'django.db.backends': {
-                'level': 'ERROR',
-                'handlers': ['console'],
-                'propagate': False,
-            },
-            'raven': {
-                'level': 'DEBUG',
-                'handlers': ['console'],
-                'propagate': False,
-            },
-            'sentry.errors': {
-                'level': 'DEBUG',
-                'handlers': ['console'],
-                'propagate': False,
-            },
-        },
-    }
+        sentry_dsn = os.environ['RAVEN_DSN']
+    except KeyError:
+        sentry_dsn = None
+if sentry_dsn:
+    # https://docs.sentry.io/platforms/python/guides/django/
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+    sentry_sdk.init(
+        dsn=sentry_dsn,
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=1.0,
+        send_default_pii=True,
+    )
+
+
+''' Asynchronous task queue for admin reports '''
+# https://huey.readthedocs.io/en/latest/django.html#setting-things-up
+HUEY = {
+    # Persistence is not important here; no need to run Redis
+    'huey_class': 'huey.SqliteHuey',
+    'immediate': False,  # By default this mirrors DEBUG
+}
