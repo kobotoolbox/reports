@@ -45,8 +45,16 @@ def rendering(request, id, extension):
     result = r.render(extension, request)
     response = HttpResponse(result)
     if extension != 'html':
+        EXTENSIONS_TO_MIME_TYPES = {
+            'pdf': 'application/pdf',
+            'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        }
         filename = '%(id)s.%(extension)s' % locals()
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        try:
+            response['Content-Type'] = EXTENSIONS_TO_MIME_TYPES[extension]
+        except IndexError:
+            pass
     return response
 
 
