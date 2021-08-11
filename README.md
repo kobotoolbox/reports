@@ -134,7 +134,11 @@ GiB of RAM, along with a 40 GiB EBS root volume. It is running Ubuntu 20.04.
     ```
     dokku letsencrypt:enable data.equitytool.org
     ```
-1. Install Postgres and link it with the new application:
+1. Enable automatic renewal of TLS certificates:
+    ```
+    dokku letsencrypt:cron-job --add
+    ```
+3. Install Postgres and link it with the new application:
     ```
     sudo dokku plugin:install https://github.com/dokku/dokku-postgres.git
     dokku postgres:create reports
