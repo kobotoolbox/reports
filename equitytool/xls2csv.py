@@ -5,12 +5,27 @@ import sys
 class Converter(object):
 
     def set_excel(self, io):
-        self.sheets = pd.read_excel(io, sheetname=None)
+        # "Specify None to get all sheets"
+        # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html
+        self.sheets = pd.read_excel(io, sheet_name=None)
 
     def set_settings(self, **kwargs):
-        settings = self.sheets['settings']
-        for k, v in kwargs.items():
-            settings[k][0] = v
+        """
+        Add settings from kwargs to the XLSForm settings sheet, overwriting
+        any existing settings with the same names
+        """
+
+        try:
+            settings = self.sheets['settings']
+        except KeyError:
+            # No settings sheet exists yet; make a new one
+            self.sheets['settings'] = pd.DataFrame.from_dict(
+                {k: [v] for k, v in kwargs.items()}
+            )
+        else:
+            # Update existing settings sheet
+            for k, v in kwargs.items():
+                settings[k][0] = v
 
     def get_csv(self):
         result = ''
