@@ -154,8 +154,10 @@ GiB of RAM, along with a 40 GiB EBS root volume. It is running Ubuntu 20.04.
    using `git push`. This relies on the [base image](Dockerfile.base) having
    already been built and pushed to [Docker
    Hub](https://hub.docker.com/r/kobotoolbox/reports_base/tags?page=1&ordering=last_updated)
-   by [GitHub Actions](.github/workflows/docker-hub.yml). Reducing the size of
-   this base image (currently over 4 GiB) would be a nice improvement.
+   by [GitHub Actions](.github/workflows/docker-hub.yml). You must make a new
+   [release](https://github.com/kobotoolbox/reports/releases) (or push a new
+   tag) to trigger building of the base image. Reducing the size of this base
+   image (currently over 4 GiB) would be a nice improvement.
 
 # Development _without_ Dokku
 
