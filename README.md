@@ -1,4 +1,4 @@
-Last updated: June 29, 2021
+Last updated: June 16, 2022
 
 # What is this?
 
@@ -184,7 +184,13 @@ on how to install such an instance.
 1. Execute `docker-compose pull`;
 1. Execute `docker build -t kobotoolbox/reports_base -f Dockerfile.base .`
    (this is a slow process);
-1. Supplicate before the gods of JavaScript and execute `docker-compose build`;
+1. Execute `docker-compose build`;
+   - **WARNING:** This builds a Docker image using the latest front-end code in
+     your source tree, **BUT** the static files and Node dependencies built
+     into the Docker image will be shadowed by the `./:/app` volume in
+     `docker-compose.yml`. You must run `npm install` and `npm run build` (or
+     `npm run dev`) _additionally_, or else the application will run with stale
+     code.
 1. Execute `docker-compose up -d postgres`;
 1. Execute `docker-compose logs -f`;
 1. Wait for the Postgres container to settle as indicated by the logs;
@@ -205,3 +211,27 @@ on how to install such an instance.
     source activate koboreports
     ./manage.py createsuperuser
     ```
+1. Build the front-end files:
+    1. On your host computer (not inside a Docker container), enter the `jsapp`
+       directory within your source tree;
+        * (Your source tree is mounted inside the Docker container by the
+          `./:/app` volume in `docker-compose.yml`)
+    1. Use [nvm](https://github.com/nvm-sh/nvm) or similar to run the same
+       version of Node as specified in
+       [`Dockerfile.base`](./Dockerfile.base#L1);
+    1. Execute `npm install`;
+    1. If you plan to do front-end development, execute `npm run dev`, which
+       will watch your code for changes and reload as needed.
+       * **If you do this,** you must visit the application at
+         http://localhost:8080/. Accessing port 5000 will use stale front-end
+         code.
+    1. If you do not plan to touch front-end code, execute `npm run build` to
+       rebuild the front-end static files one time only. **You must do this at
+       least once** after switching branches or changing front-end
+       dependencies, even if you do not edit any front-end code yourself.
+1. Access the application in a browser:
+    - If you are **not** working on front-end code and have used only `npm run
+      build`, access the application at http://localhost:5000/.
+    - If you **are** modifying front-end code and executed `npm run dev`, you
+      must access the application at http://localhost:8080/. Port 5000 will
+      appear to work, but it will serve stale front-end code.
