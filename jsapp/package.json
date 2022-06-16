@@ -44,7 +44,7 @@
     "less": "^4.1.1",
     "less-loader": "^8.1.1",
     "md5": "^2.0.0",
-    "moment": "^2.10.6",
+    "moment": "^2.29.2",
     "node-sass": "^5.0.0",
     "react-mixin": "^5.0.0",
     "react-router-dom": "^5.2.0",
