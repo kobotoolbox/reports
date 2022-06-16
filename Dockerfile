@@ -4,6 +4,12 @@ FROM kobotoolbox/reports_base
 # koboreports #
 ###############
 
+# ATTENTION: If you use Docker Compose, the `./:/app` volume (intended for
+# developers) will shadow the `node_modules` installed and the static files
+# compiled while building the Docker image. Make sure to run `npm install` and
+# `npm run build` (or `npm run dev`) as part of your development process,
+# either on your host machine or inside the Docker container. See README.md
+
 # Freshen dependencies in case they've changed since the base
 # image was built
 COPY environment.yml /app/
