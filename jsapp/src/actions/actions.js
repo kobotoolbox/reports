@@ -1,4 +1,4 @@
-import Reflux from 'reflux';
+import Reflux from 'reflux-react-16';
 import $ from 'jquery';
 import alertify from 'alertifyjs';
 

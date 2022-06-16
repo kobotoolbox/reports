@@ -2,7 +2,7 @@
 
 import React from 'react';
 import reactMixin from 'react-mixin';
-import Reflux from 'reflux';
+import Reflux from 'reflux-react-16';
 import { withRouter } from 'react-router-dom'; // to include history in the props
 import bem from '../libs/react-create-bem-element';
 import bemRouterLink from '../libs/bemRouterLink';

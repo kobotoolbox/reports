@@ -6,7 +6,7 @@ import {Redirect} from 'react-router-dom';
 import bem from '../libs/react-create-bem-element';
 import sessionStore from '../stores/session';
 import bemRouterLink from '../libs/bemRouterLink'; // !
-import Reflux from 'reflux';
+import Reflux from 'reflux-react-16';
 import accountStore from '../stores/account';
 import authUrls from '../stores/authUrls';
 
