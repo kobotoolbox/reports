@@ -1,5 +1,5 @@
 import React from 'react';
-import Reflux from 'reflux';
+import Reflux from 'reflux-react-16';
 import {Redirect} from 'react-router-dom';
 import sessionStore from '../stores/session';
 

@@ -5,7 +5,7 @@ import reactMixin from 'react-mixin';
 import bem from '../libs/react-create-bem-element';
 import sessionStore from '../stores/session';
 import authUrls from '../stores/authUrls';
-import Reflux from 'reflux';
+import Reflux from 'reflux-react-16';
 
 import GettingStarted from './GettingStarted';
 

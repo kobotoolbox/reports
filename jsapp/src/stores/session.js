@@ -1,4 +1,4 @@
-import Reflux from 'reflux';
+import Reflux from 'reflux-react-16';
 import actions from '../actions/actions';
 
 var sessionStore = Reflux.createStore({
