@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:16
 
 # Docker default of `/bin/sh` doesn't support `source`
 SHELL ["/bin/bash", "-c"]

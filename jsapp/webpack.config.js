@@ -19,7 +19,7 @@ module.exports = {
   ],
 
   devServer: {
-    contentBase: false,
+    static: false,
     // send everything except /static/assets/main.js to the Python server
     // (hopefully that is localhost:5000!)
     proxy: {
