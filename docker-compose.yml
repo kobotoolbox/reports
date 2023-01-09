@@ -35,7 +35,7 @@ services:
     depends_on:
       # This won't guarantee that Postgres is actually ready to service requests
       # before starting the application, but it will ensure that the hostname
-      # `postgres` resolves within the NGINX container.
+      # `postgres` resolves within the `koboreports` container.
       - postgres
     ports:
       - "5000:5000"
