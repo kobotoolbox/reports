@@ -122,36 +122,6 @@ def proxy_create_user(request):
     headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}
     response = requests.post(url, data=request.POST, headers=headers)
     content_type = response.headers.get('content-type')
-    # Store the user's organization in KPI if the creation was successful
-    organization = request.POST.get('organization', False)
-    if organization and response.status_code == status.HTTP_201_CREATED:
-        username = request.POST.get('username', False)
-        password = request.POST.get('password', False)
-        # Could maybe call login() after authenticate() to automatically login
-        # new users upon registration; see
-        # https://docs.djangoproject.com/en/1.9/topics/auth/default/#how-to-log-a-user-in
-        user = authenticate(username=username, password=password)
-        # Should now have user.external_api_token from KoboApiAuthBackend
-        # FUN FACT: if you omit the trailing slash, you'll always get a 200
-        # response, but nothing will ever be updated!
-        profile_url = '{}me/'.format(settings.KPI_URL)
-        profile_headers = {
-            'Authorization': 'Token {}'.format(user.external_api_token.key)
-        }
-        # Store the organization within KPI
-        profile_response = requests.patch(
-            profile_url,
-            data={'extra_details': json.dumps({'organization': organization})},
-            headers=profile_headers
-        )
-        if profile_response.status_code != status.HTTP_200_OK:
-            # The user has already been created, so it doesn't make sense to
-            # fail completely at this point. We should log the error, though
-            logging.error((
-                'Unable to set organization to "{}" for user "{}". KPI '
-                'returned HTTP {}.'
-            ).format(organization, username, profile_response.status_code))
-
     return HttpResponse(
         response.content,
         content_type=content_type,
