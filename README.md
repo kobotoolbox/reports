@@ -170,6 +170,9 @@ GiB of RAM, along with a 40 GiB EBS root volume. It is running Ubuntu 20.04.
    Hub](https://hub.docker.com/r/kobotoolbox/reports_base/tags?page=1&ordering=last_updated).
 1. Make sure your public SSH key has been added to `authorized_keys` on the
    production server.
+1. Use `dokku ssh-keys:list` to verify that your SSH key is added to dokku.
+    * If the SSH key needs to be added, copy the `.pub` file on to the server
+    and run `dokku ssh-keys:add <keyname> <path/to/key>`
 1. Create a new Git remote in your _local_ copy of this repository, unless
    you've already set this up:
     ```
