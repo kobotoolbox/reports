@@ -159,6 +159,37 @@ GiB of RAM, along with a 40 GiB EBS root volume. It is running Ubuntu 20.04.
    tag) to trigger building of the base image. Reducing the size of this base
    image (currently over 4 GiB) would be a nice improvement.
 
+## Deploying an upgrade
+1. Make sure the `master` branch on GitHub has been updated with the code you
+   want to deploy.
+1. Create a new [release](https://github.com/kobotoolbox/reports/releases) (or
+   push a new tag) from the tip of `master` to trigger building of the base
+   image by [GitHub Actions](.github/workflows/docker-hub.yml).
+1. Wait for the build to complete. Verify that the base image for your new
+   release is present on [Docker
+   Hub](https://hub.docker.com/r/kobotoolbox/reports_base/tags?page=1&ordering=last_updated).
+1. Make sure your public SSH key has been added to `authorized_keys` on the
+   production server.
+1. Use `dokku ssh-keys:list` to verify that your SSH key is added to dokku.
+    * If the SSH key needs to be added, copy the `.pub` file on to the server
+    and run `dokku ssh-keys:add <keyname> <path/to/key>`
+1. Create a new Git remote in your _local_ copy of this repository, unless
+   you've already set this up:
+    ```
+    git remote add PRODUCTION dokku@data.equitytool.org:data.equitytool.org
+    ```
+1. Make sure the `master` branch in your _local_ repository has been updated
+   with the code you want to deploy.
+1. Deploy by pushing to the `PRODUCTION` remote:
+    ```
+    git push PRODUCTION master
+    ```
+1. Once you're satisfied with the deployment, you may want to prune unused
+   Docker resources to save disk space:
+    ```
+    docker system prune -a
+    ```
+
 # Development _without_ Dokku
 
 This application requires a working instance of KoBoToolbox to run. See
