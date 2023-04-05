@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load rest_framework %}
+{% load kpi_tags %}
 <html>
 <head>
     <title>Log in</title>
@@ -62,6 +63,9 @@
                         <button class="bordered-button">Log In</button>
                         <span>or</span>
                         <a class="bordered-navlink bordered-navlink--back" href="/#/getting-started">go back</a>
+                      </div>
+                      <div id="password-reset">
+                          <a href="{% forgot_password_url %}">Forgot your password?</a>
                       </div>
                     </form>
                 </div>
