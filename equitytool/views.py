@@ -174,6 +174,22 @@ class Wrapper(object):
         data = {'active': True}
         response = requests.post(deploy_url, data=data, headers=self._headers())
         assert response.status_code == 200
+
+        # Assign anonymous submissions permissions
+        permission_assignment_url = '{}api/v2/assets/{}/permission-assignments/'.format(
+            self.KPI_URL, asset_uid
+        )
+        permission_data = {
+            'user': '{}api/v2/users/AnonymousUser/'.format(self.KPI_URL),
+            'permission': '{}api/v2/permissions/add_submissions/'.format(self.KPI_URL)
+        }
+        permission_response = requests.post(
+            permission_assignment_url,
+            data=permission_data,
+            headers=self._headers()
+        )
+        assert permission_response.status_code == 201
+
         return response.json()['asset']
 
     def set_form(self):
