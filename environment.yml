@@ -6,66 +6,75 @@ dependencies:
   - _libgcc_mutex=0.1=main
   - _openmp_mutex=5.1=1_gnu
   - _r-mutex=1.0.0=anacondar_1
-  - binutils_impl_linux-64=2.33.1=he6710b0_7
-  - binutils_linux-64=2.33.1=h9595d00_15
+  - _sysroot_linux-64_curr_repodata_hack=3=haa98f57_10
+  - binutils_impl_linux-64=2.35.1=h27ae35d_9
+  - binutils_linux-64=2.35.1=h454624a_30
   - blas=1.0=mkl
   - bottleneck=1.3.5=py37h7deecbd_0
-  - bwidget=1.9.11=1
-  - bzip2=1.0.8=h7b6447c_0
-  - ca-certificates=2023.08.22=h06a4308_0
+  - bwidget=1.9.16=h9eba36c_0
+  - bzip2=1.0.8=h5eee18b_6
+  - ca-certificates=2024.3.11=h06a4308_0
   - cairo=1.16.0=hb05425b_5
   - certifi=2022.12.7=py37h06a4308_0
   - curl=7.69.1=hbc83047_0
-  - expat=2.5.0=h6a678d5_0
+  - expat=2.6.2=h6a678d5_0
   - fontconfig=2.14.1=h52c9d5c_1
   - freetype=2.12.1=h4a9f257_0
   - fribidi=1.0.10=h7b6447c_0
-  - gcc_impl_linux-64=7.3.0=habb00fd_1
-  - gcc_linux-64=7.3.0=h553295d_15
-  - gfortran_impl_linux-64=7.3.0=hdf63c60_1
-  - gfortran_linux-64=7.3.0=h553295d_15
-  - glib=2.69.1=he621ea3_2
+  - gcc_impl_linux-64=7.5.0=h7105cf2_17
+  - gcc_linux-64=7.5.0=h8f34230_30
+  - gfortran_impl_linux-64=7.5.0=ha8c8e06_17
+  - gfortran_linux-64=7.5.0=h96bb648_30
+  - glib=2.78.4=h6a678d5_0
+  - glib-tools=2.78.4=h6a678d5_0
   - graphite2=1.3.14=h295c915_1
   - gsl=2.4=h14c3975_4
-  - gxx_impl_linux-64=7.3.0=hdf63c60_1
-  - gxx_linux-64=7.3.0=h553295d_15
+  - gxx_impl_linux-64=7.5.0=h0a5bf11_17
+  - gxx_linux-64=7.5.0=hffc177d_30
   - harfbuzz=4.3.0=hf52aaf7_1
   - icu=58.2=he6710b0_3
-  - intel-openmp=2023.1.0=hdb19cb5_46305
+  - intel-openmp=2021.4.0=h06a4308_3561
   - jpeg=9e=h5eee18b_1
+  - kernel-headers_linux-64=3.10.0=h57e8cba_10
   - krb5=1.17.1=h173b8e3_0
-  - ld_impl_linux-64=2.33.1=h53a641e_7
+  - ld_impl_linux-64=2.35.1=h7274673_9
   - lerc=3.0=h295c915_0
   - libcurl=7.69.1=h20c2e04_0
   - libdeflate=1.17=h5eee18b_1
-  - libedit=3.1.20221030=h5eee18b_0
-  - libffi=3.4.4=h6a678d5_0
+  - libedit=3.1.20230828=h5eee18b_0
+  - libffi=3.4.4=h6a678d5_1
+  - libgcc-devel_linux-64=7.5.0=hbbeae57_17
   - libgcc-ng=11.2.0=h1234567_1
   - libgfortran-ng=7.5.0=ha8ba4b0_17
   - libgfortran4=7.5.0=ha8ba4b0_17
+  - libglib=2.78.4=hdc74915_0
   - libgomp=11.2.0=h1234567_1
+  - libiconv=1.16=h5eee18b_3
   - libpng=1.6.39=h5eee18b_0
   - libssh2=1.10.0=h37d81fd_2
+  - libstdcxx-devel_linux-64=7.5.0=hf0c5c8d_17
   - libstdcxx-ng=11.2.0=h1234567_1
   - libtiff=4.5.1=h6a678d5_0
   - libuuid=1.41.5=h5eee18b_0
   - libwebp-base=1.3.2=h5eee18b_0
   - libxcb=1.15=h7f8727e_0
   - libxml2=2.9.14=h74e7548_0
-  - lz4-c=1.9.4=h6a678d5_0
+  - lz4-c=1.9.4=h6a678d5_1
   - make=4.2.1=h1bed415_1
-  - mkl=2019.4=243
-  - mkl-service=2.3.0=py37he8ac12f_0
-  - mkl_fft=1.0.14=py37hd81dba3_0
-  - mkl_random=1.0.4=py37hd81dba3_0
+  - mkl=2021.4.0=h06a4308_640
+  - mkl-service=2.4.0=py37h7f8727e_0
+  - mkl_fft=1.3.1=py37hd3c417c_0
+  - mkl_random=1.2.2=py37h51133e4_0
   - ncurses=6.4=h6a678d5_0
-  - numexpr=2.7.3=py37hb2eb853_0
-  - numpy=1.19.2=py37h54aff64_0
-  - numpy-base=1.19.2=py37hfa32c7d_0
+  - numexpr=2.8.4=py37he184ba9_0
+  - numpy=1.21.5=py37h6c91a56_3
+  - numpy-base=1.21.5=py37ha15fc14_3
   - openssl=1.1.1w=h7f8727e_0
+  - packaging=22.0=py37h06a4308_0
   - pandas=1.3.5=py37h8c16a72_0
   - pango=1.50.7=h05da053_0
   - pcre=8.45=h295c915_0
+  - pcre2=10.42=hebb0a14_1
   - pip=22.3.1=py37h06a4308_0
   - pixman=0.40.0=h7f8727e_1
   - pyasn1=0.4.8=pyhd3eb1b0_0
@@ -129,13 +138,14 @@ dependencies:
   - readline=8.2=h5eee18b_0
   - setuptools=65.6.3=py37h06a4308_0
   - six=1.16.0=pyhd3eb1b0_1
-  - sqlite=3.41.2=h5eee18b_0
+  - sqlite=3.45.3=h5eee18b_0
+  - sysroot_linux-64=2.17=h57e8cba_10
   - tk=8.6.12=h1ccaba5_0
-  - tktable=2.10=h14c3975_0
+  - tktable=2.10=h3d55465_1
   - wheel=0.38.4=py37h06a4308_0
-  - xz=5.4.2=h5eee18b_0
-  - zlib=1.2.13=h5eee18b_0
-  - zstd=1.5.5=hc292b87_0
+  - xz=5.4.6=h5eee18b_1
+  - zlib=1.2.13=h5eee18b_1
+  - zstd=1.5.5=hc292b87_2
   - pip:
       - asgiref==3.6.0
       - cffi==1.15.1
