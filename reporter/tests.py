@@ -3,6 +3,7 @@ from reporter.models import Template, Rendering
 import os
 import re
 import pandas as pd
+import responses
 from io import StringIO
 
 
@@ -24,6 +25,7 @@ class TestRendering(TestCase):
         for ext in ['html', 'pdf', 'docx']:
             output = r.render(ext)
 
+    @responses.activate()
     def test_url(self):
         '''
         When rendering a template, if we set the url field then the
@@ -32,10 +34,19 @@ class TestRendering(TestCase):
         template. Below is a small example using a csv file containing
         2,430 baseball games.
         '''
+        url = 'https://sites.calvin.edu/scofield/data/csv/stob/bballgames03.csv'
+        # Fetching a file from a third-party HTTP server each time the unit
+        # tests run has inherent problems, so Andrew's Favorite Baseball CSV
+        # is now checked into the repo and fetched with a mock request
+        bball_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), 'test_bballgames03.csv'
+        )
+        with open(bball_file) as f:
+            bball_content = f.read()
+        responses.add(responses.GET, url, body=bball_content, status=200)
+
         rmarkdown = '`r nrow(data)`\n'
         t = Template.objects.create(rmd=rmarkdown, slug='n_observations')
-        # url = 'http://www.calvin.edu/~stob/data/bballgames03.csv'
-        url = 'http://web.archive.org/web/20191230231342if_/http://www.calvin.edu:80/~stob/data/bballgames03.csv'
         r = Rendering.objects.create(template=t, url=url)
         # Hack to bypass KoBo URL validity check
         r._test_non_kobo_csv = True
