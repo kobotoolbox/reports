@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN apt-get remove -y tex-gyre
 
 # `apt-get install conda` does not actually put Conda on the PATH
-ENV PATH /opt/conda/bin:$PATH
+ENV PATH="/opt/conda/bin:$PATH"
 RUN conda update --yes conda
 
 RUN mkdir /app

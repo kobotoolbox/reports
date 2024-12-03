@@ -169,6 +169,7 @@ dependencies:
       - pycparser==2.22
       - pyopenssl==24.2.1
       - requests==2.32.3
+      - responses==0.25.3
       - sentry-sdk==2.13.0
       - sqlparse==0.5.1
       - typing-extensions==4.12.2

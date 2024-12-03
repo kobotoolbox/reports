@@ -212,23 +212,23 @@ on how to install such an instance.
           to configure `extra_hosts` as well.
     1. Set `ALLOWED_HOSTS` to match the hostname of your `reports` instance;
        see https://docs.djangoproject.com/en/3.2/ref/settings/#allowed-hosts.
-1. Execute `docker-compose pull`;
+1. Execute `docker compose pull`;
 1. Execute `docker build -t kobotoolbox/reports_base -f Dockerfile.base .`
    (this is a slow process);
-1. Execute `docker-compose build`;
+1. Execute `docker compose build`;
    - **WARNING:** This builds a Docker image using the latest front-end code in
      your source tree, **BUT** the static files and Node dependencies built
      into the Docker image will be shadowed by the `./:/app` volume in
      `docker-compose.yml`. You must run `npm install` and `npm run build` (or
      `npm run dev`) _additionally_, or else the application will run with stale
      code.
-1. Execute `docker-compose up -d postgres`;
-1. Execute `docker-compose logs -f`;
+1. Execute `docker compose up -d postgres`;
+1. Execute `docker compose logs -f`;
 1. Wait for the Postgres container to settle as indicated by the logs;
-1. Interrupt (CTRL+C) `docker-compose logs`;
-1. Start the web application with `docker-compose up -d`;
+1. Interrupt (CTRL+C) `docker compose logs`;
+1. Start the web application with `docker compose up -d`;
 1. Get a shell inside the application container by running
-   `docker-compose exec koboreports bash`;
+   `docker compose exec koboreports bash`;
 1. If desired, load some sample `Form`s into the database:
     ```
     # Inside the application container
