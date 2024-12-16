@@ -11,11 +11,13 @@ jobs:
   docker-base-image-build-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: mr-smithers-excellent/docker-build-push@v5
+      - uses: actions/checkout@v3
+      - uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: kobotoolbox/reports_base
-          tags: latest
+          # Use the Git tag for the Docker image tag (done automatically), and
+          # additionally tag the new image as `latest`
+          addLatest: true
           registry: docker.io
           dockerfile: Dockerfile.base
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
