@@ -25,6 +25,7 @@ dependencies:
       - psycopg2==2.9.10
       - pyopenssl==24.3.0
       - requests==2.32.3
+      - responses==0.25.3
       - sentry-sdk==2.19.2
       - unicodecsv==0.14.1
       - urllib3[secure]==2.2.3
