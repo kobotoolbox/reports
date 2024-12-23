@@ -1,4 +1,4 @@
-FROM kobotoolbox/reports_base
+FROM kobotoolbox/reports_base:3.3
 
 ###############
 # koboreports #
