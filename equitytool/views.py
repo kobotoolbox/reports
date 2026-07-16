@@ -144,7 +144,7 @@ class Wrapper(object):
         csv = template.render(context)
         # KPI doesn't support CSV imports; convert CSV to XLS
         base64_xlsform = base64.b64encode(self._csv_to_xlsform_io(csv).read())
-        url = self.KPI_URL + 'imports/'
+        url = self.KPI_URL + 'api/v2/imports/'
         data = {
             'name': self.name,
             'base64Encoded': b'base64:' + base64_xlsform,
