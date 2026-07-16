@@ -8,7 +8,7 @@ from reporter.models import UserExternalApiToken
 
 class KoboApiAuthBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None):
-        url = '{}authorized_application/authenticate_user/'.format(
+        url = '{}api/v2/authorized_application/authenticate_user/'.format(
             settings.KPI_URL)
         data = {'username': username, 'password': password}
         headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}

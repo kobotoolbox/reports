@@ -117,7 +117,7 @@ class RenderingViewSet(viewsets.ModelViewSet):
 
 
 def proxy_create_user(request):
-    url = '{}authorized_application/users/'.format(
+    url = '{}api/v2/authorized_application/users/'.format(
         settings.KPI_URL)
     headers = {'Authorization': 'Token {}'.format(settings.KPI_API_KEY)}
     response = requests.post(url, data=request.POST, headers=headers)
